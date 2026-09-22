@@ -219,7 +219,10 @@
   /* The cloth: a pigment-washed round table top */
   .ps-setting__cloth {
     position: relative;
-    aspect-ratio: 1 / 0.92;
+    /* Nearly square. The stack is centred in here and the dessert plate is
+       offset out to one side, so a wide, short cloth pushes that plate off
+       the edge. */
+    aspect-ratio: 1 / 0.98;
     display: grid;
     place-items: center;
     border-radius: var(--ps-radius-l);
@@ -255,7 +258,9 @@
 
   .ps-setting__stack {
     position: relative;
-    width: 72%;
+    /* 66% leaves room for the dessert plate's offset to stay on the cloth.
+       At 72% with the old offset it spilled past the left edge. */
+    width: 66%;
     aspect-ratio: 1;
     display: grid;
     place-items: center;
@@ -292,11 +297,11 @@
 
   .ps-piece--dinner  { z-index: 1; }
   .ps-piece--salad   { z-index: 2; }
-  .ps-piece--dessert { z-index: 3; transform: translate(-64%, 34%) rotate(-8deg) scale(0.9); }
+  .ps-piece--dessert { z-index: 3; transform: translate(-52%, 26%) rotate(-8deg) scale(0.9); }
   .ps-piece--soup    { z-index: 4; }
 
   .ps-setting__panel.is-active .ps-piece--dessert,
-  .is-in .ps-piece--dessert { transform: translate(-64%, 26%); }
+  .is-in .ps-piece--dessert { transform: translate(-52%, 18%); }
 
   .ps-piece:hover { z-index: 6; }
   .ps-piece:hover .ps-piece__disc {
@@ -355,7 +360,7 @@
 
   @media (max-width: 900px) {
     .ps-setting__panel { grid-template-columns: 1fr; }
-    .ps-setting__stack { width: 82%; }
+    .ps-setting__stack { width: 74%; }
     .ps-setting__cutlery { display: none; }
   }
 {% endstylesheet %}
