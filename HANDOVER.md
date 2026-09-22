@@ -131,6 +131,24 @@ copy, every image is a setting, not hardcoded.
 
 ---
 
+## The logo and the credit
+
+- The hand-lettered **per set** mark now carries the brand: header, menu
+  overlay, footer, the coming-soon page, and the veil that covers each page
+  as it loads. It is one file rendered through a CSS mask, so it is oxblood
+  on linen and blush on oxblood without a second asset.
+- The logo's own two colours, sampled from the file, are in the palette as
+  `--ps-oxblood` (#500C02) and `--ps-blush` (#F2A4B6). Buttons, the footer,
+  the veil and text selection use them.
+- **The veil doubles as the preloader.** It holds about a second on the first
+  page of a visit, lifts almost at once on every page after, and a hard
+  timeout lifts it regardless. It is never shown without JavaScript and is
+  removed for anyone who asks for reduced motion.
+- The favicon and the social share image are the mark on its oxblood ground.
+- The footer reads **Powered by Najmarketing.co**, linked. Both the text and
+  the link are settings on the footer section, and Shopify's own credit can
+  be switched on beside it if you ever want it.
+
 ## The code
 
 Lives at `github.com/AdhamezzRz/perset`, branch `claude/trusting-faraday-i1jsf8`.

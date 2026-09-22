@@ -57,7 +57,9 @@ locales/              en.default + en.default.schema
 ### Colour
 
 Tokens are sampled directly from the collection photography, so the interface
-and the porcelain are speaking the same language. Any subtree can be
+and the porcelain are speaking the same language. The logo's own two colours,
+oxblood and blush, sit alongside them and carry the buttons, the footer and
+the veil. Any subtree can be
 re-pigmented with a single attribute:
 
 ```html
