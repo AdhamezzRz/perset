@@ -91,6 +91,7 @@
                   eagerly and at high priority. The rest sit behind it already
                   decoded, which is what makes the thumbnail swap instant.
                 {%- endcomment -%}
+                {%- assign shot_alt = media.alt | default: product.title | escape -%}
                 {%- if forloop.first -%}
                   {{
                     media
@@ -100,7 +101,7 @@
                       fetchpriority: 'high',
                       widths: '420,600,800,1100,1400,1600',
                       sizes: '(max-width: 900px) 84vw, 42vw',
-                      alt: media.alt | default: product.title | escape,
+                      alt: shot_alt,
                       class: 'ps-pdp__shot is-active'
                   }}
                 {%- else -%}
@@ -111,7 +112,7 @@
                       loading: 'lazy',
                       widths: '420,600,800,1100,1400,1600',
                       sizes: '(max-width: 900px) 84vw, 42vw',
-                      alt: media.alt | default: product.title | escape,
+                      alt: shot_alt,
                       class: 'ps-pdp__shot'
                   }}
                 {%- endif -%}

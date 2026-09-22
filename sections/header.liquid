@@ -31,6 +31,7 @@
 
       <a class="ps-logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }} — {{ 'general.home' | t | default: 'Home' }}">
         {%- if section.settings.logo != blank -%}
+          {%- assign logo_alt = shop.name | escape -%}
           {{
             section.settings.logo
             | image_url: width: 420
@@ -38,7 +39,7 @@
               loading: 'eager',
               widths: '140,210,280,420',
               sizes: '(max-width: 760px) 120px, 180px',
-              alt: shop.name | escape,
+              alt: logo_alt,
               class: 'ps-logo__img'
           }}
         {%- else -%}

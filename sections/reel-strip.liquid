@@ -91,10 +91,11 @@
                 <source src="{{ block.settings.video_url }}" type="video/mp4">
               </video>
             {%- elsif block.settings.poster != blank -%}
+              {%- assign poster_alt = block.settings.caption | escape -%}
               {{
                 block.settings.poster
                 | image_url: width: 900
-                | image_tag: loading: 'lazy', widths: '320,480,700,900', sizes: '(max-width: 760px) 68vw, 24vw', alt: block.settings.caption | escape, class: 'ps-reel__video'
+                | image_tag: loading: 'lazy', widths: '320,480,700,900', sizes: '(max-width: 760px) 68vw, 24vw', alt: poster_alt, class: 'ps-reel__video'
               }}
             {%- else -%}
               {{ 'lifestyle-1' | placeholder_svg_tag: 'ps-reel__video' }}
