@@ -147,11 +147,36 @@ def check_piped_filter_args():
                      "piped filter is not the last argument to image_tag")
 
 
+def check_range_settings():
+    """Shopify range settings take whole numbers only. A fractional min, max,
+       step or default is rejected at upload — silently, when uploading by
+       URL. Scale the setting to integers and divide in Liquid instead."""
+    for path in list(ROOT.glob("sections/*.liquid")) + list(ROOT.glob("blocks/*.liquid")):
+        src = path.read_text(encoding="utf-8")
+        match = re.search(r"\{%-?\s*schema\s*-?%\}(.*?)\{%-?\s*endschema\s*-?%\}", src, re.S)
+        if not match:
+            continue
+        try:
+            schema = json.loads(match.group(1))
+        except Exception:
+            continue
+        for group in [schema] + schema.get("blocks", []):
+            for setting in group.get("settings", []):
+                if setting.get("type") != "range":
+                    continue
+                for field in ("min", "max", "step", "default"):
+                    value = setting.get(field)
+                    if isinstance(value, float) and value != int(value):
+                        fail(path.relative_to(ROOT),
+                             f"range '{setting.get('id')}' has a fractional {field} ({value})")
+
+
 def main():
     check_json_files()
     check_schemas()
     check_blank_defaults()
     check_piped_filter_args()
+    check_range_settings()
     check_tag_balance()
     check_renders()
     check_assets()

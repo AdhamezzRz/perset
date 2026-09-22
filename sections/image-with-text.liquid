@@ -31,7 +31,7 @@
     <figure class="ps-iwt__figure" data-ps-reveal="{{ section.settings.image_reveal }}">
       <div class="ps-ratio {{ ratio_class }} ps-iwt__frame">
         {%- if section.settings.image != blank -%}
-          <div class="ps-iwt__drift" data-ps-parallax="{{ section.settings.parallax }}">
+          <div class="ps-iwt__drift" data-ps-parallax="{{ section.settings.parallax | divided_by: 100.0 }}">
             {{
               section.settings.image
               | image_url: width: 1600
@@ -179,7 +179,7 @@
       "type": "range",
       "id": "parallax",
       "label": "Parallax drift",
-      "min": 0, "max": 0.3, "step": 0.02, "default": 0.12
+      "min": 0, "max": 30, "step": 2, "unit": "%", "default": 12
     },
     {
       "type": "select",
