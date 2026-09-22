@@ -1170,3 +1170,52 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
   mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
 }
+
+/* --------------------------------------------------------------------------
+   17. THE CURTAIN
+   A linen panel that draws across between pages. It is decoration only:
+   perset-motion.js navigates on whichever comes first, the transition ending
+   or a 700ms timer, so a stalled animation can never trap a visitor on a
+   page. Without JavaScript the element is never inserted at all.
+   -------------------------------------------------------------------------- */
+
+.ps-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  place-items: center;
+  background: var(--ps-linen);
+  pointer-events: none;
+  /* Open: clipped away to nothing at the top edge. */
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 620ms var(--ps-ease-set);
+}
+.ps-curtain.is-closed {
+  clip-path: inset(0 0 0 0);
+  pointer-events: auto;
+}
+
+.ps-curtain__mark {
+  font-family: var(--ps-display);
+  font-size: clamp(1.4rem, 3.4vw, 2.4rem);
+  font-weight: 300;
+  font-variation-settings: "SOFT" 40, "WONK" 1, "opsz" 72;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ps-ink);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 320ms var(--ps-ease-set) 140ms,
+              transform 520ms var(--ps-ease-set) 140ms;
+}
+.ps-curtain__mark em {
+  font-style: italic;
+  font-variation-settings: "SOFT" 60, "WONK" 1, "opsz" 144;
+  letter-spacing: 0.1em;
+}
+.ps-curtain.is-closed .ps-curtain__mark { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-curtain { display: none; }
+}

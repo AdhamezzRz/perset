@@ -499,6 +499,71 @@
     });
   }
 
+  /* ------------------------------------------------------------ transition
+     A linen panel draws across between pages, so moving through the site
+     feels like a cloth being laid rather than a browser reloading.
+
+     Navigation is never the animation's responsibility. Every path through
+     this code ends in a real navigation: if anything throws, if the panel
+     never animates, if a timer is throttled in a background tab, the link
+     still goes where it was going. */
+
+  function initTransition() {
+    if (reduced.matches) return;
+
+    var panel = document.createElement('div');
+    panel.className = 'ps-curtain';
+    panel.setAttribute('aria-hidden', 'true');
+    panel.innerHTML = '<span class="ps-curtain__mark">Per <em>Set</em></span>';
+    document.body.appendChild(panel);
+
+    // Draw the panel back on arrival, including when the page comes out of
+    // the back/forward cache with the panel already closed.
+    function open() { panel.classList.remove('is-closed'); }
+    window.addEventListener('pageshow', open);
+    open();
+
+    var leaving = false;
+
+    function leaves(a) {
+      if (!a || !a.href) return false;
+      if (a.target && a.target !== '_self') return false;
+      if (a.hasAttribute('download')) return false;
+      if (a.getAttribute('rel') === 'external') return false;
+      if (a.dataset.psNoTransition !== undefined) return false;
+
+      var url;
+      try { url = new URL(a.href, location.href); } catch (e) { return false; }
+      if (url.origin !== location.origin) return false;
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') return false;
+      // Same page, different hash: that is a scroll, not a journey.
+      if (url.pathname === location.pathname && url.search === location.search && url.hash) return false;
+      if (url.href === location.href) return false;
+      return true;
+    }
+
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || leaving) return;
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+      var a = e.target.closest ? e.target.closest('a') : null;
+      if (!leaves(a)) return;
+
+      e.preventDefault();
+      leaving = true;
+      var href = a.href;
+
+      // Two independent paths to navigation: whichever fires first wins.
+      var go = function () {
+        if (!go.done) { go.done = true; window.location.href = href; }
+      };
+      panel.addEventListener('transitionend', go, { once: true });
+      setTimeout(go, 700);
+
+      try { panel.classList.add('is-closed'); } catch (err) { go(); }
+    });
+  }
+
   /* ---------------------------------------------------------------- boot */
 
   function boot() {
@@ -515,6 +580,7 @@
     initMenu();
     initRails();
     initAccordion();
+    initTransition();
     requestTick();
     document.documentElement.classList.add('ps-ready');
   }
