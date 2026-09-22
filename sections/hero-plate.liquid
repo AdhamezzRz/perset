@@ -151,11 +151,15 @@
   .ps-hero__line--1 { margin-bottom: -0.06em; }
   .ps-hero__line--3 { margin-top: -0.06em; }
 
-  /* The stage layers the plate behind the middle line of the headline. */
+  /* The stage positions the plate; it must NOT create a stacking context.
+     `isolation: isolate` here would trap the plate's negative z-index inside
+     the stage, and the stage would then paint above the first and last lines
+     of the headline — putting the plate in front of the very words it is
+     supposed to sit behind. Letting the negative index resolve against
+     .ps-hero__inner instead puts the plate behind all three lines. */
   .ps-hero__stage {
     position: relative;
     display: block;
-    isolation: isolate;
   }
   .ps-hero__plate-wrap {
     position: absolute;
@@ -218,9 +222,15 @@
   }
 
   @media (max-width: 760px) {
-    .ps-hero { min-height: auto; padding-block: calc(var(--ps-header-h) + 5vh) 12vh; }
-    .ps-hero__title { font-size: clamp(2.6rem, 15vw, 5rem); }
-    .ps-hero__plate-wrap { width: 78%; }
+    .ps-hero { min-height: auto; padding-block: calc(var(--ps-header-h) + 4vh) 9vh; }
+
+    /* On a phone the headline has to win. A larger type size and a smaller
+       plate keep the words clear of the busy centre of the design, and keep
+       the plate roughly as tall as the three lines so it does not push up
+       into the eyebrow or down into the paragraph below. */
+    .ps-hero__title { font-size: clamp(2.9rem, 17.5vw, 5rem); }
+    .ps-hero__plate-wrap { width: 58%; }
+    .ps-hero__foot { margin-top: clamp(2rem, 7vw, 3rem); }
     .ps-hero__cue { display: none; }
   }
 {% endstylesheet %}
