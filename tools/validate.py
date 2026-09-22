@@ -147,6 +147,21 @@ def check_piped_filter_args():
                      "piped filter is not the last argument to image_tag")
 
 
+def check_liquid_tag_continuations():
+    """Inside a {% liquid %} tag every line is its own statement, so a filter
+       chain cannot be wrapped across lines. A line starting with a pipe is
+       always a syntax error there, and Shopify rejects the file for it."""
+    block = re.compile(r"\{%-?\s*liquid\b(.*?)-?%\}", re.S)
+    for path in ROOT.rglob("*.liquid"):
+        src = path.read_text(encoding="utf-8")
+        for match in block.finditer(src):
+            first = src[:match.start()].count("\n") + 1
+            for offset, line in enumerate(match.group(1).splitlines()):
+                if line.strip().startswith("|"):
+                    fail(f"{path.relative_to(ROOT)}:{first + offset}",
+                         "filter chain wrapped inside a {% liquid %} tag — keep it on one line")
+
+
 def check_range_settings():
     """Shopify range settings take whole numbers only. A fractional min, max,
        step or default is rejected at upload — silently, when uploading by
@@ -177,6 +192,7 @@ def main():
     check_blank_defaults()
     check_piped_filter_args()
     check_range_settings()
+    check_liquid_tag_continuations()
     check_tag_balance()
     check_renders()
     check_assets()
