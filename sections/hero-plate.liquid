@@ -23,7 +23,12 @@
       </p>
     {%- endif -%}
 
-    <h1 class="ps-hero__title">
+    {%- comment -%}
+      ps-lines is what the motion engine's observer watches. Without it the
+      lines would stay parked below their masks and the headline would never
+      appear.
+    {%- endcomment -%}
+    <h1 class="ps-hero__title ps-lines">
       {%- if section.settings.line_1 != blank -%}
         <span class="ps-hero__line ps-hero__line--1">
           <span class="ps-line-mask"><span class="ps-line-inner" style="--ps-delay:120ms">{{ section.settings.line_1 }}</span></span>

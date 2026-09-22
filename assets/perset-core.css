@@ -536,7 +536,11 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
    .is-in when they cross the threshold.
    -------------------------------------------------------------------------- */
 
-[data-ps-reveal] {
+/* Reveals start hidden only when we know something is there to un-hide them.
+   .ps-js is set before first paint; if the motion engine never boots, the
+   failsafe in layout/theme.liquid takes .ps-js back off and everything is
+   simply visible. Content is never dependent on a script to be readable. */
+.ps-js [data-ps-reveal] {
   opacity: 0;
   transition:
     opacity var(--ps-t-slow) var(--ps-ease-set),
@@ -545,36 +549,45 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
   transition-delay: var(--ps-delay, 0ms);
   will-change: opacity, transform;
 }
-[data-ps-reveal="up"]    { transform: translate3d(0, 34px, 0); }
-[data-ps-reveal="down"]  { transform: translate3d(0, -28px, 0); }
-[data-ps-reveal="left"]  { transform: translate3d(38px, 0, 0); }
-[data-ps-reveal="right"] { transform: translate3d(-38px, 0, 0); }
-[data-ps-reveal="fade"]  { transform: none; }
-[data-ps-reveal="scale"] { transform: scale(0.93); }
-[data-ps-reveal="glaze"] { transform: translate3d(0, 26px, 0) scale(0.97); filter: blur(7px); }
-[data-ps-reveal="set"]   { transform: translate3d(0, 52px, 0) rotate(-3.5deg) scale(0.94); }
+.ps-js [data-ps-reveal="up"]    { transform: translate3d(0, 34px, 0); }
+.ps-js [data-ps-reveal="down"]  { transform: translate3d(0, -28px, 0); }
+.ps-js [data-ps-reveal="left"]  { transform: translate3d(38px, 0, 0); }
+.ps-js [data-ps-reveal="right"] { transform: translate3d(-38px, 0, 0); }
+.ps-js [data-ps-reveal="fade"]  { transform: none; }
+.ps-js [data-ps-reveal="scale"] { transform: scale(0.93); }
+.ps-js [data-ps-reveal="glaze"] { transform: translate3d(0, 26px, 0) scale(0.97); filter: blur(7px); }
+.ps-js [data-ps-reveal="set"]   { transform: translate3d(0, 52px, 0) rotate(-3.5deg) scale(0.94); }
 
-[data-ps-reveal].is-in {
+.ps-js [data-ps-reveal].is-in {
   opacity: 1;
   transform: none;
   filter: none;
 }
 
-/* Line-by-line headline reveal — each line rises from behind a mask */
+/* Line-by-line headline reveal — each line rises from behind a mask.
+
+   The starting transform is gated on .ps-js, which layout/theme.liquid sets
+   before first paint. Without JavaScript there is nothing to remove the
+   transform again, so the line must simply never be moved: a headline that
+   is only readable once a script runs is not a headline. */
 .ps-lines { display: block; }
 .ps-line-mask { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
 .ps-line-inner {
   display: block;
-  transform: translate3d(0, 108%, 0) rotate(2.2deg);
   transform-origin: left bottom;
   transition: transform var(--ps-t-drape) var(--ps-ease-set);
   transition-delay: var(--ps-delay, 0ms);
 }
-.is-in .ps-line-inner,
-.ps-lines.is-in .ps-line-inner { transform: none; }
+.ps-js .ps-line-inner { transform: translate3d(0, 108%, 0) rotate(2.2deg); }
+
+/* .is-in may land on an ancestor (the usual case, set by the observer on
+   .ps-lines) or on the line itself (when it carries its own data-ps-reveal). */
+.ps-js .is-in .ps-line-inner,
+.ps-js .ps-lines.is-in .ps-line-inner,
+.ps-js .ps-line-inner.is-in { transform: none; }
 
 /* Per-character reveal for short display words */
-.ps-char {
+.ps-js .ps-char {
   display: inline-block;
   opacity: 0;
   transform: translate3d(0, 0.6em, 0) rotate(6deg);
@@ -583,7 +596,7 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
     transform 620ms var(--ps-ease-set);
   transition-delay: var(--ps-delay, 0ms);
 }
-.is-in .ps-char { opacity: 1; transform: none; }
+.ps-js .is-in .ps-char { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -592,7 +605,7 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  [data-ps-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
+  .ps-js [data-ps-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
   .ps-line-inner { transform: none !important; }
   .ps-char { opacity: 1 !important; transform: none !important; }
   .ps-marquee__track { animation: none !important; }

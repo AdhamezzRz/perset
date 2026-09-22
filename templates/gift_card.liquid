@@ -142,6 +142,7 @@
       }
 
       .ps-gc__qr { display: grid; justify-items: center; gap: var(--ps-s-2xs); }
+      /* Pure white behind the QR, not porcelain: scanners want the contrast. */
       .ps-gc__qr canvas, .ps-gc__qr img {
         border-radius: var(--ps-radius-s);
         background: #fff;
@@ -186,7 +187,8 @@
         .ps-gc__note { text-align: center; }
       }
 
-      /* Printed, this should be one clean card on white paper. */
+      /* Printed, this should be one clean card on white paper. Paper colours
+         are literal here on purpose — they are ink-saving values, not tokens. */
       @media print {
         body::before { display: none; }
         body { background: #fff; }

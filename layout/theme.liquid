@@ -54,8 +54,20 @@
     </style>
 
     <script>
-      // Set before first paint so the page never flashes an un-themed state.
+      // Set before first paint, so scroll reveals can start hidden without
+      // the page ever flashing its un-revealed state.
       document.documentElement.classList.add('ps-js');
+
+      // Failsafe. Every hidden-until-revealed rule is scoped to .ps-js, so if
+      // the motion engine never boots — blocked, failed to load, threw — we
+      // take the class back off and the whole page is simply visible. Nothing
+      // on this site should need JavaScript in order to be read.
+      window.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+          var el = document.documentElement;
+          if (!el.classList.contains('ps-ready')) el.classList.remove('ps-js');
+        }, 2500);
+      });
     </script>
 
     {{ content_for_header }}
