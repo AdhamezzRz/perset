@@ -1,0 +1,176 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Per Set · Atelier",
+    "theme_author": "Per Set",
+    "theme_version": "1.0.0",
+    "theme_documentation_url": "https://perset.eg/pages/theme-guide",
+    "theme_support_url": "https://perset.eg/pages/contact"
+  },
+  {
+    "name": "Colours",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "The linen ground and the pigment. Everything else in the theme is derived from these two, so change them sparingly."
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent pigment",
+        "info": "Used for buttons, rules and the stitched ring on the product cards.",
+        "default": "#E87E68"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background linen",
+        "info": "The warm cloth every piece is photographed on.",
+        "default": "#F4EEE4"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Per Set sets Fraunces for anything expressive and Jost for body copy, labels and buttons. Both are loaded from Google Fonts in the layout and are not editable here — the pairing is part of the identity."
+      },
+      {
+        "type": "checkbox",
+        "id": "type_uppercase_headings",
+        "label": "Uppercase the largest headings",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "type_measure",
+        "label": "Body measure",
+        "info": "How many characters a line of body copy runs to before it wraps.",
+        "min": 52,
+        "max": 92,
+        "step": 2,
+        "unit": "ch",
+        "default": 78
+      }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      { "type": "url", "id": "social_instagram", "label": "Instagram" },
+      { "type": "url", "id": "social_tiktok", "label": "TikTok" },
+      { "type": "url", "id": "social_facebook", "label": "Facebook" },
+      {
+        "type": "text",
+        "id": "social_whatsapp",
+        "label": "WhatsApp number",
+        "info": "Digits only, with the country code. 201xxxxxxxxx for Egypt.",
+        "default": "201000000000"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_handle",
+        "label": "X / Twitter handle",
+        "info": "Used only for the Twitter card attribution. Include the @."
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "32 × 32 px or larger, square."
+      }
+    ]
+  },
+  {
+    "name": "Product cards",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "card_show_second_image",
+        "label": "Cross-fade to the second image on hover",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_type",
+        "label": "Show the product type under the title",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_vendor",
+        "label": "Show the vendor",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "card_reveal",
+        "label": "How cards arrive",
+        "options": [
+          { "value": "set", "label": "Set down (house default)" },
+          { "value": "up", "label": "Rise" },
+          { "value": "glaze", "label": "Glaze" },
+          { "value": "fade", "label": "Fade" }
+        ],
+        "default": "set"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart behaviour",
+        "options": [
+          { "value": "drawer", "label": "Slide-out drawer" },
+          { "value": "page", "label": "Go to the cart page" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_note",
+        "label": "Let customers leave a note",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_shipping_note",
+        "label": "Show a delivery note at checkout",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_shipping_note",
+        "label": "Delivery note",
+        "default": "Shipping across Egypt is calculated at checkout. Every set travels double-boxed."
+      }
+    ]
+  },
+  {
+    "name": "SEO and sharing",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Social share image",
+        "info": "Used when a page has no image of its own. 1200 × 630 px works everywhere."
+      },
+      {
+        "type": "textarea",
+        "id": "share_description",
+        "label": "Fallback description",
+        "default": "Hand-painted porcelain from Egypt. Three collections, each a 24-piece service for six."
+      }
+    ]
+  }
+]

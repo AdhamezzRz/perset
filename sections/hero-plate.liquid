@@ -1,0 +1,278 @@
+{%- comment -%}
+  THE TURNING PLATE
+
+  The signature moment of the site. A single plate sits between the lines of
+  the headline and turns slowly as you scroll, the way you would turn a piece
+  over in your hands. Type in front, plate behind, linen under everything.
+{%- endcomment -%}
+
+<section
+  class="ps-hero"
+  {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}
+  style="--hero-plate: {{ section.settings.plate_size }}%;">
+
+  {%- if section.settings.show_grain -%}
+    <div class="ps-hero__wash" aria-hidden="true"></div>
+  {%- endif -%}
+
+  <div class="ps-shell ps-shell--wide ps-hero__inner">
+
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="ps-eyebrow ps-eyebrow--center ps-hero__eyebrow" data-ps-reveal="fade">
+        {{ section.settings.eyebrow }}
+      </p>
+    {%- endif -%}
+
+    <h1 class="ps-hero__title">
+      {%- if section.settings.line_1 != blank -%}
+        <span class="ps-hero__line ps-hero__line--1">
+          <span class="ps-line-mask"><span class="ps-line-inner" style="--ps-delay:120ms">{{ section.settings.line_1 }}</span></span>
+        </span>
+      {%- endif -%}
+
+      <span class="ps-hero__stage">
+        {%- comment -%} The plate. Rotates with scroll, drifts with parallax. {%- endcomment -%}
+        <span class="ps-hero__plate-wrap" data-ps-parallax="0.09">
+          <span class="ps-plate ps-hero__plate" data-ps-rotate="{{ section.settings.rotation }}" data-ps-cursor="{{ section.settings.plate_cursor | escape }}">
+            {%- if section.settings.image != blank -%}
+              {{
+                section.settings.image
+                | image_url: width: 1600
+                | image_tag:
+                  loading: 'eager',
+                  fetchpriority: 'high',
+                  widths: '500,700,900,1200,1600',
+                  sizes: '(max-width: 760px) 78vw, 46vw',
+                  alt: section.settings.image.alt | default: section.settings.line_2 | escape
+              }}
+            {%- else -%}
+              {{ 'collection-1' | placeholder_svg_tag: 'ps-hero__ph' }}
+            {%- endif -%}
+          </span>
+          <span class="ps-plate-shadow" aria-hidden="true"></span>
+        </span>
+
+        {%- if section.settings.line_2 != blank -%}
+          <span class="ps-hero__line ps-hero__line--2">
+            <span class="ps-line-mask"><span class="ps-line-inner" style="--ps-delay:230ms">{{ section.settings.line_2 }}</span></span>
+          </span>
+        {%- endif -%}
+      </span>
+
+      {%- if section.settings.line_3 != blank -%}
+        <span class="ps-hero__line ps-hero__line--3">
+          <span class="ps-line-mask"><span class="ps-line-inner" style="--ps-delay:340ms">{{ section.settings.line_3 }}</span></span>
+        </span>
+      {%- endif -%}
+    </h1>
+
+    <div class="ps-hero__foot">
+      {%- if section.settings.lede != blank -%}
+        <p class="ps-lede ps-hero__lede" data-ps-reveal="up" style="--ps-delay:620ms">
+          {{ section.settings.lede }}
+        </p>
+      {%- endif -%}
+
+      <div class="ps-hero__actions" data-ps-reveal="up" style="--ps-delay:740ms">
+        {%- if section.settings.cta_label != blank -%}
+          <a class="ps-btn" href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}" data-ps-magnetic="0.22">
+            {{ section.settings.cta_label }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.cta2_label != blank -%}
+          <a class="ps-link" href="{{ section.settings.cta2_url | default: routes.collections_url }}">
+            {{ section.settings.cta2_label }}
+            {% render 'icon', name: 'arrow-right', size: 15 %}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if section.settings.scroll_cue != blank -%}
+    <div class="ps-hero__cue" data-ps-reveal="fade" style="--ps-delay:1000ms" aria-hidden="true">
+      <span>{{ section.settings.scroll_cue }}</span>
+      <span class="ps-hero__cue-line"></span>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .ps-hero {
+    position: relative;
+    min-height: min(104svh, 1080px);
+    display: flex;
+    align-items: center;
+    padding-block: calc(var(--ps-header-h) + 3vh) 9vh;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* A soft wash of the collection pigment bleeding in from the edges */
+  .ps-hero__wash {
+    position: absolute;
+    inset: -20%;
+    z-index: -2;
+    background:
+      radial-gradient(60% 50% at 18% 12%, var(--ps-wash, transparent), transparent 62%),
+      radial-gradient(55% 45% at 85% 78%, var(--ps-wash, transparent), transparent 60%);
+    opacity: 0.75;
+    filter: blur(20px);
+  }
+
+  .ps-hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1rem, 2.2vw, 1.8rem);
+    text-align: center;
+    width: 100%;
+  }
+
+  .ps-hero__eyebrow { color: var(--ps-ink-soft); }
+
+  .ps-hero__title {
+    font-family: var(--ps-display);
+    font-size: clamp(3rem, 13.2vw, 11.5rem);
+    font-weight: 250;
+    font-variation-settings: "SOFT" 46, "WONK" 1, "opsz" 144;
+    line-height: 0.86;
+    letter-spacing: -0.042em;
+    text-transform: uppercase;
+    margin: 0;
+    width: 100%;
+  }
+  .ps-hero__line { display: block; }
+  .ps-hero__line--1 { margin-bottom: -0.06em; }
+  .ps-hero__line--3 { margin-top: -0.06em; }
+
+  /* The stage layers the plate behind the middle line of the headline. */
+  .ps-hero__stage {
+    position: relative;
+    display: block;
+    isolation: isolate;
+  }
+  .ps-hero__plate-wrap {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--hero-plate, 46%);
+    aspect-ratio: 1;
+    transform: translate3d(-50%, calc(-50% + var(--ps-par, 0px)), 0);
+    z-index: -1;
+    pointer-events: auto;
+  }
+  .ps-hero__plate {
+    width: 100%;
+    box-shadow: 0 28px 70px rgba(120, 95, 60, 0.20);
+  }
+  .ps-hero__plate .ps-hero__ph { width: 100%; height: 100%; }
+  .ps-hero__line--2 .ps-line-inner { mix-blend-mode: normal; }
+
+  .ps-hero__foot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.1rem, 2.4vw, 1.9rem);
+    margin-top: clamp(1.4rem, 4vw, 3.2rem);
+  }
+  .ps-hero__lede { text-align: center; max-width: 42ch; }
+  .ps-hero__actions {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.2rem);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .ps-hero__cue {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(1rem, 3vh, 2.4rem);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: var(--ps-ink-faint);
+  }
+  .ps-hero__cue-line {
+    width: 1px;
+    height: 46px;
+    background: linear-gradient(to bottom, var(--ps-ink-faint), transparent);
+    transform-origin: top center;
+    animation: ps-cue 2.6s var(--ps-ease-swap) infinite;
+  }
+  @keyframes ps-cue {
+    0%   { transform: scaleY(0); opacity: 0; }
+    35%  { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(1) translateY(46px); opacity: 0; }
+  }
+
+  @media (max-width: 760px) {
+    .ps-hero { min-height: auto; padding-block: calc(var(--ps-header-h) + 5vh) 12vh; }
+    .ps-hero__title { font-size: clamp(2.6rem, 15vw, 5rem); }
+    .ps-hero__plate-wrap { width: 78%; }
+    .ps-hero__cue { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero — turning plate",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The plate sits behind the middle line of the headline and rotates as the visitor scrolls."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Hand painted porcelain · Made in Egypt" },
+    { "type": "text", "id": "line_1", "label": "Headline line 1", "default": "A table" },
+    { "type": "text", "id": "line_2", "label": "Headline line 2 (sits over the plate)", "default": "worth" },
+    { "type": "text", "id": "line_3", "label": "Headline line 3", "default": "staying at" },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Introduction",
+      "default": "Three collections, painted by hand, one piece at a time. Made to be used on a Tuesday, not kept behind glass."
+    },
+    { "type": "image_picker", "id": "image", "label": "Plate image (square works best)" },
+    {
+      "type": "range",
+      "id": "plate_size",
+      "label": "Plate size",
+      "min": 24, "max": 78, "step": 2, "unit": "%", "default": 46
+    },
+    {
+      "type": "range",
+      "id": "rotation",
+      "label": "Scroll rotation",
+      "min": 0, "max": 120, "step": 5, "unit": "°", "default": 45
+    },
+    { "type": "text", "id": "plate_cursor", "label": "Cursor label over the plate", "default": "Per Set" },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "none", "label": "Linen (default)" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "beads"
+    },
+    { "type": "checkbox", "id": "show_grain", "label": "Show pigment wash", "default": true },
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "cta_label", "label": "Primary label", "default": "Shop the collections" },
+    { "type": "url", "id": "cta_url", "label": "Primary link" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary label", "default": "Our story" },
+    { "type": "url", "id": "cta2_url", "label": "Secondary link" },
+    { "type": "text", "id": "scroll_cue", "label": "Scroll cue", "default": "Scroll" }
+  ],
+  "presets": [{ "name": "Hero — turning plate" }]
+}
+{% endschema %}

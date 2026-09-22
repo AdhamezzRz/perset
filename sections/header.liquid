@@ -1,0 +1,214 @@
+{%- comment -%}
+  Per Set header.
+
+  Sits over the hero with no background, picks up a linen blur once you
+  scroll, and hides itself on the way down so the photography is never
+  competing with navigation.
+{%- endcomment -%}
+
+<header class="ps-header" data-ps-header>
+  <div class="ps-shell ps-shell--wide">
+    <div class="ps-header__inner">
+
+      <nav class="ps-nav ps-nav--main" aria-label="{{ 'sections.header.primary_nav' | t | default: 'Primary' }}">
+        {%- for link in section.settings.menu.links limit: 4 -%}
+          <a
+            class="ps-nav__link"
+            href="{{ link.url }}"
+            {% if link.current %}aria-current="page"{% endif %}>{{ link.title }}</a>
+        {%- endfor -%}
+      </nav>
+
+      <button
+        class="ps-icon-btn ps-burger ps-only@sm"
+        type="button"
+        data-ps-menu-toggle
+        aria-expanded="false"
+        aria-controls="ps-menu"
+        aria-label="{{ 'sections.header.menu' | t | default: 'Menu' }}">
+        {% render 'icon', name: 'menu', size: 21 %}
+      </button>
+
+      <a class="ps-logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }} — {{ 'general.home' | t | default: 'Home' }}">
+        {%- if section.settings.logo != blank -%}
+          {{
+            section.settings.logo
+            | image_url: width: 420
+            | image_tag:
+              loading: 'eager',
+              widths: '140,210,280,420',
+              sizes: '(max-width: 760px) 120px, 180px',
+              alt: shop.name | escape,
+              class: 'ps-logo__img'
+          }}
+        {%- else -%}
+          Per <em>Set</em>
+        {%- endif -%}
+      </a>
+
+      <div class="ps-header__tools">
+        <a
+          class="ps-icon-btn ps-hide@sm"
+          href="{{ routes.search_url }}"
+          aria-label="{{ 'general.search.title' | t | default: 'Search' }}">
+          {% render 'icon', name: 'search', size: 19 %}
+        </a>
+
+        {%- if shop.customer_accounts_enabled -%}
+          <a
+            class="ps-icon-btn ps-hide@sm"
+            href="{{ routes.account_url }}"
+            aria-label="{{ 'customer.account.title' | t | default: 'Account' }}">
+            {% render 'icon', name: 'account', size: 19 %}
+          </a>
+        {%- endif -%}
+
+        <a
+          class="ps-icon-btn"
+          href="{{ routes.cart_url }}"
+          data-ps-cart-link
+          aria-label="{{ 'sections.header.cart' | t | default: 'Cart' }}">
+          {% render 'icon', name: 'cart', size: 19 %}
+          <span
+            class="ps-cart-count{% if cart.item_count > 0 %} is-on{% endif %}"
+            data-ps-cart-count>{{ cart.item_count }}</span>
+        </a>
+
+        <button
+          class="ps-icon-btn ps-hide@sm"
+          type="button"
+          data-ps-menu-toggle
+          aria-expanded="false"
+          aria-controls="ps-menu"
+          aria-label="{{ 'sections.header.menu' | t | default: 'Menu' }}">
+          {% render 'icon', name: 'menu', size: 21 %}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+{%- comment -%} Full-screen menu. Wipes open from the top like a cloth drawn over a table. {%- endcomment -%}
+<div class="ps-menu" id="ps-menu" data-ps-menu aria-hidden="true">
+  <div class="ps-shell ps-shell--wide ps-menu__top">
+    <span class="ps-logo">Per <em>Set</em></span>
+    <button
+      class="ps-icon-btn"
+      type="button"
+      data-ps-menu-close
+      aria-label="{{ 'accessibility.close' | t | default: 'Close' }}">
+      {% render 'icon', name: 'close', size: 22 %}
+    </button>
+  </div>
+
+  <div class="ps-shell ps-shell--wide ps-menu__body">
+    <nav aria-label="{{ 'sections.header.menu' | t | default: 'Menu' }}">
+      <ul class="ps-menu__list">
+        {%- for link in section.settings.menu.links -%}
+          <li class="ps-menu__item">
+            <a class="ps-menu__link" href="{{ link.url }}">
+              <span class="ps-menu__idx">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>{{ link.title }}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <aside class="ps-menu__aside">
+      {%- if section.settings.menu_image != blank -%}
+        <div class="ps-menu__figure ps-ratio ps-ratio--34">
+          {{
+            section.settings.menu_image
+            | image_url: width: 900
+            | image_tag: loading: 'lazy', widths: '400,600,900', sizes: '(max-width: 960px) 60vw, 30vw', alt: ''
+          }}
+        </div>
+      {%- endif -%}
+      {%- if section.settings.menu_note != blank -%}
+        <p class="ps-menu__note">{{ section.settings.menu_note }}</p>
+      {%- endif -%}
+    </aside>
+  </div>
+
+  <div class="ps-shell ps-shell--wide ps-menu__foot">
+    <a class="ps-link" href="{{ routes.search_url }}">{{ 'general.search.title' | t | default: 'Search' }}</a>
+    {%- if shop.customer_accounts_enabled -%}
+      <a class="ps-link" href="{{ routes.account_url }}">{{ 'customer.account.title' | t | default: 'Account' }}</a>
+    {%- endif -%}
+    {%- if section.settings.instagram != blank -%}
+      <a class="ps-link" href="{{ section.settings.instagram }}" rel="noopener" target="_blank">Instagram</a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .ps-logo__img { width: auto; max-height: 40px; object-fit: contain; }
+
+  .ps-menu__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--ps-header-h);
+  }
+  .ps-menu__body {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr;
+    gap: var(--ps-s-xl);
+    align-items: center;
+    padding-block: clamp(1.5rem, 5vw, 4rem);
+  }
+  .ps-menu__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ps-s-m);
+  }
+  .ps-menu__figure {
+    border-radius: var(--ps-radius-l);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity var(--ps-t-drape) var(--ps-ease-set) 420ms,
+                transform var(--ps-t-drape) var(--ps-ease-set) 420ms;
+  }
+  .ps-menu.is-open .ps-menu__figure { opacity: 1; transform: none; }
+  .ps-menu__note {
+    max-width: 34ch;
+    font-family: var(--ps-display);
+    font-style: italic;
+    font-size: var(--ps-step-1);
+    line-height: 1.34;
+    color: var(--ps-ink-soft);
+  }
+  .ps-menu__foot {
+    display: flex;
+    gap: var(--ps-s-m);
+    flex-wrap: wrap;
+    padding-block: var(--ps-s-m) var(--ps-s-l);
+    border-top: 1px solid var(--ps-hairline);
+  }
+  @media (max-width: 860px) {
+    .ps-menu__body { grid-template-columns: 1fr; align-items: start; }
+    .ps-menu__aside { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "header", "content": "Menu overlay" },
+    { "type": "image_picker", "id": "menu_image", "label": "Menu image" },
+    {
+      "type": "textarea",
+      "id": "menu_note",
+      "label": "Menu note",
+      "default": "Every piece is painted by hand, so no two are identical. That is the point."
+    },
+    { "type": "url", "id": "instagram", "label": "Instagram URL" }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

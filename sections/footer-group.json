@@ -1,0 +1,46 @@
+{
+  "name": "Footer",
+  "type": "footer",
+  "sections": {
+    "marquee-footer": {
+      "type": "marquee",
+      "blocks": {
+        "m1": { "type": "phrase", "settings": { "text": "Hand painted" } },
+        "m2": { "type": "phrase", "settings": { "text": "Fired in small runs" } },
+        "m3": { "type": "phrase", "settings": { "text": "No two alike" } },
+        "m4": { "type": "phrase", "settings": { "text": "Made in Egypt" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4"],
+      "settings": { "speed": 48, "reverse": false, "dark": false, "aria": "Brand notes" }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "shop": {
+          "type": "menu",
+          "settings": { "title": "Shop", "menu": "footer" }
+        },
+        "help": {
+          "type": "text",
+          "settings": {
+            "title": "Care",
+            "text": "<p>Dishwasher safe on a gentle cycle. Not for the microwave, because of the gold.</p>"
+          }
+        },
+        "visit": {
+          "type": "text",
+          "settings": { "title": "Visit", "text": "<p>Cairo, Egypt</p>" }
+        }
+      },
+      "block_order": ["shop", "help", "visit"],
+      "settings": {
+        "show_newsletter": true,
+        "news_heading": "First look at the next firing",
+        "news_body": "Small runs sell out quietly. We will tell you before they do.",
+        "blurb": "Hand-painted porcelain, made in small runs in Egypt.",
+        "rights": "All rights reserved."
+      }
+    }
+  },
+  "order": ["marquee-footer", "footer"]
+}

@@ -1,0 +1,220 @@
+{%- comment -%}
+  PAGE HERO
+
+  The banner that opens a content page. A pigment wash bleeds in from the
+  corners, the heading splits into lines that rise from behind a mask, and an
+  optional plate or photograph drifts on parallax beside it.
+
+  Reusable: drop it on any page, blog or search template. The heading level is
+  selectable so the page keeps exactly one h1.
+{%- endcomment -%}
+
+{%- liquid
+  assign tag = section.settings.heading_tag | default: 'h1'
+  assign has_image = false
+  if section.settings.image != blank
+    assign has_image = true
+  endif
+-%}
+
+<section
+  class="ps-phero{% if has_image %} ps-phero--split{% endif %}"
+  {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;">
+
+  {%- if section.settings.show_wash -%}
+    <div class="ps-phero__wash" aria-hidden="true"></div>
+  {%- endif -%}
+
+  <div class="ps-shell ps-phero__inner">
+
+    <div class="ps-phero__text">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+
+      <{{ tag }} class="ps-phero__title" data-ps-split="lines" data-ps-split-step="100">
+        {{- section.settings.heading | default: page.title -}}
+      </{{ tag }}>
+
+      {%- if section.settings.lede != blank -%}
+        <p class="ps-lede ps-phero__lede" data-ps-reveal="up" style="--ps-delay:260ms">
+          {{ section.settings.lede }}
+        </p>
+      {%- endif -%}
+
+      {%- if section.settings.cta_label != blank -%}
+        <a
+          class="ps-btn ps-phero__cta"
+          href="{{ section.settings.cta_url | default: routes.collections_url }}"
+          data-ps-magnetic="0.2"
+          data-ps-reveal="up"
+          style="--ps-delay:380ms">
+          {{ section.settings.cta_label }}
+          {% render 'icon', name: 'arrow-right', size: 15 %}
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.show_thread -%}
+        <div class="ps-phero__thread" aria-hidden="true">
+          {% render 'icon', name: 'thread', draw: true %}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if has_image -%}
+      <div class="ps-phero__figure" data-ps-parallax="0.08">
+        <div class="ps-phero__frame{% if section.settings.image_shape == 'plate' %} ps-plate{% else %} ps-ratio ps-ratio--43{% endif %}">
+          {{
+            section.settings.image
+            | image_url: width: 1400
+            | image_tag:
+              loading: 'lazy',
+              widths: '420,640,900,1200,1400',
+              sizes: '(max-width: 900px) 84vw, 40vw',
+              alt: section.settings.image.alt | default: section.settings.heading | escape
+          }}
+        </div>
+        {%- if section.settings.image_shape == 'plate' -%}
+          <span class="ps-plate-shadow" aria-hidden="true"></span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-phero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .ps-phero__wash {
+    position: absolute;
+    inset: -30% -10%;
+    z-index: -1;
+    background:
+      radial-gradient(48% 46% at 12% 0%, var(--ps-wash, var(--ps-linen-warm)), transparent 64%),
+      radial-gradient(42% 40% at 92% 92%, var(--ps-wash, var(--ps-linen-warm)), transparent 62%);
+    opacity: 0.85;
+    filter: blur(18px);
+  }
+
+  .ps-phero__inner {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+  .ps-phero--split .ps-phero__inner {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+
+  .ps-phero__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.9rem, 2vw, 1.6rem);
+    max-width: 24ch;
+  }
+  .ps-phero:not(.ps-phero--split) .ps-phero__text { max-width: none; }
+
+  .ps-phero__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.6rem, 8.6vw, 6.2rem);
+    font-weight: 280;
+    font-variation-settings: "SOFT" 44, "WONK" 1, "opsz" 144;
+    line-height: 0.94;
+    letter-spacing: -0.036em;
+    margin: 0;
+  }
+
+  .ps-phero__lede { max-width: 46ch; }
+  .ps-phero__cta { margin-top: 0.4rem; }
+  .ps-phero__thread { width: min(100%, 22rem); margin-top: 0.6rem; }
+
+  .ps-phero__figure { position: relative; transform: translate3d(0, var(--ps-par, 0px), 0); }
+  .ps-phero__frame {
+    border-radius: var(--ps-radius-l);
+    overflow: hidden;
+    box-shadow: var(--ps-lift-2);
+  }
+  .ps-phero__frame.ps-plate { border-radius: 50%; box-shadow: 0 28px 70px rgba(120, 95, 60, 0.20); }
+
+  @media (max-width: 900px) {
+    .ps-phero--split .ps-phero__inner { grid-template-columns: 1fr; }
+    .ps-phero__text { max-width: none; }
+    .ps-phero__figure { width: min(84%, 26rem); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page hero",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Per Set" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Painted by hand" },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Heading level",
+      "info": "Keep one h1 per page.",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Lede",
+      "default": "Three collections, fired in small runs outside Cairo. Made to be used on a Tuesday."
+    },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "label": "Image shape",
+      "options": [
+        { "value": "plate", "label": "Plate (round)" },
+        { "value": "frame", "label": "Frame (4:3)" }
+      ],
+      "default": "plate"
+    },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "none", "label": "Linen (default)" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "none"
+    },
+    { "type": "checkbox", "id": "show_wash", "label": "Show pigment wash", "default": true },
+    { "type": "checkbox", "id": "show_thread", "label": "Show stitched rule", "default": true },
+    { "type": "header", "content": "Button" },
+    { "type": "text", "id": "cta_label", "label": "Label" },
+    { "type": "url", "id": "cta_url", "label": "Link" },
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0, "max": 220, "step": 4, "unit": "px", "default": 160
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0, "max": 220, "step": 4, "unit": "px", "default": 72
+    }
+  ],
+  "presets": [{ "name": "Page hero" }]
+}
+{% endschema %}

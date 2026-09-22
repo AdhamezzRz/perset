@@ -1,0 +1,295 @@
+{%- comment -%}
+  THE THREE STORIES
+
+  Each collection gets a full panel that sticks to the top of the viewport
+  while the next one slides up over it. Every panel carries its own pigment,
+  so the whole sequence reads as three distinct worlds rather than three rows
+  of the same template.
+{%- endcomment -%}
+
+<section class="ps-stories" aria-label="{{ section.settings.heading | default: 'Collections' | escape }}">
+
+  {%- if section.settings.heading != blank -%}
+    <div class="ps-shell ps-stories__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow ps-eyebrow--center" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h2 class="ps-h2 ps-center" data-ps-split="lines">{{ section.settings.heading }}</h2>
+      {%- if section.settings.intro != blank -%}
+        <p class="ps-lede ps-center" data-ps-reveal="up">{{ section.settings.intro }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="ps-stories__stack">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign col = collections[block.settings.collection]
+        assign img = block.settings.image
+        if img == blank and col.image != blank
+          assign img = col.image
+        endif
+        if img == blank and col.products.first.featured_media != blank
+          assign img = col.products.first.featured_media.preview_image
+        endif
+        assign title = block.settings.title
+        if title == blank
+          assign title = col.title
+        endif
+        assign body = block.settings.body
+        if body == blank
+          assign body = col.description | strip_html | truncatewords: 42
+        endif
+      -%}
+
+      <article
+        class="ps-story"
+        data-ps-pigment="{{ block.settings.pigment }}"
+        style="--story-i: {{ forloop.index0 }};"
+        {{ block.shopify_attributes }}>
+
+        <div class="ps-story__inner ps-shell ps-shell--wide">
+
+          <div class="ps-story__text">
+            <p class="ps-story__idx ps-num" data-ps-reveal="fade">
+              {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+              <span class="ps-story__rule" aria-hidden="true"></span>
+              {{ section.blocks.size | prepend: '0' | slice: -2, 2 }}
+            </p>
+
+            <h3 class="ps-story__title" data-ps-split="lines" data-ps-split-step="90">{{ title }}</h3>
+
+            {%- if body != blank -%}
+              <p class="ps-story__body" data-ps-reveal="up" style="--ps-delay:180ms">{{ body }}</p>
+            {%- endif -%}
+
+            <div class="ps-story__meta" data-ps-reveal="up" style="--ps-delay:280ms">
+              {%- if block.settings.meta != blank -%}
+                <span class="ps-story__pill">{{ block.settings.meta }}</span>
+              {%- endif -%}
+              {%- if col != blank and col.all_products_count > 0 -%}
+                <span class="ps-story__pill">
+                  {{ col.all_products_count }} {{ 'collections.general.pieces' | t | default: 'pieces' }}
+                </span>
+              {%- endif -%}
+            </div>
+
+            <a
+              class="ps-btn ps-story__cta"
+              href="{{ col.url | default: block.settings.link | default: routes.collections_url }}"
+              data-ps-magnetic="0.2"
+              data-ps-reveal="up"
+              style="--ps-delay:380ms">
+              {{ block.settings.cta | default: 'Open the collection' }}
+              {% render 'icon', name: 'arrow-right', size: 15 %}
+            </a>
+          </div>
+
+          <div class="ps-story__figure">
+            <div class="ps-story__plate-wrap" data-ps-parallax="0.06">
+              <div
+                class="ps-plate ps-story__plate"
+                data-ps-rotate="{{ block.settings.rotation }}"
+                data-ps-cursor="{{ block.settings.cta | default: 'Open' | escape }}">
+                {%- if img != blank -%}
+                  {{
+                    img
+                    | image_url: width: 1400
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '480,700,900,1200,1400',
+                      sizes: '(max-width: 900px) 72vw, 42vw',
+                      alt: title | escape
+                  }}
+                {%- else -%}
+                  {{ 'collection-2' | placeholder_svg_tag: '' }}
+                {%- endif -%}
+              </div>
+              <span class="ps-plate-shadow" aria-hidden="true"></span>
+
+              <a class="ps-story__cover" href="{{ col.url | default: block.settings.link | default: routes.collections_url }}">
+                <span class="ps-sr">{{ title | escape }}</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </article>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-stories { position: relative; }
+
+  .ps-stories__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ps-s-s);
+    padding-block: clamp(4rem, 9vw, 9rem) clamp(2rem, 5vw, 4rem);
+    text-align: center;
+  }
+  .ps-stories__intro .ps-lede { text-align: center; }
+
+  /* Each panel sticks; the next one rides up over it. */
+  .ps-story {
+    position: sticky;
+    top: 0;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    background: var(--ps-wash, var(--ps-linen-warm));
+    border-top: 1px solid var(--ps-hairline-soft);
+    overflow: hidden;
+  }
+
+  .ps-story__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(1.5rem, 5vw, 5rem);
+    width: 100%;
+    padding-block: clamp(3rem, 8vh, 6rem);
+  }
+  /* Alternate which side the plate sits on. */
+  .ps-story:nth-child(even) .ps-story__text { order: 2; }
+
+  .ps-story__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.8rem, 1.6vw, 1.35rem);
+  }
+
+  .ps-story__idx {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75em;
+    font-size: var(--ps-step--1);
+    letter-spacing: 0.18em;
+    color: var(--ps-ink-faint);
+  }
+  .ps-story__rule {
+    width: 3.4em;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  .ps-story__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.4rem, 5.6vw, 5.1rem);
+    font-weight: 300;
+    font-variation-settings: "SOFT" 42, "WONK" 1, "opsz" 144;
+    line-height: 0.95;
+    letter-spacing: -0.032em;
+    margin: 0;
+  }
+
+  .ps-story__body {
+    max-width: 44ch;
+    font-size: var(--ps-step-0);
+    line-height: 1.62;
+    color: var(--ps-ink-soft);
+    text-wrap: pretty;
+  }
+
+  .ps-story__meta { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+  .ps-story__pill {
+    padding: 0.42em 0.95em;
+    border-radius: 999px;
+    border: 1px solid var(--ps-hairline);
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ps-ink-soft);
+  }
+
+  .ps-story__cta { margin-top: 0.5rem; }
+
+  .ps-story__figure { display: grid; place-items: center; }
+  .ps-story__plate-wrap {
+    position: relative;
+    width: min(100%, 34rem);
+    aspect-ratio: 1;
+    transform: translate3d(0, var(--ps-par, 0px), 0);
+  }
+  .ps-story__plate {
+    width: 100%;
+    box-shadow: 0 30px 80px rgba(120, 95, 60, 0.22);
+  }
+  .ps-story__cover { position: absolute; inset: 0; border-radius: 50%; z-index: 3; }
+
+  @media (max-width: 900px) {
+    .ps-story {
+      position: relative;
+      min-height: auto;
+      padding-block: clamp(3rem, 9vw, 5rem);
+    }
+    .ps-story__inner { grid-template-columns: 1fr; gap: var(--ps-s-l); }
+    .ps-story:nth-child(even) .ps-story__text { order: 0; }
+    .ps-story__figure { order: -1; }
+    .ps-story__plate-wrap { width: min(80%, 22rem); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection stories",
+  "tag": "section",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Three collections" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Every set tells its own story" },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "Drawn by hand, fired in small runs, and finished so no two pieces are quite the same."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "story",
+      "name": "Collection",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Title override" },
+        { "type": "textarea", "id": "body", "label": "Description override" },
+        { "type": "image_picker", "id": "image", "label": "Image override" },
+        { "type": "text", "id": "meta", "label": "Detail pill", "default": "24 pieces · Service for six" },
+        { "type": "text", "id": "cta", "label": "Button label", "default": "Open the collection" },
+        { "type": "url", "id": "link", "label": "Fallback link" },
+        {
+          "type": "range",
+          "id": "rotation",
+          "label": "Scroll rotation",
+          "min": 0, "max": 120, "step": 5, "unit": "°", "default": 55
+        },
+        {
+          "type": "select",
+          "id": "pigment",
+          "label": "Pigment",
+          "options": [
+            { "value": "wild", "label": "Stitches of the Wild" },
+            { "value": "beads", "label": "A Tale in Beads" },
+            { "value": "past", "label": "Pretty Past" }
+          ],
+          "default": "wild"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection stories",
+      "blocks": [
+        { "type": "story", "settings": { "pigment": "wild" } },
+        { "type": "story", "settings": { "pigment": "beads" } },
+        { "type": "story", "settings": { "pigment": "past" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

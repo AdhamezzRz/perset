@@ -1,0 +1,86 @@
+{%- comment -%}
+  Per Set social + canonical meta.
+
+  Rendered from layout/theme.liquid inside <head>. Everything here is derived
+  from the page itself; the only authored fallback is the share image in
+  theme settings, so a merchant never has to think about this file.
+
+  og:type follows the template — product pages describe a product with its
+  price and availability, articles describe an article, everything else is a
+  plain website.
+{%- endcomment -%}
+
+{%- liquid
+  # ---- Title ---------------------------------------------------------------
+  assign og_title = page_title | default: shop.name
+
+  # ---- Description ---------------------------------------------------------
+  assign og_description = page_description | default: shop.description | default: shop.name
+
+  # ---- Image ---------------------------------------------------------------
+  # Best available image for this page, falling back to the theme setting.
+  assign og_image = blank
+  if template.name == 'product' and product.featured_media.preview_image != blank
+    assign og_image = product.featured_media.preview_image
+  elsif template.name == 'article' and article.image != blank
+    assign og_image = article.image
+  elsif template.name == 'collection' and collection.image != blank
+    assign og_image = collection.image
+  elsif template.name == 'page' and page.metafields.perset.share_image.value != blank
+    assign og_image = page.metafields.perset.share_image.value
+  endif
+  if og_image == blank and settings.share_image != blank
+    assign og_image = settings.share_image
+  endif
+-%}
+
+<meta property="og:site_name" content="{{ shop.name | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ og_title | escape }}">
+<meta property="og:description" content="{{ og_description | strip_html | truncate: 300 | escape }}">
+<meta property="og:locale" content="{{ request.locale.iso_code }}">
+
+{%- if template.name == 'product' and product != blank -%}
+  <meta property="og:type" content="product">
+  <meta property="product:price:amount" content="{{ product.price | divided_by: 100.0 }}">
+  <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+  <meta property="product:availability" content="{% if product.available %}in stock{% else %}out of stock{% endif %}">
+  {%- if product.vendor != blank -%}
+    <meta property="product:brand" content="{{ product.vendor | escape }}">
+  {%- endif -%}
+  {%- if product.selected_or_first_available_variant.sku != blank -%}
+    <meta property="product:retailer_item_id" content="{{ product.selected_or_first_available_variant.sku | escape }}">
+  {%- endif -%}
+{%- elsif template.name == 'article' and article != blank -%}
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="{{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' }}">
+  {%- if article.author != blank -%}
+    <meta property="article:author" content="{{ article.author | escape }}">
+  {%- endif -%}
+  {%- for tag in article.tags limit: 6 -%}
+    <meta property="article:tag" content="{{ tag | escape }}">
+  {%- endfor -%}
+{%- else -%}
+  <meta property="og:type" content="website">
+{%- endif -%}
+
+{%- if og_image != blank -%}
+  <meta property="og:image" content="http:{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image:secure_url" content="https:{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="{{ 1200 | divided_by: og_image.aspect_ratio | round | default: 630 }}">
+  {%- if og_image.alt != blank -%}
+    <meta property="og:image:alt" content="{{ og_image.alt | escape }}">
+  {%- endif -%}
+{%- endif -%}
+
+{%- comment -%} Twitter reads its own namespace; keep it in step with Open Graph. {%- endcomment -%}
+<meta name="twitter:card" content="{% if og_image != blank %}summary_large_image{% else %}summary{% endif %}">
+<meta name="twitter:title" content="{{ og_title | escape }}">
+<meta name="twitter:description" content="{{ og_description | strip_html | truncate: 200 | escape }}">
+{%- if og_image != blank -%}
+  <meta name="twitter:image" content="https:{{ og_image | image_url: width: 1200 }}">
+{%- endif -%}
+{%- if settings.social_twitter_handle != blank -%}
+  <meta name="twitter:site" content="{{ settings.social_twitter_handle }}">
+{%- endif -%}

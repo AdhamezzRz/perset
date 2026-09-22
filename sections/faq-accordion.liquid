@@ -1,0 +1,243 @@
+{%- comment -%}
+  FAQ
+
+  A sticky heading column on the left, the questions on the right. Each block
+  is a <details>, and the wrapper carries [data-ps-accordion] so opening one
+  closes its siblings.
+
+  Plain <details> means the answers are readable and findable with no
+  JavaScript at all; the engine only adds the close-the-others manners.
+{%- endcomment -%}
+
+<section
+  class="ps-faq{% if section.settings.wash_bg %} ps-wash-bg{% endif %}"
+  {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;">
+
+  <div class="ps-shell ps-faq__inner">
+
+    <div class="ps-faq__aside">
+      <div class="ps-faq__sticky">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+
+        <h2 class="ps-faq__heading" data-ps-split="lines" data-ps-split-step="100">
+          {{- section.settings.heading | default: 'Questions' -}}
+        </h2>
+
+        {%- if section.settings.body != blank -%}
+          <p class="ps-faq__body" data-ps-reveal="up">{{ section.settings.body }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.cta_label != blank -%}
+          <a class="ps-link ps-faq__cta" href="{{ section.settings.cta_url | default: routes.root_url }}" data-ps-reveal="fade">
+            {{ section.settings.cta_label }}
+            {% render 'icon', name: 'arrow-right', size: 15 %}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="ps-faq__list" data-ps-accordion data-ps-stagger="70">
+      {%- for block in section.blocks -%}
+        <details
+          class="ps-faq__item"
+          data-ps-reveal="up"
+          {% if block.settings.open %}open{% endif %}
+          {{ block.shopify_attributes }}>
+          <summary class="ps-faq__q">
+            <span class="ps-faq__q-text">{{ block.settings.question }}</span>
+            <span class="ps-faq__mark" aria-hidden="true">
+              {% render 'icon', name: 'plus', size: 18 %}
+            </span>
+          </summary>
+          <div class="ps-faq__a">
+            <div class="ps-prose ps-faq__a-inner">{{ block.settings.answer }}</div>
+          </div>
+        </details>
+      {%- else -%}
+        <p class="ps-faq__empty">
+          {{ 'sections.faq.empty' | t | default: 'Add a question in the theme editor.' }}
+        </p>
+      {%- endfor -%}
+    </div>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-faq { position: relative; }
+
+  .ps-faq__inner {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+
+  .ps-faq__sticky {
+    position: sticky;
+    top: calc(var(--ps-header-h) + 2rem);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ps-s-s);
+  }
+
+  .ps-faq__heading {
+    font-family: var(--ps-display);
+    font-size: clamp(2rem, 4.8vw, 3.8rem);
+    font-weight: 300;
+    font-variation-settings: "SOFT" 42, "WONK" 1, "opsz" 144;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    margin: 0;
+    max-width: 12ch;
+  }
+  .ps-faq__body { max-width: 34ch; color: var(--ps-ink-soft); }
+  .ps-faq__cta { margin-top: 0.3rem; }
+
+  .ps-faq__list { border-top: 1px solid var(--ps-hairline); }
+
+  .ps-faq__item { border-bottom: 1px solid var(--ps-hairline); }
+
+  .ps-faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ps-s-s);
+    padding-block: clamp(1rem, 2.4vw, 1.6rem);
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-1);
+    font-weight: 400;
+    font-variation-settings: "SOFT" 22, "WONK" 0, "opsz" 42;
+    line-height: 1.25;
+    letter-spacing: -0.012em;
+    transition: color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-faq__q::-webkit-details-marker { display: none; }
+  .ps-faq__q:hover { color: var(--ps-accent); }
+
+  .ps-faq__mark {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--ps-hairline);
+    color: var(--ps-ink-soft);
+    transition: transform var(--ps-t-base) var(--ps-ease-set),
+                border-color var(--ps-t-fast) var(--ps-ease-swap),
+                background var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-faq__item[open] .ps-faq__mark {
+    transform: rotate(135deg);
+    background: var(--ps-accent);
+    border-color: transparent;
+    color: var(--ps-porcelain);
+  }
+
+  .ps-faq__a {
+    display: grid;
+    grid-template-rows: 1fr;
+    padding-bottom: clamp(1rem, 2.4vw, 1.6rem);
+  }
+  .ps-faq__a-inner {
+    max-width: 58ch;
+    color: var(--ps-ink-soft);
+    font-size: var(--ps-step-0);
+    line-height: 1.68;
+  }
+  /* The answer lifts into place once the summary is toggled open. */
+  .ps-faq__item[open] .ps-faq__a-inner {
+    animation: ps-faq-in var(--ps-t-base) var(--ps-ease-set) both;
+  }
+  @keyframes ps-faq-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .ps-faq__empty { color: var(--ps-ink-faint); padding-block: var(--ps-s-m); }
+
+  @media (max-width: 860px) {
+    .ps-faq__inner { grid-template-columns: 1fr; gap: var(--ps-s-l); }
+    .ps-faq__sticky { position: static; }
+    .ps-faq__heading { max-width: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAQ",
+  "tag": "section",
+  "max_blocks": 24,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Before you order" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Questions we get asked" },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body",
+      "default": "If yours is not here, write to us. Someone in the studio answers, usually the same day."
+    },
+    { "type": "text", "id": "cta_label", "label": "Link label", "default": "Write to the studio" },
+    { "type": "url", "id": "cta_url", "label": "Link" },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "none", "label": "Linen (default)" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "none"
+    },
+    { "type": "checkbox", "id": "wash_bg", "label": "Fill the section with the pigment wash", "default": false },
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0, "max": 220, "step": 4, "unit": "px", "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0, "max": 220, "step": 4, "unit": "px", "default": 100
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "How long does an order take?" },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Sets in stock leave the studio in two to three working days. If a piece has to be painted for you, allow two to three weeks. We write to you when it goes into the kiln.</p>"
+        },
+        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "question" },
+        { "type": "question" },
+        { "type": "question" }
+      ]
+    }
+  ]
+}
+{% endschema %}

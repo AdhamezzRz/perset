@@ -1,0 +1,239 @@
+{%- comment -%}
+  IMAGE WITH TEXT
+
+  An editorial row: one photograph, one column of copy. The image side is
+  selectable so several of these stacked read as a spread rather than a list.
+  The image drifts on parallax inside a fixed frame, which keeps the crop
+  steady while the picture moves.
+{%- endcomment -%}
+
+{%- liquid
+  assign ratio_class = 'ps-ratio--34'
+  case section.settings.ratio
+    when 'square'
+      assign ratio_class = 'ps-ratio--1'
+    when 'landscape'
+      assign ratio_class = 'ps-ratio--43'
+    when 'wide'
+      assign ratio_class = 'ps-ratio--169'
+    when 'tall'
+      assign ratio_class = 'ps-ratio--23'
+  endcase
+-%}
+
+<section
+  class="ps-iwt ps-iwt--{{ section.settings.image_side }}{% if section.settings.wash_bg %} ps-wash-bg{% endif %}"
+  {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;">
+
+  <div class="ps-shell ps-iwt__inner">
+
+    <figure class="ps-iwt__figure" data-ps-reveal="{{ section.settings.image_reveal }}">
+      <div class="ps-ratio {{ ratio_class }} ps-iwt__frame">
+        {%- if section.settings.image != blank -%}
+          <div class="ps-iwt__drift" data-ps-parallax="{{ section.settings.parallax }}">
+            {{
+              section.settings.image
+              | image_url: width: 1600
+              | image_tag:
+                loading: 'lazy',
+                widths: '420,640,900,1200,1600',
+                sizes: '(max-width: 900px) 92vw, 46vw',
+                alt: section.settings.image.alt | default: section.settings.heading | escape
+            }}
+          </div>
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'ps-iwt__ph' }}
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.caption != blank -%}
+        <figcaption class="ps-iwt__caption">{{ section.settings.caption }}</figcaption>
+      {%- endif -%}
+    </figure>
+
+    <div class="ps-iwt__text" data-ps-stagger="100">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h2 class="ps-iwt__heading" data-ps-split="lines" data-ps-split-step="100">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.body != blank -%}
+        <div class="ps-prose ps-iwt__body" data-ps-reveal="up">{{ section.settings.body }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.cta_label != blank -%}
+        <a
+          class="ps-btn ps-iwt__cta"
+          href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}"
+          data-ps-reveal="up"
+          data-ps-magnetic="0.2">
+          {{ section.settings.cta_label }}
+          {% render 'icon', name: 'arrow-right', size: 15 %}
+        </a>
+      {%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-iwt { position: relative; }
+
+  .ps-iwt__inner {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    gap: clamp(1.8rem, 5vw, 5rem);
+  }
+  /* Flip the order rather than the grid, so the DOM stays in reading order. */
+  .ps-iwt--right .ps-iwt__figure { order: 2; }
+
+  .ps-iwt__frame {
+    border-radius: var(--ps-radius-l);
+    box-shadow: var(--ps-lift-2);
+    background: var(--ps-linen-deep);
+  }
+  /* The drift layer is taller than the frame so the parallax never shows an edge. */
+  .ps-iwt__drift {
+    position: absolute;
+    inset: -12% 0;
+    transform: translate3d(0, var(--ps-par, 0px), 0);
+  }
+  .ps-iwt__drift img { width: 100%; height: 100%; object-fit: cover; }
+  .ps-iwt__ph { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  .ps-iwt__caption {
+    margin-top: var(--ps-s-xs);
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-faint);
+    letter-spacing: 0.04em;
+  }
+
+  .ps-iwt__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.8rem, 1.8vw, 1.4rem);
+  }
+
+  .ps-iwt__heading {
+    font-family: var(--ps-display);
+    font-size: clamp(1.9rem, 4.4vw, 3.5rem);
+    font-weight: 320;
+    font-variation-settings: "SOFT" 38, "WONK" 1, "opsz" 120;
+    line-height: 1.02;
+    letter-spacing: -0.028em;
+    margin: 0;
+    max-width: 16ch;
+  }
+
+  .ps-iwt__body {
+    max-width: 44ch;
+    color: var(--ps-ink-soft);
+    line-height: 1.68;
+  }
+
+  .ps-iwt__cta { margin-top: 0.4rem; }
+
+  @media (max-width: 860px) {
+    .ps-iwt__inner { grid-template-columns: 1fr; gap: var(--ps-s-l); }
+    .ps-iwt--right .ps-iwt__figure { order: 0; }
+    .ps-iwt__heading { max-width: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Image with text",
+  "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select",
+      "id": "image_side",
+      "label": "Image side",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "ratio",
+      "label": "Image shape",
+      "options": [
+        { "value": "portrait", "label": "Portrait (3:4)" },
+        { "value": "tall", "label": "Tall (2:3)" },
+        { "value": "square", "label": "Square" },
+        { "value": "landscape", "label": "Landscape (4:3)" },
+        { "value": "wide", "label": "Wide (16:9)" }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "range",
+      "id": "parallax",
+      "label": "Parallax drift",
+      "min": 0, "max": 0.3, "step": 0.02, "default": 0.12
+    },
+    {
+      "type": "select",
+      "id": "image_reveal",
+      "label": "How the image arrives",
+      "options": [
+        { "value": "set", "label": "Set down" },
+        { "value": "glaze", "label": "Glaze" },
+        { "value": "up", "label": "Rise" },
+        { "value": "scale", "label": "Scale" },
+        { "value": "fade", "label": "Fade" }
+      ],
+      "default": "glaze"
+    },
+    { "type": "text", "id": "caption", "label": "Caption" },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The workshop" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Painted where the light is best" },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Work starts early, before the heat. A blank plate, a loaded brush, and a line that has to be right the first time — glaze does not forgive a second pass.</p>"
+    },
+    { "type": "text", "id": "cta_label", "label": "Button label" },
+    { "type": "url", "id": "cta_url", "label": "Button link" },
+    { "type": "header", "content": "Appearance" },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "none", "label": "Linen (default)" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "none"
+    },
+    { "type": "checkbox", "id": "wash_bg", "label": "Fill the section with the pigment wash", "default": false },
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0, "max": 220, "step": 4, "unit": "px", "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0, "max": 220, "step": 4, "unit": "px", "default": 100
+    }
+  ],
+  "presets": [{ "name": "Image with text" }]
+}
+{% endschema %}

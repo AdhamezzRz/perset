@@ -1,0 +1,22 @@
+{
+  "current": {
+    "color_accent": "#E87E68",
+    "color_background": "#F4EEE4",
+    "type_uppercase_headings": true,
+    "type_measure": 78,
+    "social_instagram": "https://www.instagram.com/persetegypt",
+    "social_tiktok": "https://www.tiktok.com/@persetegypt",
+    "social_facebook": "https://www.facebook.com/persetegypt",
+    "social_whatsapp": "201000000000",
+    "social_twitter_handle": "",
+    "card_show_second_image": true,
+    "card_show_type": false,
+    "card_show_vendor": false,
+    "card_reveal": "set",
+    "cart_type": "drawer",
+    "cart_show_note": true,
+    "cart_show_shipping_note": true,
+    "cart_shipping_note": "Shipping across Egypt is calculated at checkout. Every set travels double-boxed.",
+    "share_description": "Hand-painted porcelain from Egypt. Three collections, each a 24-piece service for six."
+  }
+}

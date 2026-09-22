@@ -1,0 +1,183 @@
+{%- comment -%}
+  PAGE
+
+  The editorial page layout. A pigment-washed title block, a stitched rule,
+  then the page body set in .ps-prose at a generous measure.
+
+  The title is split into real line boxes so it rises line by line the way the
+  headlines do everywhere else on the site.
+{%- endcomment -%}
+
+<article
+  class="ps-page"
+  {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}>
+
+  <header class="ps-page__head" style="padding-top: {{ section.settings.padding_top }}px;">
+    {%- if section.settings.show_wash -%}
+      <span class="ps-page__wash" aria-hidden="true"></span>
+    {%- endif -%}
+
+    <div class="ps-shell ps-page__head-inner">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+
+      <h1 class="ps-page__title" data-ps-split="lines" data-ps-split-step="110">{{ page.title }}</h1>
+
+      {%- if section.settings.lede != blank -%}
+        <p class="ps-lede ps-page__lede" data-ps-reveal="up" style="--ps-delay:240ms">
+          {{ section.settings.lede }}
+        </p>
+      {%- endif -%}
+
+      <div class="ps-page__thread" aria-hidden="true">
+        {% render 'icon', name: 'thread', draw: true %}
+      </div>
+    </div>
+  </header>
+
+  <div class="ps-shell ps-page__body" style="padding-bottom: {{ section.settings.padding_bottom }}px;">
+    {%- if page.content != blank -%}
+      <div class="ps-prose ps-page__prose" data-ps-reveal="up">
+        {{ page.content }}
+      </div>
+    {%- else -%}
+      <p class="ps-page__empty" data-ps-reveal="fade">
+        {{ 'templates.page.empty' | t | default: 'This page has nothing on it yet.' }}
+      </p>
+    {%- endif -%}
+
+    {%- if section.settings.show_back -%}
+      <p class="ps-page__back" data-ps-reveal="fade">
+        <a class="ps-link" href="{{ routes.root_url }}">
+          {% render 'icon', name: 'arrow-left', size: 15 %}
+          {{ 'general.back_home' | t | default: 'Back to the shop' }}
+        </a>
+      </p>
+    {%- endif -%}
+  </div>
+</article>
+
+{% stylesheet %}
+  .ps-page { position: relative; }
+
+  .ps-page__head {
+    position: relative;
+    padding-bottom: clamp(2rem, 5vw, 4rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .ps-page__wash {
+    position: absolute;
+    inset: -40% -12% 0;
+    z-index: -1;
+    background:
+      radial-gradient(52% 58% at 14% 6%, var(--ps-wash, var(--ps-linen-warm)), transparent 66%),
+      radial-gradient(44% 48% at 88% 30%, var(--ps-wash, var(--ps-linen-warm)), transparent 62%);
+    opacity: 0.9;
+    filter: blur(16px);
+  }
+
+  .ps-page__head-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.9rem, 2vw, 1.5rem);
+  }
+
+  .ps-page__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.7rem, 9vw, 6.6rem);
+    font-weight: 270;
+    font-variation-settings: "SOFT" 46, "WONK" 1, "opsz" 144;
+    line-height: 0.93;
+    letter-spacing: -0.038em;
+    margin: 0;
+    max-width: 16ch;
+  }
+
+  .ps-page__lede { max-width: 48ch; }
+  .ps-page__thread { width: min(100%, 26rem); margin-top: 0.4rem; }
+
+  .ps-page__body { padding-top: clamp(1.5rem, 4vw, 3rem); }
+
+  /* A generous measure — this is the one place on the site that is all text. */
+  .ps-page__prose {
+    max-width: 68ch;
+    font-size: var(--ps-step-0);
+    line-height: 1.72;
+    color: var(--ps-ink-soft);
+  }
+  .ps-page__prose h2,
+  .ps-page__prose h3,
+  .ps-page__prose strong { color: var(--ps-ink); }
+  .ps-page__prose img { border-radius: var(--ps-radius-m); margin-block: var(--ps-s-m); }
+  .ps-page__prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--ps-step--1);
+  }
+  .ps-page__prose th,
+  .ps-page__prose td {
+    text-align: left;
+    padding: 0.7em 0.9em 0.7em 0;
+    border-bottom: 1px solid var(--ps-hairline-soft);
+  }
+  .ps-page__prose th {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: var(--ps-step--2);
+    color: var(--ps-ink-faint);
+    font-weight: 500;
+  }
+
+  .ps-page__empty { color: var(--ps-ink-faint); }
+  .ps-page__back { margin-top: var(--ps-s-xl); }
+
+  @media (max-width: 640px) {
+    .ps-page__title { max-width: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Per Set" },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Lede",
+      "info": "Sits under the title, above the rule. Leave empty to hide."
+    },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "none", "label": "Linen (default)" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "beads"
+    },
+    { "type": "checkbox", "id": "show_wash", "label": "Show pigment wash", "default": true },
+    { "type": "checkbox", "id": "show_back", "label": "Show the link back to the shop", "default": true },
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0, "max": 260, "step": 4, "unit": "px", "default": 168
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0, "max": 260, "step": 4, "unit": "px", "default": 120
+    }
+  ]
+}
+{% endschema %}

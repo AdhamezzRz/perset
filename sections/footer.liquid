@@ -1,0 +1,196 @@
+{%- comment -%}
+  Footer. Dark, quiet, with the wordmark oversized at the bottom so the last
+  thing you see is the name.
+{%- endcomment -%}
+
+<footer class="ps-footer">
+  <div class="ps-shell ps-shell--wide">
+
+    {%- if section.settings.show_newsletter -%}
+      <div class="ps-footer__news" data-ps-reveal="up">
+        <div class="ps-footer__news-text">
+          <h2 class="ps-h3">{{ section.settings.news_heading }}</h2>
+          {%- if section.settings.news_body != blank -%}
+            <p>{{ section.settings.news_body }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- form 'customer', id: 'ps-newsletter', class: 'ps-footer__form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p class="ps-footer__ok" role="status">
+              {{ 'newsletter.success' | t | default: 'Thank you. Look out for us in your inbox.' }}
+            </p>
+          {%- else -%}
+            <div class="ps-field ps-footer__field">
+              <input
+                class="ps-input"
+                type="email"
+                name="contact[email]"
+                id="ps-news-email"
+                placeholder=" "
+                autocomplete="email"
+                required>
+              <label class="ps-label" for="ps-news-email">
+                {{ 'newsletter.label' | t | default: 'Email address' }}
+              </label>
+              <button class="ps-footer__submit" type="submit" aria-label="{{ 'newsletter.button' | t | default: 'Subscribe' }}">
+                {% render 'icon', name: 'arrow-right', size: 19 %}
+              </button>
+            </div>
+            {%- if form.errors -%}
+              <p class="ps-footer__err" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    {%- endif -%}
+
+    <div class="ps-footer__grid">
+      <div class="ps-footer__brand">
+        <span class="ps-logo">Per <em>Set</em></span>
+        {%- if section.settings.blurb != blank -%}
+          <p class="ps-footer__blurb">{{ section.settings.blurb }}</p>
+        {%- endif -%}
+        <div class="ps-footer__social">
+          {%- if settings.instagram != blank -%}
+            <a href="{{ settings.instagram }}" rel="noopener" target="_blank" aria-label="Instagram" class="ps-icon-btn">{% render 'icon', name: 'instagram', size: 19 %}</a>
+          {%- endif -%}
+          {%- if settings.tiktok != blank -%}
+            <a href="{{ settings.tiktok }}" rel="noopener" target="_blank" aria-label="TikTok" class="ps-icon-btn">{% render 'icon', name: 'tiktok', size: 19 %}</a>
+          {%- endif -%}
+          {%- if settings.facebook != blank -%}
+            <a href="{{ settings.facebook }}" rel="noopener" target="_blank" aria-label="Facebook" class="ps-icon-btn">{% render 'icon', name: 'facebook', size: 19 %}</a>
+          {%- endif -%}
+          {%- if settings.whatsapp != blank -%}
+            <a href="{{ settings.whatsapp }}" rel="noopener" target="_blank" aria-label="WhatsApp" class="ps-icon-btn">{% render 'icon', name: 'whatsapp', size: 19 %}</a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'menu' -%}
+            <nav class="ps-footer__col" {{ block.shopify_attributes }} aria-label="{{ block.settings.title | escape }}">
+              <h2 class="ps-footer__head">{{ block.settings.title }}</h2>
+              <ul class="ps-footer__list">
+                {%- for link in block.settings.menu.links -%}
+                  <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            </nav>
+          {%- when 'text' -%}
+            <div class="ps-footer__col" {{ block.shopify_attributes }}>
+              <h2 class="ps-footer__head">{{ block.settings.title }}</h2>
+              <div class="ps-footer__list">{{ block.settings.text }}</div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="ps-footer__bottom">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ section.settings.rights | default: 'All rights reserved.' }}</p>
+      <p>{{ powered_by_link }}</p>
+    </div>
+
+    <div class="ps-wordmark" aria-hidden="true">
+      <span class="ps-line-mask"><span class="ps-line-inner" data-ps-reveal="fade">PER SET</span></span>
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .ps-footer__news {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--ps-s-l);
+    align-items: center;
+    padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+    border-bottom: 1px solid rgba(244, 238, 228, 0.16);
+  }
+  .ps-footer__news-text p {
+    margin-top: 0.6rem;
+    color: rgba(244, 238, 228, 0.7);
+    max-width: 44ch;
+  }
+  .ps-footer__field { position: relative; }
+  .ps-footer__field .ps-input {
+    border-bottom-color: rgba(244, 238, 228, 0.3);
+    padding-right: 3.2rem;
+    color: var(--ps-linen);
+  }
+  .ps-footer__field .ps-input:focus { border-bottom-color: var(--ps-coral); }
+  .ps-footer__field .ps-label { color: rgba(244, 238, 228, 0.55); }
+  .ps-footer__submit {
+    position: absolute;
+    right: 0;
+    bottom: 0.45rem;
+    display: grid;
+    place-items: center;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    color: var(--ps-linen);
+    transition: background var(--ps-t-fast) var(--ps-ease-swap), transform var(--ps-t-base) var(--ps-ease-set);
+  }
+  .ps-footer__submit:hover { background: rgba(244,238,228,0.12); transform: translateX(3px); }
+  .ps-footer__ok { color: var(--ps-coral); font-family: var(--ps-display); font-size: var(--ps-step-1); font-style: italic; }
+  .ps-footer__err { color: var(--ps-coral); font-size: var(--ps-step--1); margin-top: 0.5rem; }
+
+  .ps-footer__brand { display: flex; flex-direction: column; gap: var(--ps-s-s); align-items: flex-start; }
+  .ps-footer__blurb { color: rgba(244, 238, 228, 0.68); max-width: 34ch; font-size: var(--ps-step--1); }
+  .ps-footer__social { display: flex; gap: 0.25rem; margin-top: 0.2rem; }
+  .ps-footer__social .ps-icon-btn:hover { background: rgba(244,238,228,0.12); }
+
+  .ps-footer__list a {
+    position: relative;
+    transition: color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-footer__list p { color: rgba(244,238,228,0.68); font-size: var(--ps-step--1); }
+
+  @media (max-width: 760px) {
+    .ps-footer__news { grid-template-columns: 1fr; gap: var(--ps-s-m); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "checkbox", "id": "show_newsletter", "label": "Show newsletter", "default": true },
+    { "type": "text", "id": "news_heading", "label": "Newsletter heading", "default": "First look at the next firing" },
+    {
+      "type": "textarea",
+      "id": "news_body",
+      "label": "Newsletter text",
+      "default": "Small runs sell out quietly. We will tell you before they do."
+    },
+    {
+      "type": "textarea",
+      "id": "blurb",
+      "label": "Brand line",
+      "default": "Hand-painted porcelain, made in small runs in Egypt."
+    },
+    { "type": "text", "id": "rights", "label": "Rights line", "default": "All rights reserved." }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu" }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Visit" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Cairo, Egypt</p>" }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

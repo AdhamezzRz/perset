@@ -1,0 +1,14 @@
+{
+  "name": "Header",
+  "type": "header",
+  "sections": {
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "menu_note": "Every piece is painted by hand, so no two are identical. That is the point."
+      }
+    }
+  },
+  "order": ["header"]
+}

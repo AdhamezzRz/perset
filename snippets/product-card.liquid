@@ -1,0 +1,106 @@
+{%- comment -%}
+  Per Set product card.
+
+  The plate sits inside a coloured wash, lifts and turns on hover, and a ring
+  of stitching draws itself around it. A second image, when the product has
+  one, cross-fades underneath.
+
+  Accepts:
+    product   {Object}  required
+    pigment   {String}  wild | beads | past — tints the wash and the ring
+    reveal    {String}  reveal mode, default "set"
+    heading   {String}  h-level for the title, default "h3"
+    show_type {Boolean} show product type under the title
+{%- endcomment -%}
+
+{%- liquid
+  assign pig = pigment
+  if pig == blank
+    assign pig = product.metafields.perset.pigment.value
+  endif
+  if pig == blank
+    for col in product.collections
+      case col.handle
+        when 'stitches-of-the-wild'
+          assign pig = 'wild'
+        when 'a-tale-in-beads'
+          assign pig = 'beads'
+        when 'pretty-past'
+          assign pig = 'past'
+      endcase
+    endfor
+  endif
+
+  assign rev = reveal | default: 'set'
+  assign tag = heading | default: 'h3'
+  assign second = product.media[1]
+-%}
+
+<article
+  class="ps-card"
+  {% if pig != blank %}data-ps-pigment="{{ pig }}"{% endif %}
+  data-ps-reveal="{{ rev }}">
+
+  <div class="ps-card__frame" data-ps-cursor="View">
+    {%- if product.available == false -%}
+      <span class="ps-badge ps-badge--sold">{{ 'products.product.sold_out' | t | default: 'Sold out' }}</span>
+    {%- elsif product.compare_at_price > product.price -%}
+      <span class="ps-badge ps-badge--accent">{{ 'products.product.on_sale' | t | default: 'Sale' }}</span>
+    {%- endif -%}
+
+    <span class="ps-card__ring" aria-hidden="true"></span>
+
+    <div class="ps-card__media">
+      {%- if product.featured_media -%}
+        {{
+          product.featured_media
+          | image_url: width: 900
+          | image_tag:
+            loading: 'lazy',
+            widths: '300,420,600,900',
+            sizes: '(max-width: 640px) 78vw, (max-width: 1024px) 40vw, 26vw',
+            alt: product.featured_media.alt | default: product.title | escape
+        }}
+        {%- if second and second.media_type == 'image' -%}
+          {{
+            second
+            | image_url: width: 900
+            | image_tag:
+              loading: 'lazy',
+              widths: '300,420,600,900',
+              sizes: '(max-width: 640px) 78vw, (max-width: 1024px) 40vw, 26vw',
+              alt: ''
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'ps-placeholder' }}
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="ps-card__body">
+    <{{ tag }} class="ps-card__title">
+      <a class="ps-card__link" href="{{ product.url }}">
+        <span class="ps-sr">{{ product.title | escape }}</span>
+      </a>
+      <span aria-hidden="true">{{ product.title }}</span>
+    </{{ tag }}>
+
+    {%- if show_type and product.type != blank -%}
+      <p class="ps-card__meta">{{ product.type }}</p>
+    {%- elsif product.metafields.perset.pieces.value != blank -%}
+      <p class="ps-card__meta">{{ product.metafields.perset.pieces.value }}</p>
+    {%- endif -%}
+
+    <p class="ps-card__price">
+      {%- if product.compare_at_price > product.price -%}
+        <del>{{ product.compare_at_price | money }}</del>
+      {%- endif -%}
+      {%- if product.price_varies -%}
+        {{ 'products.product.from_price' | t: price: product.price_min | money | default: product.price_min | money }}
+      {%- else -%}
+        {{ product.price | money }}
+      {%- endif -%}
+    </p>
+  </div>
+</article>

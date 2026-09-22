@@ -1,0 +1,175 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-plate",
+      "settings": {
+        "eyebrow": "Hand painted porcelain · Made in Egypt",
+        "line_1": "A table",
+        "line_2": "worth",
+        "line_3": "staying at",
+        "lede": "Three collections, painted by hand, one piece at a time. Made to be used on a Tuesday, not kept behind glass.",
+        "plate_size": 46,
+        "rotation": 45,
+        "plate_cursor": "Per Set",
+        "pigment": "beads",
+        "show_grain": true,
+        "cta_label": "Shop the collections",
+        "cta_url": "/collections",
+        "cta2_label": "How it is made",
+        "cta2_url": "/pages/our-story",
+        "scroll_cue": "Scroll"
+      }
+    },
+    "marquee-top": {
+      "type": "marquee",
+      "blocks": {
+        "m1": { "type": "phrase", "settings": { "text": "Stitches of the Wild" } },
+        "m2": { "type": "phrase", "settings": { "text": "A Tale in Beads" } },
+        "m3": { "type": "phrase", "settings": { "text": "Pretty Past" } },
+        "m4": { "type": "phrase", "settings": { "text": "Service for six" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4"],
+      "settings": { "speed": 40, "reverse": false, "dark": false, "aria": "Collections" }
+    },
+    "stories": {
+      "type": "collection-stories",
+      "blocks": {
+        "wild": {
+          "type": "story",
+          "settings": {
+            "collection": "stitches-of-the-wild",
+            "meta": "24 pieces · Service for six",
+            "cta": "Open the collection",
+            "rotation": 55,
+            "pigment": "wild"
+          }
+        },
+        "beads": {
+          "type": "story",
+          "settings": {
+            "collection": "a-tale-in-beads",
+            "meta": "24 pieces · Service for six",
+            "cta": "Open the collection",
+            "rotation": 55,
+            "pigment": "beads"
+          }
+        },
+        "past": {
+          "type": "story",
+          "settings": {
+            "collection": "pretty-past",
+            "meta": "24 pieces · Service for six",
+            "cta": "Open the collection",
+            "rotation": 55,
+            "pigment": "past"
+          }
+        }
+      },
+      "block_order": ["wild", "beads", "past"],
+      "settings": {
+        "eyebrow": "Three collections",
+        "heading": "Every set tells its own story",
+        "intro": "Drawn by hand, fired in small runs, and finished so no two pieces are quite the same."
+      }
+    },
+    "setting": {
+      "type": "setting-builder",
+      "blocks": {
+        "s-wild": {
+          "type": "setting",
+          "settings": {
+            "collection": "stitches-of-the-wild",
+            "label": "Stitches of the Wild",
+            "note": "Leopards resting in bamboo under a pink parasol, with every border drawn to look softly stitched.",
+            "cta": "See the full service",
+            "pigment": "wild"
+          }
+        },
+        "s-beads": {
+          "type": "setting",
+          "settings": {
+            "collection": "a-tale-in-beads",
+            "label": "A Tale in Beads",
+            "note": "A palm built from what look like hundreds of tiny placed beads. The closer you look, the more you see.",
+            "cta": "See the full service",
+            "pigment": "beads"
+          }
+        },
+        "s-past": {
+          "type": "setting",
+          "settings": {
+            "collection": "pretty-past",
+            "label": "Pretty Past",
+            "note": "A peacock among roses, in the warm colours of a plate someone kept for forty years.",
+            "cta": "See the full service",
+            "pigment": "past"
+          }
+        }
+      },
+      "block_order": ["s-wild", "s-beads", "s-past"],
+      "settings": {
+        "eyebrow": "The anatomy of a service",
+        "heading": "Set your table",
+        "body": "Four pieces, twenty-four in all, drawn here at the size they actually arrive. Hover any piece to see what it is."
+      }
+    },
+    "rail": {
+      "type": "featured-rail",
+      "settings": {
+        "collection": "a-tale-in-beads",
+        "eyebrow": "Start here",
+        "heading": "Pieces to begin with",
+        "view_all": "View all",
+        "count": 8,
+        "dark": false
+      }
+    },
+    "craft": {
+      "type": "craft-process",
+      "blocks": {
+        "c1": {
+          "type": "step",
+          "settings": {
+            "title": "The drawing",
+            "icon": "brush",
+            "text": "Each motif is drawn by hand first, at full size, until the composition sits right on a circle."
+          }
+        },
+        "c2": {
+          "type": "step",
+          "settings": {
+            "title": "The painting",
+            "icon": "leaf",
+            "text": "Colour goes on in layers over the bisque. The stitched borders are the slowest part, laid stitch by stitch around the rim."
+          }
+        },
+        "c3": {
+          "type": "step",
+          "settings": {
+            "title": "The firing",
+            "icon": "knot",
+            "text": "Two firings. The first sets the body, the second fixes the glaze and brings the colour up to its final depth."
+          }
+        },
+        "c4": {
+          "type": "step",
+          "settings": {
+            "title": "The packing",
+            "icon": "box",
+            "text": "Wrapped by hand, boxed in sixes, and checked once more before it leaves the studio."
+          }
+        }
+      },
+      "block_order": ["c1", "c2", "c3", "c4"],
+      "settings": {
+        "eyebrow": "How a piece comes to be",
+        "heading": "Drawn, painted, fired, twice",
+        "body": "Nothing here is transferred or printed. Every line is laid down by a hand holding a brush, which is why the leopards on your plates will not match the leopards on anyone else's.",
+        "cta_label": "Read our story",
+        "cta_url": "/pages/our-story",
+        "dark": false
+      }
+    }
+  },
+  "order": ["hero", "marquee-top", "stories", "setting", "rail", "craft"]
+}

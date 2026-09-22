@@ -1,0 +1,1157 @@
+/* ==========================================================================
+   PER SET — ATELIER
+   A design system for hand-painted porcelain.
+   Built around three ideas: linen, glaze, and thread.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. TOKENS
+   Colours are sampled directly from the collection photography so the
+   interface and the porcelain are always speaking the same language.
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Surfaces — the linen tablecloth every piece is photographed on */
+  --ps-linen:        #F4EEE4;
+  --ps-linen-warm:   #EFE7D9;
+  --ps-linen-deep:   #E5DAC7;
+  --ps-porcelain:    #FDFBF7;
+  --ps-shadow-warm:  #D8C9B2;
+
+  /* Ink */
+  --ps-ink:          #241F1B;
+  --ps-ink-soft:     #5C534A;
+  --ps-ink-faint:    #8B8177;
+  --ps-hairline:     rgba(36, 31, 27, 0.14);
+  --ps-hairline-soft:rgba(36, 31, 27, 0.07);
+
+  /* Collection pigments */
+  --ps-coral:        #E87E68;
+  --ps-coral-deep:   #C95A44;
+  --ps-coral-mist:   #F7D9D0;
+  --ps-sage:         #A9AE7C;
+  --ps-forest:       #45543A;
+  --ps-saffron:      #EFC45C;
+  --ps-saffron-deep: #D9A32E;
+  --ps-peacock:      #3C6E9F;
+  --ps-peacock-soft: #7FB0AE;
+  --ps-gold:         #BE9B3E;
+
+  /* Semantic */
+  --ps-bg:           var(--ps-linen);
+  --ps-fg:           var(--ps-ink);
+  --ps-accent:       var(--ps-coral);
+  --ps-accent-ink:   var(--ps-porcelain);
+
+  /* Type families */
+  --ps-display: "Fraunces", "Didot", "Bodoni MT", Georgia, serif;
+  --ps-body:    "Jost", "Futura", "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Fluid type scale — 360px to 1600px viewport */
+  --ps-step--2: clamp(0.694rem, 0.68rem + 0.06vw, 0.75rem);
+  --ps-step--1: clamp(0.833rem, 0.80rem + 0.14vw, 0.938rem);
+  --ps-step-0:  clamp(1rem, 0.96rem + 0.19vw, 1.125rem);
+  --ps-step-1:  clamp(1.2rem, 1.13rem + 0.32vw, 1.44rem);
+  --ps-step-2:  clamp(1.44rem, 1.32rem + 0.53vw, 1.85rem);
+  --ps-step-3:  clamp(1.728rem, 1.53rem + 0.86vw, 2.37rem);
+  --ps-step-4:  clamp(2.074rem, 1.77rem + 1.33vw, 3.05rem);
+  --ps-step-5:  clamp(2.488rem, 2.03rem + 2.01vw, 3.91rem);
+  --ps-step-6:  clamp(2.986rem, 2.32rem + 2.95vw, 5.02rem);
+  --ps-step-7:  clamp(3.583rem, 2.62rem + 4.26vw, 6.44rem);
+  --ps-step-8:  clamp(4.3rem, 2.92rem + 6.09vw, 8.26rem);
+
+  /* Space scale */
+  --ps-s-3xs: 0.25rem;
+  --ps-s-2xs: 0.5rem;
+  --ps-s-xs:  0.75rem;
+  --ps-s-s:   1rem;
+  --ps-s-m:   1.5rem;
+  --ps-s-l:   2.25rem;
+  --ps-s-xl:  3.5rem;
+  --ps-s-2xl: 5.5rem;
+  --ps-s-3xl: 8rem;
+  --ps-s-4xl: 12rem;
+
+  /* Measure & rhythm */
+  --ps-measure: 62ch;
+  --ps-gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --ps-max: 1600px;
+  --ps-max-text: 78ch;
+
+  /* Motion — the whole personality of the site lives in these four curves */
+  --ps-ease-set:    cubic-bezier(0.16, 1, 0.30, 1);    /* a plate set down on linen */
+  --ps-ease-lift:   cubic-bezier(0.32, 0, 0.67, 0);    /* lifting away */
+  --ps-ease-swap:   cubic-bezier(0.65, 0, 0.35, 1);    /* symmetrical transition */
+  --ps-ease-thread: cubic-bezier(0.45, 0.05, 0.25, 1); /* thread pulled through cloth */
+
+  --ps-t-fast:  240ms;
+  --ps-t-base:  520ms;
+  --ps-t-slow:  900ms;
+  --ps-t-drape: 1400ms;
+
+  /* Elevation — warm, never grey */
+  --ps-lift-1: 0 1px 2px rgba(96, 74, 48, 0.06), 0 4px 12px rgba(96, 74, 48, 0.05);
+  --ps-lift-2: 0 2px 6px rgba(96, 74, 48, 0.07), 0 14px 38px rgba(96, 74, 48, 0.09);
+  --ps-lift-3: 0 6px 18px rgba(96, 74, 48, 0.10), 0 34px 80px rgba(96, 74, 48, 0.14);
+
+  --ps-radius-s: 4px;
+  --ps-radius-m: 10px;
+  --ps-radius-l: 22px;
+
+  --ps-header-h: 76px;
+}
+
+/* Per-collection theming. Any subtree can be re-pigmented by one attribute. */
+[data-ps-pigment="wild"] {
+  --ps-accent: var(--ps-coral);
+  --ps-accent-2: var(--ps-forest);
+  --ps-wash: #F9E8E2;
+}
+[data-ps-pigment="beads"] {
+  --ps-accent: var(--ps-sage);
+  --ps-accent-2: var(--ps-coral);
+  --ps-wash: #EDEFDD;
+}
+[data-ps-pigment="past"] {
+  --ps-accent: var(--ps-saffron-deep);
+  --ps-accent-2: var(--ps-peacock);
+  --ps-wash: #FBF0D4;
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET
+   -------------------------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--ps-header-h) + 1rem);
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--ps-bg);
+  color: var(--ps-fg);
+  font-family: var(--ps-body);
+  font-size: var(--ps-step-0);
+  font-weight: 350;
+  line-height: 1.62;
+  letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* The linen itself — a woven texture laid under everything, almost subliminal */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  background-image:
+    repeating-linear-gradient(0deg,   rgba(160,140,112,0.045) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg,  rgba(160,140,112,0.045) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+}
+
+img, svg, video, canvas { display: block; max-width: 100%; height: auto; }
+img { -webkit-user-drag: none; user-select: none; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; padding: 0; }
+
+a { color: inherit; text-decoration: none; }
+
+ul, ol { margin: 0; padding: 0; list-style: none; }
+figure, blockquote, p, h1, h2, h3, h4, h5, h6 { margin: 0; }
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--ps-hairline);
+  margin: var(--ps-s-xl) 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ps-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection { background: var(--ps-coral-mist); color: var(--ps-ink); }
+
+.ps-sr {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ps-skip {
+  position: absolute;
+  top: -100%;
+  left: var(--ps-s-s);
+  z-index: 1000;
+  background: var(--ps-ink);
+  color: var(--ps-porcelain);
+  padding: var(--ps-s-2xs) var(--ps-s-s);
+  border-radius: var(--ps-radius-s);
+}
+.ps-skip:focus { top: var(--ps-s-2xs); }
+
+/* --------------------------------------------------------------------------
+   3. TYPOGRAPHY
+   Fraunces carries the voice. Its optical-size and "wonk" axes are what make
+   the headlines feel drawn by hand rather than set by a machine.
+   -------------------------------------------------------------------------- */
+
+.ps-display,
+h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
+  font-family: var(--ps-display);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 28, "WONK" 1, "opsz" 120;
+  line-height: 1.02;
+  letter-spacing: -0.021em;
+  text-wrap: balance;
+}
+
+.ps-h-hero {
+  font-family: var(--ps-display);
+  font-size: var(--ps-step-8);
+  font-weight: 300;
+  font-variation-settings: "SOFT" 40, "WONK" 1, "opsz" 144;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+
+.ps-h1, h1 { font-size: var(--ps-step-7); }
+.ps-h2, h2 { font-size: var(--ps-step-5); }
+.ps-h3, h3 { font-size: var(--ps-step-3); }
+.ps-h4, h4 {
+  font-family: var(--ps-display);
+  font-size: var(--ps-step-2);
+  font-weight: 500;
+  font-variation-settings: "SOFT" 20, "WONK" 0, "opsz" 40;
+  line-height: 1.18;
+  letter-spacing: -0.012em;
+}
+
+/* An italic that actually earns its place — Fraunces' italic is gorgeous */
+.ps-em {
+  font-style: italic;
+  font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+  letter-spacing: -0.02em;
+}
+
+/* The small-caps label used for every eyebrow on the site */
+.ps-eyebrow {
+  font-family: var(--ps-body);
+  font-size: var(--ps-step--1);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--ps-ink-faint);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+}
+.ps-eyebrow::before {
+  content: "";
+  width: 1.9em;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+  transform-origin: left center;
+}
+.ps-eyebrow--bare::before { display: none; }
+.ps-eyebrow--center { justify-content: center; }
+.ps-eyebrow--center::after {
+  content: "";
+  width: 1.9em;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.ps-lede {
+  font-size: var(--ps-step-1);
+  line-height: 1.55;
+  color: var(--ps-ink-soft);
+  font-weight: 300;
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+.ps-prose { max-width: var(--ps-max-text); }
+.ps-prose > * + * { margin-top: 1.1em; }
+.ps-prose p { text-wrap: pretty; }
+.ps-prose h2 { margin-top: 1.9em; font-size: var(--ps-step-4); }
+.ps-prose h3 { margin-top: 1.6em; font-size: var(--ps-step-2); }
+.ps-prose a {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  transition: background-size var(--ps-t-fast) var(--ps-ease-swap);
+}
+.ps-prose a:hover { background-size: 0% 1px; background-position: 100% 92%; }
+.ps-prose ul { list-style: none; padding-left: 0; }
+.ps-prose ul li {
+  position: relative;
+  padding-left: 1.5em;
+  margin-top: 0.5em;
+}
+.ps-prose ul li::before {
+  content: "";
+  position: absolute;
+  left: 0.15em;
+  top: 0.72em;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ps-accent);
+}
+.ps-prose ol { counter-reset: ps-ol; }
+.ps-prose ol li {
+  counter-increment: ps-ol;
+  position: relative;
+  padding-left: 2em;
+  margin-top: 0.5em;
+}
+.ps-prose ol li::before {
+  content: counter(ps-ol, decimal-leading-zero);
+  position: absolute; left: 0; top: 0.1em;
+  font-family: var(--ps-display);
+  font-size: 0.82em;
+  color: var(--ps-accent);
+}
+.ps-prose blockquote {
+  border-left: 2px solid var(--ps-accent);
+  padding-left: var(--ps-s-m);
+  font-family: var(--ps-display);
+  font-size: var(--ps-step-2);
+  font-style: italic;
+  line-height: 1.32;
+  color: var(--ps-ink);
+}
+
+.ps-num {
+  font-family: var(--ps-display);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* --------------------------------------------------------------------------
+   4. LAYOUT
+   -------------------------------------------------------------------------- */
+
+.ps-shell {
+  width: 100%;
+  max-width: var(--ps-max);
+  margin-inline: auto;
+  padding-inline: var(--ps-gutter);
+  position: relative;
+  z-index: 1;
+}
+.ps-shell--narrow { max-width: 1080px; }
+.ps-shell--text   { max-width: 760px; }
+.ps-shell--wide   { max-width: 1840px; }
+.ps-shell--flush  { padding-inline: 0; max-width: none; }
+
+.ps-section { padding-block: clamp(4rem, 9vw, 9.5rem); position: relative; }
+.ps-section--tight { padding-block: clamp(2.5rem, 5vw, 5rem); }
+.ps-section--flush-top { padding-top: 0; }
+.ps-section--flush-bottom { padding-bottom: 0; }
+
+.ps-grid { display: grid; gap: var(--ps-s-m); }
+.ps-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ps-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ps-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ps-grid--auto { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); }
+
+@media (max-width: 1024px) {
+  .ps-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ps-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .ps-grid--2, .ps-grid--3, .ps-grid--4 { grid-template-columns: minmax(0, 1fr); }
+  .ps-grid--keep-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.ps-stack > * + * { margin-top: var(--ps-flow, var(--ps-s-m)); }
+.ps-row { display: flex; align-items: center; gap: var(--ps-s-s); flex-wrap: wrap; }
+.ps-row--between { justify-content: space-between; }
+.ps-row--center { justify-content: center; }
+.ps-row--end { justify-content: flex-end; }
+.ps-row--baseline { align-items: baseline; }
+.ps-center { text-align: center; margin-inline: auto; }
+
+.ps-bleed {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+/* --------------------------------------------------------------------------
+   5. THREAD — the hand-drawn line language
+   Every rule, underline and divider on this site is drawn as stitching.
+   -------------------------------------------------------------------------- */
+
+.ps-thread {
+  width: 100%;
+  height: 10px;
+  overflow: visible;
+  color: var(--ps-accent);
+}
+.ps-thread path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 7 9;
+}
+.ps-thread--draw path {
+  stroke-dasharray: var(--ps-dash, 1400);
+  stroke-dashoffset: var(--ps-dash, 1400);
+}
+.ps-thread--draw.is-in path {
+  animation: ps-stitch var(--ps-t-drape) var(--ps-ease-thread) forwards;
+}
+@keyframes ps-stitch { to { stroke-dashoffset: 0; } }
+
+/* The asterisk that separates things, drawn like a French knot */
+.ps-knot {
+  display: inline-block;
+  width: 0.72em; height: 0.72em;
+  color: var(--ps-accent);
+  flex: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. BUTTONS
+   -------------------------------------------------------------------------- */
+
+.ps-btn {
+  --btn-bg: var(--ps-ink);
+  --btn-fg: var(--ps-porcelain);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7em;
+  padding: 1.02em 2.1em;
+  font-family: var(--ps-body);
+  font-size: var(--ps-step--1);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.17em;
+  color: var(--btn-fg);
+  background: var(--btn-bg);
+  border-radius: 999px;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    color var(--ps-t-fast) var(--ps-ease-swap),
+    transform var(--ps-t-base) var(--ps-ease-set),
+    box-shadow var(--ps-t-base) var(--ps-ease-set);
+  will-change: transform;
+}
+/* The fill rises from the bottom like glaze pooling */
+.ps-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--ps-accent);
+  transform: translateY(101%);
+  transition: transform var(--ps-t-base) var(--ps-ease-set);
+}
+.ps-btn:hover::before,
+.ps-btn:focus-visible::before { transform: translateY(0); }
+.ps-btn:hover {
+  color: var(--ps-accent-ink);
+  transform: translateY(-2px);
+  box-shadow: var(--ps-lift-2);
+}
+.ps-btn:active { transform: translateY(0) scale(0.985); }
+
+.ps-btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ps-ink);
+  box-shadow: inset 0 0 0 1px var(--ps-hairline);
+}
+.ps-btn--ghost:hover { box-shadow: inset 0 0 0 1px transparent, var(--ps-lift-2); }
+
+.ps-btn--accent { --btn-bg: var(--ps-accent); --btn-fg: var(--ps-porcelain); }
+.ps-btn--accent::before { background: var(--ps-ink); }
+
+.ps-btn--light { --btn-bg: var(--ps-porcelain); --btn-fg: var(--ps-ink); }
+
+.ps-btn--block { display: flex; width: 100%; }
+.ps-btn--sm { padding: 0.78em 1.45em; font-size: var(--ps-step--2); letter-spacing: 0.15em; }
+.ps-btn[disabled], .ps-btn[aria-disabled="true"] {
+  opacity: 0.45; pointer-events: none;
+}
+
+/* Text link with a thread underline that redraws on hover */
+.ps-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: var(--ps-step--1);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  padding-bottom: 0.3em;
+}
+.ps-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%; height: 1px;
+  background: currentColor;
+  transform: scaleX(1);
+  transform-origin: right center;
+  transition: transform var(--ps-t-base) var(--ps-ease-swap);
+}
+.ps-link:hover::after {
+  transform: scaleX(0);
+  transform-origin: right center;
+}
+.ps-link .ps-arrow {
+  transition: transform var(--ps-t-base) var(--ps-ease-set);
+}
+.ps-link:hover .ps-arrow { transform: translateX(5px); }
+
+/* --------------------------------------------------------------------------
+   7. MOTION UTILITIES
+   Elements declare how they arrive; the observer in perset-motion.js flips
+   .is-in when they cross the threshold.
+   -------------------------------------------------------------------------- */
+
+[data-ps-reveal] {
+  opacity: 0;
+  transition:
+    opacity var(--ps-t-slow) var(--ps-ease-set),
+    transform var(--ps-t-slow) var(--ps-ease-set),
+    filter var(--ps-t-slow) var(--ps-ease-set);
+  transition-delay: var(--ps-delay, 0ms);
+  will-change: opacity, transform;
+}
+[data-ps-reveal="up"]    { transform: translate3d(0, 34px, 0); }
+[data-ps-reveal="down"]  { transform: translate3d(0, -28px, 0); }
+[data-ps-reveal="left"]  { transform: translate3d(38px, 0, 0); }
+[data-ps-reveal="right"] { transform: translate3d(-38px, 0, 0); }
+[data-ps-reveal="fade"]  { transform: none; }
+[data-ps-reveal="scale"] { transform: scale(0.93); }
+[data-ps-reveal="glaze"] { transform: translate3d(0, 26px, 0) scale(0.97); filter: blur(7px); }
+[data-ps-reveal="set"]   { transform: translate3d(0, 52px, 0) rotate(-3.5deg) scale(0.94); }
+
+[data-ps-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Line-by-line headline reveal — each line rises from behind a mask */
+.ps-lines { display: block; }
+.ps-line-mask { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.ps-line-inner {
+  display: block;
+  transform: translate3d(0, 108%, 0) rotate(2.2deg);
+  transform-origin: left bottom;
+  transition: transform var(--ps-t-drape) var(--ps-ease-set);
+  transition-delay: var(--ps-delay, 0ms);
+}
+.is-in .ps-line-inner,
+.ps-lines.is-in .ps-line-inner { transform: none; }
+
+/* Per-character reveal for short display words */
+.ps-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 0.6em, 0) rotate(6deg);
+  transition:
+    opacity 620ms var(--ps-ease-set),
+    transform 620ms var(--ps-ease-set);
+  transition-delay: var(--ps-delay, 0ms);
+}
+.is-in .ps-char { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-ps-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
+  .ps-line-inner { transform: none !important; }
+  .ps-char { opacity: 1 !important; transform: none !important; }
+  .ps-marquee__track { animation: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   8. THE PLATE
+   The single most important object on the site. It turns, it lifts, it casts
+   a warm shadow onto the linen. Everything else is staging.
+   -------------------------------------------------------------------------- */
+
+.ps-plate {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--ps-porcelain);
+  isolation: isolate;
+  transform: rotate(var(--ps-rot, 0deg));
+  transition: transform var(--ps-t-slow) var(--ps-ease-set);
+}
+.ps-plate img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+/* The glaze — a soft specular sweep that tracks the pointer */
+.ps-plate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    120px 120px at var(--ps-gx, 32%) var(--ps-gy, 24%),
+    rgba(255, 255, 255, 0.55),
+    rgba(255, 255, 255, 0.08) 45%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity var(--ps-t-base) var(--ps-ease-set);
+  mix-blend-mode: screen;
+}
+.ps-plate:hover::after { opacity: 1; }
+
+/* The shadow the plate drops onto the cloth — elliptical, warm, soft */
+.ps-plate-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -3%;
+  width: 82%;
+  height: 12%;
+  transform: translateX(-50%) scale(var(--ps-shadow-scale, 1));
+  background: radial-gradient(ellipse at center, rgba(120, 95, 60, 0.30), transparent 68%);
+  filter: blur(14px);
+  z-index: -1;
+  transition: transform var(--ps-t-slow) var(--ps-ease-set),
+              opacity var(--ps-t-slow) var(--ps-ease-set);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   9. PRODUCT CARD
+   -------------------------------------------------------------------------- */
+
+.ps-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-s-s);
+}
+.ps-card__frame {
+  position: relative;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  padding: 11%;
+  border-radius: var(--ps-radius-l);
+  background: var(--ps-wash, var(--ps-linen-warm));
+  overflow: hidden;
+  isolation: isolate;
+  transition: background var(--ps-t-slow) var(--ps-ease-set);
+}
+/* A ring of stitching that draws itself on hover */
+.ps-card__ring {
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  border: 1px dashed var(--ps-accent);
+  opacity: 0;
+  transform: scale(0.9) rotate(-25deg);
+  transition:
+    opacity var(--ps-t-base) var(--ps-ease-set),
+    transform var(--ps-t-drape) var(--ps-ease-set);
+  pointer-events: none;
+}
+.ps-card:hover .ps-card__ring,
+.ps-card:focus-within .ps-card__ring {
+  opacity: 0.6;
+  transform: scale(1) rotate(0deg);
+}
+.ps-card__media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  transform: rotate(0deg) scale(1);
+  transition: transform var(--ps-t-drape) var(--ps-ease-set);
+  will-change: transform;
+  box-shadow: 0 10px 30px rgba(120, 95, 60, 0.16);
+}
+.ps-card:hover .ps-card__media,
+.ps-card:focus-within .ps-card__media {
+  transform: rotate(9deg) scale(1.045);
+}
+.ps-card__media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: opacity var(--ps-t-base) var(--ps-ease-swap);
+}
+.ps-card__media img + img {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+.ps-card:hover .ps-card__media img + img { opacity: 1; }
+
+.ps-card__body { display: flex; flex-direction: column; gap: 0.28rem; }
+.ps-card__title {
+  font-family: var(--ps-display);
+  font-size: var(--ps-step-1);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 20, "WONK" 0, "opsz" 36;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+}
+.ps-card__meta {
+  font-size: var(--ps-step--1);
+  color: var(--ps-ink-faint);
+  letter-spacing: 0.04em;
+}
+.ps-card__price {
+  font-family: var(--ps-display);
+  font-size: var(--ps-step-0);
+  font-variant-numeric: tabular-nums;
+  margin-top: 0.2rem;
+}
+.ps-card__price del { color: var(--ps-ink-faint); margin-right: 0.5em; }
+.ps-card__link { position: absolute; inset: 0; z-index: 2; }
+.ps-card__link:focus-visible { outline-offset: -4px; }
+
+.ps-badge {
+  position: absolute;
+  top: var(--ps-s-s);
+  left: var(--ps-s-s);
+  z-index: 3;
+  padding: 0.42em 0.9em;
+  border-radius: 999px;
+  background: var(--ps-ink);
+  color: var(--ps-porcelain);
+  font-size: var(--ps-step--2);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+.ps-badge--sold { background: var(--ps-ink-faint); }
+.ps-badge--accent { background: var(--ps-accent); }
+
+/* --------------------------------------------------------------------------
+   10. MARQUEE
+   -------------------------------------------------------------------------- */
+
+.ps-marquee {
+  --ps-marquee-dur: 42s;
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--ps-s-m);
+  border-block: 1px solid var(--ps-hairline);
+  background: var(--ps-linen-warm);
+}
+.ps-marquee__track {
+  display: flex;
+  width: max-content;
+  animation: ps-slide var(--ps-marquee-dur) linear infinite;
+}
+.ps-marquee:hover .ps-marquee__track { animation-play-state: paused; }
+.ps-marquee__group {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  padding-right: clamp(1.5rem, 4vw, 3.5rem);
+  flex: none;
+}
+.ps-marquee__item {
+  font-family: var(--ps-display);
+  font-size: var(--ps-step-2);
+  font-style: italic;
+  font-variation-settings: "SOFT" 40, "WONK" 1, "opsz" 72;
+  white-space: nowrap;
+  color: var(--ps-ink);
+}
+@keyframes ps-slide { to { transform: translate3d(-50%, 0, 0); } }
+.ps-marquee--reverse .ps-marquee__track { animation-direction: reverse; }
+
+/* --------------------------------------------------------------------------
+   11. FORMS
+   -------------------------------------------------------------------------- */
+
+.ps-field { position: relative; display: block; }
+.ps-input, .ps-select, .ps-textarea {
+  width: 100%;
+  padding: 1.15rem 1.1rem 0.5rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ps-hairline);
+  border-radius: 0;
+  font-size: var(--ps-step-0);
+  transition: border-color var(--ps-t-fast) var(--ps-ease-swap);
+  appearance: none;
+}
+.ps-textarea { min-height: 8rem; resize: vertical; padding-top: 1.4rem; }
+.ps-input:focus, .ps-select:focus, .ps-textarea:focus {
+  outline: none;
+  border-bottom-color: var(--ps-accent);
+}
+.ps-label {
+  position: absolute;
+  left: 1.1rem;
+  top: 1.05rem;
+  font-size: var(--ps-step-0);
+  color: var(--ps-ink-faint);
+  pointer-events: none;
+  transform-origin: left top;
+  transition: transform var(--ps-t-fast) var(--ps-ease-set),
+              color var(--ps-t-fast) var(--ps-ease-swap);
+}
+.ps-input:focus + .ps-label,
+.ps-input:not(:placeholder-shown) + .ps-label,
+.ps-textarea:focus + .ps-label,
+.ps-textarea:not(:placeholder-shown) + .ps-label,
+.ps-select:focus + .ps-label,
+.ps-select:valid + .ps-label {
+  transform: translateY(-0.85rem) scale(0.72);
+  color: var(--ps-accent);
+}
+.ps-select {
+  padding-top: 1.15rem;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 1rem top 1.5rem, right 0.66rem top 1.5rem;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   12. HEADER
+   -------------------------------------------------------------------------- */
+
+.ps-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  transition:
+    transform var(--ps-t-base) var(--ps-ease-set),
+    background var(--ps-t-base) var(--ps-ease-swap),
+    box-shadow var(--ps-t-base) var(--ps-ease-swap),
+    backdrop-filter var(--ps-t-base) var(--ps-ease-swap);
+}
+.ps-header__inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--ps-s-m);
+  height: var(--ps-header-h);
+}
+.ps-header.is-stuck {
+  background: rgba(244, 238, 228, 0.86);
+  backdrop-filter: saturate(150%) blur(18px);
+  -webkit-backdrop-filter: saturate(150%) blur(18px);
+  box-shadow: 0 1px 0 var(--ps-hairline-soft);
+}
+.ps-header.is-hidden { transform: translateY(-100%); }
+
+.ps-logo {
+  font-family: var(--ps-display);
+  font-size: clamp(1.15rem, 2.1vw, 1.6rem);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 48;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.22em;
+}
+.ps-logo em {
+  font-style: italic;
+  font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+  letter-spacing: 0.06em;
+}
+
+.ps-nav { display: flex; align-items: center; gap: clamp(1rem, 2.2vw, 2.1rem); }
+.ps-nav__link {
+  position: relative;
+  font-size: var(--ps-step--1);
+  font-weight: 400;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding-block: 0.45em;
+  white-space: nowrap;
+}
+.ps-nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0.1em;
+  width: 100%; height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--ps-t-base) var(--ps-ease-swap);
+}
+.ps-nav__link:hover::after,
+.ps-nav__link[aria-current="page"]::after { transform: scaleX(1); }
+
+.ps-header__tools { display: flex; align-items: center; justify-content: flex-end; gap: clamp(0.65rem, 1.6vw, 1.25rem); }
+.ps-icon-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  transition: background var(--ps-t-fast) var(--ps-ease-swap),
+              transform var(--ps-t-base) var(--ps-ease-set);
+}
+.ps-icon-btn:hover { background: rgba(36,31,27,0.06); transform: translateY(-1px); }
+.ps-icon-btn svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 1.4; }
+
+.ps-cart-count {
+  position: absolute;
+  top: 3px; right: 2px;
+  min-width: 17px; height: 17px;
+  padding: 0 4px;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  background: var(--ps-coral);
+  color: var(--ps-porcelain);
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transform: scale(0);
+  transition: transform var(--ps-t-base) var(--ps-ease-set);
+}
+.ps-cart-count.is-on { transform: scale(1); }
+.ps-cart-count.is-bump { animation: ps-bump 620ms var(--ps-ease-set); }
+@keyframes ps-bump {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+.ps-burger { display: none; }
+@media (max-width: 960px) {
+  .ps-nav--main { display: none; }
+  .ps-burger { display: grid; }
+}
+
+/* Scroll progress, drawn as a thread across the very top */
+.ps-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 100%;
+  z-index: 200;
+  transform-origin: left center;
+  transform: scaleX(var(--ps-progress, 0));
+  background: linear-gradient(90deg, var(--ps-coral), var(--ps-saffron), var(--ps-sage), var(--ps-peacock));
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   13. MENU OVERLAY
+   -------------------------------------------------------------------------- */
+
+.ps-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: var(--ps-linen);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path var(--ps-t-drape) var(--ps-ease-set);
+  overflow-y: auto;
+  visibility: hidden;
+}
+.ps-menu.is-open { clip-path: inset(0 0 0 0); visibility: visible; }
+.ps-menu__list { display: flex; flex-direction: column; gap: 0.1em; }
+.ps-menu__item { overflow: hidden; }
+.ps-menu__link {
+  display: block;
+  font-family: var(--ps-display);
+  font-size: clamp(2.2rem, 9vw, 5rem);
+  font-weight: 300;
+  font-variation-settings: "SOFT" 40, "WONK" 1, "opsz" 144;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  transform: translateY(110%);
+  transition: transform var(--ps-t-drape) var(--ps-ease-set), color var(--ps-t-fast) var(--ps-ease-swap);
+  transition-delay: var(--ps-delay, 0ms);
+}
+.ps-menu.is-open .ps-menu__link { transform: translateY(0); }
+.ps-menu__link:hover { color: var(--ps-accent); }
+.ps-menu__link .ps-menu__idx {
+  font-family: var(--ps-body);
+  font-size: 0.24em;
+  letter-spacing: 0.2em;
+  vertical-align: super;
+  color: var(--ps-ink-faint);
+  margin-right: 0.6em;
+}
+
+/* --------------------------------------------------------------------------
+   14. CURSOR
+   A thin porcelain rim that follows the pointer and swells over the plates.
+   -------------------------------------------------------------------------- */
+
+.ps-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--ps-ink);
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transform: translate3d(-50%, -50%, 0);
+  transition: width 420ms var(--ps-ease-set),
+              height 420ms var(--ps-ease-set),
+              opacity 260ms linear,
+              border-color 320ms var(--ps-ease-swap),
+              background 320ms var(--ps-ease-swap);
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+.ps-cursor.is-on { opacity: 0.85; }
+.ps-cursor.is-lg { width: 86px; height: 86px; border-color: var(--ps-porcelain); }
+.ps-cursor__label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ps-porcelain);
+  opacity: 0;
+  transition: opacity 260ms linear;
+}
+.ps-cursor.is-lg .ps-cursor__label { opacity: 1; }
+@media (hover: none), (pointer: coarse) { .ps-cursor { display: none; } }
+
+/* --------------------------------------------------------------------------
+   15. FOOTER
+   -------------------------------------------------------------------------- */
+
+.ps-footer {
+  background: var(--ps-ink);
+  color: var(--ps-linen);
+  padding-block: clamp(3.5rem, 7vw, 6.5rem) var(--ps-s-l);
+  position: relative;
+  z-index: 1;
+}
+.ps-footer a:hover { color: var(--ps-coral); }
+.ps-footer__grid {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(3, 1fr);
+  gap: var(--ps-s-xl) var(--ps-s-m);
+}
+@media (max-width: 900px) { .ps-footer__grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .ps-footer__grid { grid-template-columns: 1fr; } }
+.ps-footer__head {
+  font-size: var(--ps-step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: rgba(244, 238, 228, 0.5);
+  margin-bottom: var(--ps-s-s);
+}
+.ps-footer__list { display: flex; flex-direction: column; gap: 0.6rem; font-size: var(--ps-step--1); }
+.ps-footer__bottom {
+  margin-top: var(--ps-s-2xl);
+  padding-top: var(--ps-s-m);
+  border-top: 1px solid rgba(244, 238, 228, 0.14);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ps-s-s);
+  flex-wrap: wrap;
+  font-size: var(--ps-step--2);
+  color: rgba(244, 238, 228, 0.55);
+  letter-spacing: 0.06em;
+}
+.ps-wordmark {
+  font-family: var(--ps-display);
+  font-size: clamp(3.5rem, 15vw, 15rem);
+  font-weight: 200;
+  font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+  color: rgba(244, 238, 228, 0.1);
+  text-align: center;
+  user-select: none;
+  margin-top: var(--ps-s-xl);
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   16. UTILITIES
+   -------------------------------------------------------------------------- */
+
+.ps-dark { background: var(--ps-ink); color: var(--ps-linen); }
+.ps-dark .ps-eyebrow { color: rgba(244,238,228,0.55); }
+.ps-dark .ps-lede { color: rgba(244,238,228,0.72); }
+.ps-dark .ps-btn--ghost { --btn-fg: var(--ps-linen); box-shadow: inset 0 0 0 1px rgba(244,238,228,0.28); }
+
+.ps-wash-bg { background: var(--ps-wash, var(--ps-linen-warm)); }
+.ps-porcelain-bg { background: var(--ps-porcelain); }
+
+.ps-hide { display: none !important; }
+@media (max-width: 760px) { .ps-hide\@sm { display: none !important; } }
+@media (min-width: 761px) { .ps-only\@sm { display: none !important; } }
+
+.ps-ratio { position: relative; overflow: hidden; }
+.ps-ratio > img, .ps-ratio > video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.ps-ratio--1 { aspect-ratio: 1; }
+.ps-ratio--43 { aspect-ratio: 4 / 3; }
+.ps-ratio--34 { aspect-ratio: 3 / 4; }
+.ps-ratio--169 { aspect-ratio: 16 / 9; }
+.ps-ratio--23 { aspect-ratio: 2 / 3; }
+
+.ps-zoom { overflow: hidden; }
+.ps-zoom img {
+  transition: transform var(--ps-t-drape) var(--ps-ease-set);
+  will-change: transform;
+}
+.ps-zoom:hover img { transform: scale(1.06); }
+
+/* Parallax layers read their offset from the motion engine */
+[data-ps-parallax] {
+  will-change: transform;
+  transform: translate3d(0, var(--ps-par, 0px), 0);
+}
+
+.ps-noise-fade {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+}
