@@ -1,0 +1,1109 @@
+{%- comment -%}
+  THE PIECE
+
+  A product page built plate-first. The featured image sits in a circle of
+  collection pigment, the way every piece is photographed on linen, and the
+  rest of the page takes its colour from the same metafield.
+
+  Nothing here invents a second layout language: the wash circle is the
+  `.ps-card__frame` idea at full size, the thumbnails are the same object
+  small, and the accordion is the house `[data-ps-accordion]`.
+{%- endcomment -%}
+
+{%- liquid
+  comment
+    Pigment: the product's own metafield wins, then the collection it lives
+    in. Everything below inherits --ps-accent and --ps-wash from this.
+  endcomment
+  assign pig = product.metafields.perset.pigment.value
+  if pig == blank
+    for col in product.collections
+      case col.handle
+        when 'stitches-of-the-wild'
+          assign pig = 'wild'
+        when 'a-tale-in-beads'
+          assign pig = 'beads'
+        when 'pretty-past'
+          assign pig = 'past'
+      endcase
+    endfor
+  endif
+
+  comment
+    The eyebrow links back to wherever the visitor came from when that is a
+    collection, and otherwise to the first real collection the piece is in.
+  endcomment
+  assign home_collection = collection
+  if home_collection == blank or home_collection.handle == 'all'
+    for col in product.collections
+      unless col.handle == 'all' or col.handle == 'frontpage'
+        assign home_collection = col
+        break
+      endunless
+    endfor
+  endif
+
+  assign current_variant = product.selected_or_first_available_variant
+  if current_variant == blank
+    assign current_variant = product.variants.first
+  endif
+
+  assign form_id = 'ps-buy-' | append: section.id
+  assign stage_id = 'ps-stage-' | append: section.id
+  assign qty_id = 'ps-qty-' | append: section.id
+  assign pieces = product.metafields.perset.pieces.value
+  assign gallery = product.media | where: 'media_type', 'image'
+  assign media_count = gallery | size
+-%}
+
+<section
+  class="ps-pdp"
+  id="ps-pdp-{{ section.id }}"
+  data-ps-pdp
+  {% if pig != blank %}data-ps-pigment="{{ pig }}"{% endif %}
+  style="--pdp-pt: {{ section.settings.padding_top }}px; --pdp-pb: {{ section.settings.padding_bottom }}px;">
+
+  <div class="ps-shell ps-pdp__shell">
+
+    {%- comment -%} ----------------------------------------------- gallery {%- endcomment -%}
+    <div class="ps-pdp__gallery">
+
+      <div class="ps-pdp__stage">
+        <div class="ps-pdp__frame" data-ps-frame data-ps-cursor="{{ 'products.product.zoom' | t | default: 'Look closer' }}">
+          {%- if product.available == false and section.settings.show_sold_badge -%}
+            <span class="ps-badge ps-badge--sold">{{ 'products.product.sold_out' | t | default: 'Sold out' }}</span>
+          {%- elsif current_variant.compare_at_price > current_variant.price -%}
+            <span class="ps-badge ps-badge--accent">{{ 'products.product.on_sale' | t | default: 'Sale' }}</span>
+          {%- endif -%}
+
+          <span class="ps-pdp__ring" aria-hidden="true"></span>
+
+          <div
+            class="ps-pdp__media"
+            id="{{ stage_id }}"
+            role="tabpanel"
+            tabindex="-1"
+            aria-label="{{ 'products.product.media' | t | default: 'Product image' }}">
+            {%- if media_count > 0 -%}
+              {%- for media in gallery -%}
+                {%- comment -%}
+                  The first shot is the LCP element on this page, so it loads
+                  eagerly and at high priority. The rest sit behind it already
+                  decoded, which is what makes the thumbnail swap instant.
+                {%- endcomment -%}
+                {%- if forloop.first -%}
+                  {{
+                    media
+                    | image_url: width: 1600
+                    | image_tag:
+                      loading: 'eager',
+                      fetchpriority: 'high',
+                      widths: '420,600,800,1100,1400,1600',
+                      sizes: '(max-width: 900px) 84vw, 42vw',
+                      alt: media.alt | default: product.title | escape,
+                      class: 'ps-pdp__shot is-active'
+                  }}
+                {%- else -%}
+                  {{
+                    media
+                    | image_url: width: 1600
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '420,600,800,1100,1400,1600',
+                      sizes: '(max-width: 900px) 84vw, 42vw',
+                      alt: media.alt | default: product.title | escape,
+                      class: 'ps-pdp__shot'
+                  }}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'ps-pdp__shot is-active' }}
+            {%- endif -%}
+          </div>
+        </div>
+
+        <span class="ps-plate-shadow" aria-hidden="true"></span>
+      </div>
+
+      {%- if media_count > 1 -%}
+        <div
+          class="ps-pdp__thumbs"
+          role="tablist"
+          aria-label="{{ 'products.product.gallery' | t | default: 'Product gallery' }}">
+          {%- for media in gallery -%}
+            <button
+              class="ps-pdp__thumb{% if forloop.first %} is-active{% endif %}"
+              type="button"
+              role="tab"
+              id="ps-thumb-{{ section.id }}-{{ forloop.index0 }}"
+              aria-controls="{{ stage_id }}"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+              data-ps-thumb="{{ forloop.index0 }}">
+              <span class="ps-sr">
+                {{ 'products.product.view_image' | t: index: forloop.index | default: 'View image' }}
+                {{ forloop.index }}
+              </span>
+              {{
+                media
+                | image_url: width: 240
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '80,120,160,240',
+                  sizes: '84px',
+                  alt: ''
+              }}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} -------------------------------------------------- info {%- endcomment -%}
+    <div class="ps-pdp__info">
+      {%- liquid
+        assign acc_open = false
+      -%}
+
+      {%- for block in section.blocks -%}
+        {%- comment -%}
+          Accordion blocks are collected into one [data-ps-accordion] wrapper
+          so the "close the siblings" behaviour in perset-motion.js applies
+          across the whole run, however the merchant orders them.
+        {%- endcomment -%}
+        {%- if block.type != 'accordion' and acc_open -%}
+          </div>
+          {%- assign acc_open = false -%}
+        {%- endif -%}
+
+        {%- case block.type -%}
+
+          {%- when 'eyebrow' -%}
+            <p class="ps-pdp__eyebrow" data-ps-reveal="fade" {{ block.shopify_attributes }}>
+              {%- if home_collection != blank and block.settings.link_collection -%}
+                <a class="ps-eyebrow" href="{{ home_collection.url }}">
+                  {{- home_collection.title -}}
+                </a>
+              {%- elsif block.settings.text != blank -%}
+                <span class="ps-eyebrow">{{ block.settings.text }}</span>
+              {%- elsif product.type != blank -%}
+                <span class="ps-eyebrow">{{ product.type }}</span>
+              {%- endif -%}
+            </p>
+
+          {%- when 'title' -%}
+            <h1 class="ps-pdp__title" data-ps-split="lines" data-ps-split-step="90" {{ block.shopify_attributes }}>
+              {{- product.title -}}
+            </h1>
+            {%- if block.settings.show_vendor and product.vendor != blank -%}
+              <p class="ps-pdp__vendor" data-ps-reveal="fade">{{ product.vendor }}</p>
+            {%- endif -%}
+
+          {%- when 'price' -%}
+            <div class="ps-pdp__price" data-ps-price data-ps-reveal="up" {{ block.shopify_attributes }}>
+              <span class="ps-pdp__price-now ps-num" data-ps-price-now>
+                {{- current_variant.price | money -}}
+              </span>
+              <s class="ps-pdp__price-was ps-num{% unless current_variant.compare_at_price > current_variant.price %} ps-hide{% endunless %}" data-ps-price-was>
+                {{- current_variant.compare_at_price | money -}}
+              </s>
+              {%- if block.settings.tax_note != blank -%}
+                <span class="ps-pdp__tax">{{ block.settings.tax_note }}</span>
+              {%- endif -%}
+            </div>
+
+          {%- when 'description' -%}
+            {%- if product.description != blank -%}
+              <div class="ps-prose ps-pdp__desc" data-ps-reveal="up" {{ block.shopify_attributes }}>
+                {{ product.description }}
+              </div>
+            {%- endif -%}
+
+          {%- when 'variant_picker' -%}
+            {%- unless product.has_only_default_variant and block.settings.hide_single -%}
+              <div class="ps-pdp__options" data-ps-options data-ps-reveal="up" {{ block.shopify_attributes }}>
+                {%- for option in product.options_with_values -%}
+                  <fieldset class="ps-pdp__option" data-ps-option="{{ forloop.index0 }}">
+                    <legend class="ps-pdp__option-name">
+                      <span class="ps-eyebrow ps-eyebrow--bare">{{ option.name }}</span>
+                      <span class="ps-pdp__option-value" data-ps-option-value="{{ forloop.index0 }}">
+                        {{- option.selected_value -}}
+                      </span>
+                    </legend>
+                    <div class="ps-pdp__swatches">
+                      {%- for value in option.values -%}
+                        {%- assign input_id = 'ps-opt-' | append: section.id | append: '-' | append: option.position | append: '-' | append: forloop.index -%}
+                        <input
+                          class="ps-sr ps-pdp__radio"
+                          type="radio"
+                          id="{{ input_id }}"
+                          name="{{ option.name | escape }}-{{ section.id }}"
+                          value="{{ value | escape }}"
+                          data-ps-opt-index="{{ option.position | minus: 1 }}"
+                          {% if option.selected_value == value %}checked{% endif %}>
+                        <label class="ps-pdp__swatch" for="{{ input_id }}">{{ value }}</label>
+                      {%- endfor -%}
+                    </div>
+                  </fieldset>
+                {%- endfor -%}
+
+                {%- comment -%}
+                  With JavaScript off the radios cannot rewrite the hidden id,
+                  so a plain select posts the variant instead.
+                {%- endcomment -%}
+                <noscript>
+                  <label class="ps-pdp__nojs-label" for="ps-variant-{{ section.id }}">
+                    {{ 'products.product.choose_variant' | t | default: 'Choose a variant' }}
+                  </label>
+                  <select
+                    class="ps-select"
+                    id="ps-variant-{{ section.id }}"
+                    name="id"
+                    form="{{ form_id }}">
+                    {%- for variant in product.variants -%}
+                      <option
+                        value="{{ variant.id }}"
+                        {% if variant == current_variant %}selected{% endif %}
+                        {% unless variant.available %}disabled{% endunless %}>
+                        {{ variant.title }} · {{ variant.price | money }}
+                        {%- unless variant.available %} · {{ 'products.product.sold_out' | t | default: 'Sold out' }}{% endunless -%}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </noscript>
+              </div>
+            {%- endunless -%}
+
+          {%- when 'quantity' -%}
+            <div class="ps-pdp__qty" data-ps-reveal="up" {{ block.shopify_attributes }}>
+              <label class="ps-eyebrow ps-eyebrow--bare" for="{{ qty_id }}">
+                {{ block.settings.label | default: 'Quantity' }}
+              </label>
+              <div class="ps-qty">
+                <button
+                  class="ps-qty__btn"
+                  type="button"
+                  data-ps-step="-1"
+                  aria-controls="{{ qty_id }}"
+                  aria-label="{{ 'products.product.quantity_decrease' | t | default: 'Decrease quantity' }}">
+                  {% render 'icon', name: 'minus', size: 16 %}
+                </button>
+                <input
+                  class="ps-qty__input ps-num"
+                  id="{{ qty_id }}"
+                  name="quantity"
+                  form="{{ form_id }}"
+                  type="number"
+                  inputmode="numeric"
+                  min="1"
+                  step="1"
+                  value="1"
+                  aria-label="{{ block.settings.label | default: 'Quantity' | escape }}">
+                <button
+                  class="ps-qty__btn"
+                  type="button"
+                  data-ps-step="1"
+                  aria-controls="{{ qty_id }}"
+                  aria-label="{{ 'products.product.quantity_increase' | t | default: 'Increase quantity' }}">
+                  {% render 'icon', name: 'plus', size: 16 %}
+                </button>
+              </div>
+            </div>
+
+          {%- when 'buy_buttons' -%}
+            <div class="ps-pdp__buy" data-ps-reveal="up" {{ block.shopify_attributes }}>
+              {%- form 'product',
+                product,
+                id: form_id,
+                class: 'ps-pdp__form',
+                novalidate: 'novalidate',
+                data-ps-add: 'true',
+                data-ps-busy-label: block.settings.busy_label,
+                data-ps-done-label: block.settings.done_label,
+                data-ps-added-message: block.settings.added_message
+              -%}
+                <input type="hidden" name="id" value="{{ current_variant.id }}" data-ps-variant-id>
+
+                <button
+                  class="ps-pdp__submit ps-btn ps-btn--block"
+                  type="submit"
+                  name="add"
+                  data-ps-add-btn
+                  {% unless current_variant.available %}disabled{% endunless %}>
+                  <span data-ps-add-label>
+                    {%- if current_variant.available -%}
+                      {{ block.settings.add_label | default: 'Add to cart' }}
+                    {%- else -%}
+                      {{ 'products.product.sold_out' | t | default: 'Sold out' }}
+                    {%- endif -%}
+                  </span>
+                </button>
+              {%- endform -%}
+
+              {%- comment -%}
+                Everything is fired in small runs, so "sold out" is a normal
+                state here rather than an error. It gets its own quiet note
+                instead of a red box.
+              {%- endcomment -%}
+              <div class="ps-pdp__note" data-ps-note-sold {% if current_variant.available %}hidden{% endif %}>
+                {%- if block.settings.soldout_note != blank -%}
+                  <span class="ps-pdp__note-mark" aria-hidden="true">
+                    {% render 'icon', name: 'knot', size: 13 %}
+                  </span>
+                  <span>{{ block.settings.soldout_note }}</span>
+                {%- endif -%}
+              </div>
+
+              <div class="ps-pdp__note" data-ps-note-made {% unless current_variant.available %}hidden{% endunless %}>
+                {%- if block.settings.made_note != blank -%}
+                  <span class="ps-pdp__note-mark" aria-hidden="true">
+                    {% render 'icon', name: 'brush', size: 13 %}
+                  </span>
+                  <span>{{ block.settings.made_note }}</span>
+                {%- endif -%}
+              </div>
+
+              {%- if block.settings.waitlist_label != blank and block.settings.waitlist_url != blank -%}
+                <a
+                  class="ps-link ps-pdp__waitlist"
+                  href="{{ block.settings.waitlist_url }}"
+                  data-ps-note-sold-link
+                  {% if current_variant.available %}hidden{% endif %}>
+                  {{ block.settings.waitlist_label }}
+                  {% render 'icon', name: 'arrow-right', size: 15 %}
+                </a>
+              {%- endif -%}
+            </div>
+
+          {%- when 'accordion' -%}
+            {%- unless acc_open -%}
+              <div class="ps-pdp__details" data-ps-accordion data-ps-reveal="up">
+              {%- assign acc_open = true -%}
+            {%- endunless -%}
+
+            {%- liquid
+              assign acc_body = block.settings.content
+              assign acc_heading = block.settings.heading
+
+              case block.settings.kind
+                when 'dimensions'
+                  if acc_heading == blank
+                    assign acc_heading = 'Dimensions'
+                  endif
+                  if pieces != blank
+                    assign acc_body = block.settings.content | prepend: '</p>' | prepend: pieces | prepend: '<p class="ps-pdp__pieces">'
+                  endif
+                when 'care'
+                  if acc_heading == blank
+                    assign acc_heading = 'Care'
+                  endif
+                when 'shipping'
+                  if acc_heading == blank
+                    assign acc_heading = 'Shipping & returns'
+                  endif
+                else
+                  if acc_heading == blank
+                    assign acc_heading = 'Details'
+                  endif
+              endcase
+            -%}
+
+            {%- if acc_body != blank -%}
+              <details class="ps-acc" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+                <summary class="ps-acc__summary">
+                  <span>{{ acc_heading }}</span>
+                  <span class="ps-acc__mark" aria-hidden="true">
+                    {% render 'icon', name: 'chevron-down', size: 18 %}
+                  </span>
+                </summary>
+                <div class="ps-acc__body ps-prose">{{ acc_body }}</div>
+              </details>
+            {%- endif -%}
+
+          {%- when 'share' -%}
+            <div class="ps-pdp__share" data-ps-reveal="fade" {{ block.shopify_attributes }}>
+              <button
+                class="ps-link"
+                type="button"
+                data-ps-share
+                data-ps-share-title="{{ product.title | escape }}"
+                data-ps-share-done="{{ block.settings.copied_label | default: 'Link copied' | escape }}">
+                {{ block.settings.label | default: 'Share this piece' }}
+                {% render 'icon', name: 'arrow-right', size: 15 %}
+              </button>
+            </div>
+
+        {%- endcase -%}
+      {%- endfor -%}
+
+      {%- if acc_open -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%}
+    Pre-formatted money strings, so the swap never has to guess at a currency
+    symbol or a decimal separator. Liquid already knows both.
+  {%- endcomment -%}
+  <script type="application/json" data-ps-variants>
+    [
+      {%- for variant in product.variants -%}
+        {
+          "id": {{ variant.id }},
+          "title": {{ variant.title | json }},
+          "options": {{ variant.options | json }},
+          "available": {{ variant.available | json }},
+          "price": {{ variant.price | money | json }},
+          "compare_at_price": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %},
+          "url": {{ product.url | append: '?variant=' | append: variant.id | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]
+  </script>
+
+  {%- comment -%} ------------------------------------------- structured data {%- endcomment -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": {{ product.title | json }},
+      "url": {{ request.origin | append: product.url | json }},
+      {%- if product.featured_media != blank -%}
+        "image": [{{ product.featured_media | image_url: width: 1400 | prepend: 'https:' | json }}],
+      {%- endif -%}
+      "description": {{ product.description | strip_html | json }},
+      "brand": { "@type": "Brand", "name": {{ product.vendor | default: shop.name | json }} },
+      {%- if current_variant.sku != blank -%}
+        "sku": {{ current_variant.sku | json }},
+      {%- endif -%}
+      "offers": [
+        {%- for variant in product.variants -%}
+          {
+            "@type": "Offer",
+            {%- if variant.sku != blank -%}"sku": {{ variant.sku | json }},{%- endif -%}
+            "availability": "https://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+            "price": {{ variant.price | divided_by: 100.0 }},
+            "priceCurrency": {{ cart.currency.iso_code | json }},
+            "url": {{ request.origin | append: product.url | append: '?variant=' | append: variant.id | json }}
+          }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+</section>
+
+<script>
+  /* The piece: gallery swapping, pointer zoom, variant state. Scoped to this
+     section id so two of them on one page never talk to each other. */
+  (function () {
+    var root = document.getElementById('ps-pdp-{{ section.id }}');
+    if (!root) return;
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+    function $(s) { return root.querySelector(s); }
+    function $$(s) { return Array.prototype.slice.call(root.querySelectorAll(s)); }
+
+    /* ------------------------------------------------------------ gallery */
+
+    var shots = $$('.ps-pdp__shot');
+    var thumbs = $$('[data-ps-thumb]');
+
+    function show(index, focusThumb) {
+      if (index < 0 || index >= shots.length) return;
+      shots.forEach(function (img, i) { img.classList.toggle('is-active', i === index); });
+      thumbs.forEach(function (btn, i) {
+        var on = i === index;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+        btn.tabIndex = on ? 0 : -1;
+        if (on && focusThumb) btn.focus();
+      });
+    }
+
+    if (shots.length) shots[0].classList.add('is-active');
+
+    thumbs.forEach(function (btn, i) {
+      btn.addEventListener('click', function () { show(i, false); });
+      btn.addEventListener('keydown', function (e) {
+        var last = thumbs.length - 1;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); show(i === last ? 0 : i + 1, true); }
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); show(i === 0 ? last : i - 1, true); }
+        else if (e.key === 'Home') { e.preventDefault(); show(0, true); }
+        else if (e.key === 'End') { e.preventDefault(); show(last, true); }
+        else if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); show(i, false); }
+      });
+    });
+
+    /* --------------------------------------------------------- pointer zoom
+       Same --ps-gx/--ps-gy contract the glaze on .ps-plate uses: the pointer
+       writes a position, CSS does the moving. Off on touch and off when the
+       visitor has asked for less motion. */
+
+    var frame = $('[data-ps-frame]');
+    if (frame && fine.matches && !reduced.matches) {
+      frame.addEventListener('pointermove', function (e) {
+        var r = frame.getBoundingClientRect();
+        frame.style.setProperty('--ps-gx', (((e.clientX - r.left) / r.width) * 100).toFixed(1) + '%');
+        frame.style.setProperty('--ps-gy', (((e.clientY - r.top) / r.height) * 100).toFixed(1) + '%');
+      }, { passive: true });
+      frame.addEventListener('pointerenter', function () { frame.classList.add('is-zoom'); });
+      frame.addEventListener('pointerleave', function () {
+        frame.classList.remove('is-zoom');
+        frame.style.setProperty('--ps-gx', '50%');
+        frame.style.setProperty('--ps-gy', '50%');
+      });
+    }
+
+    /* ------------------------------------------------------------ variants */
+
+    var blob = $('[data-ps-variants]');
+    var variants = [];
+    if (blob) { try { variants = JSON.parse(blob.textContent); } catch (e) { variants = []; } }
+
+    var idInput = $('[data-ps-variant-id]');
+    var submit = $('[data-ps-add-btn]');
+    var addLabel = $('[data-ps-add-label]');
+    var priceNow = $('[data-ps-price-now]');
+    var priceWas = $('[data-ps-price-was]');
+    var noteSold = $('[data-ps-note-sold]');
+    var noteMade = $('[data-ps-note-made]');
+    var soldLink = $('[data-ps-note-sold-link]');
+    var radios = $$('.ps-pdp__radio');
+
+    var LABEL_ADD = {{ 'products.product.add_to_cart' | t | default: 'Add to cart' | json }};
+    var LABEL_SOLD = {{ 'products.product.sold_out' | t | default: 'Sold out' | json }};
+    var LABEL_NONE = {{ 'products.product.unavailable' | t | default: 'Unavailable' | json }};
+
+    function selection() {
+      var chosen = [];
+      radios.forEach(function (r) {
+        if (r.checked) chosen[parseInt(r.getAttribute('data-ps-opt-index'), 10)] = r.value;
+      });
+      return chosen;
+    }
+
+    function match(chosen) {
+      for (var i = 0; i < variants.length; i++) {
+        var v = variants[i], ok = true;
+        for (var j = 0; j < chosen.length; j++) {
+          if (chosen[j] !== undefined && v.options[j] !== chosen[j]) { ok = false; break; }
+        }
+        if (ok) return v;
+      }
+      return null;
+    }
+
+    function toggle(el, on) { if (el) { if (on) el.removeAttribute('hidden'); else el.setAttribute('hidden', ''); } }
+
+    function apply(variant) {
+      if (submit) {
+        submit.disabled = !variant || !variant.available;
+        if (addLabel) addLabel.textContent = !variant ? LABEL_NONE : (variant.available ? LABEL_ADD : LABEL_SOLD);
+      }
+      if (!variant) return;
+
+      if (idInput) idInput.value = variant.id;
+      if (priceNow) priceNow.innerHTML = variant.price;
+      if (priceWas) {
+        priceWas.innerHTML = variant.compare_at_price || '';
+        priceWas.classList.toggle('ps-hide', !variant.compare_at_price);
+      }
+      toggle(noteSold, !variant.available);
+      toggle(soldLink, !variant.available);
+      toggle(noteMade, variant.available);
+
+      $$('[data-ps-option-value]').forEach(function (el) {
+        var i = parseInt(el.getAttribute('data-ps-option-value'), 10);
+        if (variant.options[i]) el.textContent = variant.options[i];
+      });
+
+      if (window.history && history.replaceState) {
+        history.replaceState({}, '', variant.url);
+      }
+    }
+
+    radios.forEach(function (r) {
+      r.addEventListener('change', function () { apply(match(selection())); });
+    });
+
+    /* --------------------------------------------------------------- share */
+
+    var share = $('[data-ps-share]');
+    if (share) {
+      share.addEventListener('click', function () {
+        var url = window.location.href;
+        var title = share.getAttribute('data-ps-share-title');
+        if (navigator.share) {
+          navigator.share({ title: title, url: url }).catch(function () {});
+          return;
+        }
+        var resting = share.firstChild;
+        function done() {
+          var live = document.getElementById('ps-live');
+          if (live) live.textContent = share.getAttribute('data-ps-share-done');
+          if (resting) {
+            var was = resting.textContent;
+            resting.textContent = ' ' + share.getAttribute('data-ps-share-done') + ' ';
+            setTimeout(function () { resting.textContent = was; }, 2200);
+          }
+        }
+        if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () {});
+      });
+    }
+  })();
+</script>
+
+{% stylesheet %}
+  .ps-pdp {
+    padding-block: calc(var(--ps-header-h) + var(--pdp-pt, 40px)) var(--pdp-pb, 80px);
+    background: var(--ps-bg);
+  }
+
+  .ps-pdp__shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(1.75rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  /* ---- gallery ---------------------------------------------------------- */
+
+  .ps-pdp__gallery { position: relative; top: 0; }
+
+  /* The wash circle: .ps-card__frame at full size. */
+  .ps-pdp__frame {
+    position: relative;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    padding: 9%;
+    border-radius: var(--ps-radius-l);
+    background: var(--ps-wash, var(--ps-linen-warm));
+    overflow: hidden;
+    isolation: isolate;
+    transition: background var(--ps-t-slow) var(--ps-ease-set);
+  }
+  .ps-pdp__ring {
+    position: absolute;
+    inset: 5%;
+    border-radius: 50%;
+    border: 1px dashed var(--ps-accent);
+    opacity: 0.4;
+    pointer-events: none;
+    transform: rotate(0deg);
+    transition: transform var(--ps-t-drape) var(--ps-ease-set), opacity var(--ps-t-base) var(--ps-ease-set);
+  }
+  .ps-pdp__frame:hover .ps-pdp__ring { opacity: 0.68; transform: rotate(12deg); }
+
+  .ps-pdp__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(120, 95, 60, 0.18);
+  }
+  .ps-pdp__media:focus-visible { outline-offset: 6px; }
+
+  /* Every shot is in the DOM and crossfades, so the swap has nothing to load. */
+  .ps-pdp__shot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform-origin: var(--ps-gx, 50%) var(--ps-gy, 50%);
+    transition:
+      opacity var(--ps-t-base) var(--ps-ease-swap),
+      transform var(--ps-t-slow) var(--ps-ease-set);
+  }
+  .ps-pdp__shot.is-active { opacity: 1; }
+  .ps-pdp__frame.is-zoom .ps-pdp__shot.is-active { transform: scale(1.5); }
+
+  /* The glaze sweep, the same specular the plate carries. */
+  .ps-pdp__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(
+      140px 140px at var(--ps-gx, 32%) var(--ps-gy, 24%),
+      rgba(255, 255, 255, 0.42),
+      rgba(255, 255, 255, 0.06) 45%,
+      transparent 70%
+    );
+    opacity: 0;
+    mix-blend-mode: screen;
+    transition: opacity var(--ps-t-base) var(--ps-ease-set);
+  }
+  .ps-pdp__frame:hover .ps-pdp__media::after { opacity: 1; }
+
+  /* The frame and the shadow it casts on the linen share one stage. */
+  .ps-pdp__stage { position: relative; }
+
+  .ps-pdp__thumbs {
+    display: flex;
+    gap: var(--ps-s-2xs);
+    flex-wrap: wrap;
+    margin-top: var(--ps-s-s);
+  }
+  .ps-pdp__thumb {
+    position: relative;
+    width: 72px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    flex: none;
+    background: var(--ps-wash, var(--ps-linen-warm));
+    box-shadow: 0 0 0 1px var(--ps-hairline-soft);
+    opacity: 0.62;
+    transition:
+      opacity var(--ps-t-fast) var(--ps-ease-swap),
+      box-shadow var(--ps-t-fast) var(--ps-ease-swap),
+      transform var(--ps-t-base) var(--ps-ease-set);
+  }
+  .ps-pdp__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .ps-pdp__thumb:hover { opacity: 1; transform: translateY(-2px); }
+  .ps-pdp__thumb.is-active {
+    opacity: 1;
+    box-shadow: 0 0 0 1px var(--ps-accent);
+  }
+
+  /* ---- info ------------------------------------------------------------- */
+
+  .ps-pdp__info {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.9rem, 1.9vw, 1.5rem);
+    padding-top: clamp(0rem, 2vw, 2rem);
+  }
+
+  .ps-pdp__eyebrow { margin: 0; }
+  .ps-pdp__eyebrow a:hover { color: var(--ps-accent); }
+
+  .ps-pdp__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.3rem, 4.6vw, 4rem);
+    font-weight: 300;
+    font-variation-settings: "SOFT" 42, "WONK" 1, "opsz" 144;
+    line-height: 0.98;
+    letter-spacing: -0.032em;
+    margin: 0;
+  }
+  .ps-pdp__vendor {
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-faint);
+    letter-spacing: 0.06em;
+  }
+
+  .ps-pdp__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7em;
+    flex-wrap: wrap;
+    font-size: var(--ps-step-2);
+  }
+  .ps-pdp__price-now { font-family: var(--ps-display); }
+  .ps-pdp__price-was { color: var(--ps-ink-faint); font-size: var(--ps-step-0); }
+  .ps-pdp__tax {
+    font-family: var(--ps-body);
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-faint);
+  }
+
+  .ps-pdp__desc { color: var(--ps-ink-soft); }
+
+  /* ---- options ---------------------------------------------------------- */
+
+  .ps-pdp__options { display: flex; flex-direction: column; gap: var(--ps-s-s); }
+  .ps-pdp__option { border: 0; padding: 0; margin: 0; }
+  .ps-pdp__option-name {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+    padding: 0;
+    margin-bottom: 0.55rem;
+  }
+  .ps-pdp__option-value {
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-soft);
+  }
+  .ps-pdp__swatches { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .ps-pdp__swatch {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.62em 1.15em;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--ps-hairline);
+    font-size: var(--ps-step--1);
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition:
+      box-shadow var(--ps-t-fast) var(--ps-ease-swap),
+      background var(--ps-t-fast) var(--ps-ease-swap),
+      color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-pdp__swatch:hover { box-shadow: inset 0 0 0 1px var(--ps-accent); }
+  .ps-pdp__radio:checked + .ps-pdp__swatch {
+    background: var(--ps-ink);
+    color: var(--ps-porcelain);
+    box-shadow: inset 0 0 0 1px var(--ps-ink);
+  }
+  .ps-pdp__radio:focus-visible + .ps-pdp__swatch {
+    outline: 2px solid var(--ps-accent);
+    outline-offset: 3px;
+  }
+  .ps-pdp__nojs-label { display: block; margin-top: var(--ps-s-s); }
+
+  /* ---- quantity --------------------------------------------------------- */
+
+  .ps-pdp__qty { display: flex; flex-direction: column; gap: 0.55rem; align-items: flex-start; }
+  .ps-qty {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--ps-hairline);
+    overflow: hidden;
+  }
+  .ps-qty__btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    color: var(--ps-ink-soft);
+    transition: background var(--ps-t-fast) var(--ps-ease-swap), color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-qty__btn:hover { background: var(--ps-linen-warm); color: var(--ps-ink); }
+  .ps-qty__input {
+    width: 3.2rem;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: center;
+    font-size: var(--ps-step-0);
+    -moz-appearance: textfield;
+  }
+  .ps-qty__input::-webkit-outer-spin-button,
+  .ps-qty__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .ps-qty__input:focus { outline: none; }
+  /* Without JS the steppers are inert, so they stay out of the way. */
+  html:not(.ps-js) .ps-qty__btn { display: none; }
+
+  /* ---- buy -------------------------------------------------------------- */
+
+  .ps-pdp__buy { display: flex; flex-direction: column; gap: var(--ps-s-xs); margin-top: var(--ps-s-2xs); }
+  .ps-pdp__form { margin: 0; }
+  .ps-pdp__submit[aria-busy="true"] { opacity: 0.7; }
+
+  /* Sold out is the resting state of a small run, not a failure. It reads as
+     an empty shelf in a shop, not as a disabled control. */
+  .ps-pdp__submit[disabled] {
+    opacity: 1;
+    pointer-events: none;
+    --btn-bg: transparent;
+    --btn-fg: var(--ps-ink-soft);
+    box-shadow: inset 0 0 0 1px var(--ps-hairline);
+    background-image: repeating-linear-gradient(
+      -45deg,
+      var(--ps-hairline-soft) 0 1px,
+      transparent 1px 9px
+    );
+  }
+
+  .ps-pdp__note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6em;
+    font-size: var(--ps-step--1);
+    line-height: 1.5;
+    color: var(--ps-ink-faint);
+    text-wrap: pretty;
+  }
+  .ps-pdp__note[hidden] { display: none; }
+  .ps-pdp__note-mark { color: var(--ps-accent); flex: none; margin-top: 0.25em; }
+  .ps-pdp__waitlist { align-self: flex-start; color: var(--ps-ink); }
+  .ps-pdp__waitlist[hidden] { display: none; }
+
+  /* ---- details ---------------------------------------------------------- */
+
+  .ps-pdp__details {
+    margin-top: var(--ps-s-s);
+    border-top: 1px solid var(--ps-hairline);
+  }
+  .ps-acc { border-bottom: 1px solid var(--ps-hairline); }
+  .ps-acc__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ps-s-s);
+    padding-block: 1.05rem;
+    cursor: pointer;
+    list-style: none;
+    font-size: var(--ps-step--1);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    transition: color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-acc__summary::-webkit-details-marker { display: none; }
+  .ps-acc__summary:hover { color: var(--ps-accent); }
+  .ps-acc__mark {
+    display: grid;
+    place-items: center;
+    color: var(--ps-ink-faint);
+    transition: transform var(--ps-t-base) var(--ps-ease-set);
+  }
+  .ps-acc[open] .ps-acc__mark { transform: rotate(180deg); }
+  .ps-acc__body {
+    padding-bottom: 1.3rem;
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-soft);
+  }
+  .ps-pdp__pieces {
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-0);
+    font-style: italic;
+    color: var(--ps-ink);
+  }
+
+  .ps-pdp__share { margin-top: var(--ps-s-2xs); color: var(--ps-ink-soft); }
+
+  /* ---- responsive ------------------------------------------------------- */
+
+  @media (min-width: 1025px) {
+    .ps-pdp__gallery { position: sticky; top: calc(var(--ps-header-h) + 1.5rem); }
+  }
+
+  @media (max-width: 1024px) {
+    .ps-pdp__shell { grid-template-columns: minmax(0, 1fr); gap: var(--ps-s-l); }
+  }
+
+  @media (max-width: 480px) {
+    .ps-pdp__frame { padding: 6%; border-radius: var(--ps-radius-m); }
+    .ps-pdp__thumb { width: 58px; }
+    .ps-pdp__thumbs { gap: 0.4rem; }
+    .ps-pdp__price { font-size: var(--ps-step-1); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The page takes its colour from the product's perset.pigment metafield, and falls back to the collection it belongs to."
+    },
+    { "type": "checkbox", "id": "show_sold_badge", "label": "Show the sold-out badge on the image", "default": true },
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 88 }
+  ],
+  "blocks": [
+    {
+      "type": "eyebrow",
+      "name": "Collection eyebrow",
+      "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "link_collection", "label": "Link to the collection", "default": true },
+        { "type": "text", "id": "text", "label": "Fallback text", "default": "Hand painted" }
+      ]
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "show_vendor", "label": "Show vendor", "default": false }
+      ]
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "tax_note", "label": "Note beside the price", "default": "Taxes included" }
+      ]
+    },
+    { "type": "description", "name": "Description", "limit": 1, "settings": [] },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "hide_single", "label": "Hide when there is only one variant", "default": true }
+      ]
+    },
+    {
+      "type": "quantity",
+      "name": "Quantity",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Quantity" }
+      ]
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "add_label", "label": "Add to cart label", "default": "Add to cart" },
+        { "type": "text", "id": "busy_label", "label": "Label while adding", "default": "Setting the table" },
+        { "type": "text", "id": "done_label", "label": "Label once added", "default": "In your cart" },
+        { "type": "text", "id": "added_message", "label": "Screen reader confirmation", "default": "Added to your cart." },
+        {
+          "type": "textarea",
+          "id": "made_note",
+          "label": "Note under the button",
+          "default": "Painted and fired in small runs. Allow two to three weeks from order to table."
+        },
+        {
+          "type": "textarea",
+          "id": "soldout_note",
+          "label": "Note when sold out",
+          "default": "This run is finished. The next one is being painted now — leave your name and we will write to you when it comes out of the kiln."
+        },
+        { "type": "text", "id": "waitlist_label", "label": "Waitlist link label", "default": "Tell me when it returns" },
+        { "type": "url", "id": "waitlist_url", "label": "Waitlist link" }
+      ]
+    },
+    {
+      "type": "accordion",
+      "name": "Detail panel",
+      "settings": [
+        {
+          "type": "select",
+          "id": "kind",
+          "label": "Panel",
+          "options": [
+            { "value": "dimensions", "label": "Dimensions" },
+            { "value": "care", "label": "Care" },
+            { "value": "shipping", "label": "Shipping & returns" },
+            { "value": "text", "label": "Rich text" }
+          ],
+          "default": "text"
+        },
+        { "type": "text", "id": "heading", "label": "Heading override" },
+        { "type": "richtext", "id": "content", "label": "Content", "default": "<p>Tell the visitor what the hand did.</p>" },
+        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false }
+      ]
+    },
+    {
+      "type": "share",
+      "name": "Share",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Share this piece" },
+        { "type": "text", "id": "copied_label", "label": "Confirmation", "default": "Link copied" }
+      ]
+    }
+  ]
+}
+{% endschema %}

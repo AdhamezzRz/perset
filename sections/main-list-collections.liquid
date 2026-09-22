@@ -1,0 +1,386 @@
+{%- comment -%}
+  EVERY COLLECTION
+
+  One large editorial card per collection. Each one is re-pigmented from its
+  own handle, so the page reads as three worlds rather than three rows of the
+  same template, and each plate turns as it travels up the viewport.
+
+  Merchants can either let the section list every collection, or add blocks to
+  choose the order and override a pigment.
+{%- endcomment -%}
+
+{%- liquid
+  assign use_blocks = false
+  if section.blocks.size > 0
+    assign use_blocks = true
+  endif
+-%}
+
+<section class="ps-idx ps-section" id="ps-idx-{{ section.id }}">
+  <div class="ps-shell">
+
+    <div class="ps-idx__head">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow ps-eyebrow--center" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h1 class="ps-idx__title" data-ps-split="lines" data-ps-split-step="100">{{ section.settings.heading }}</h1>
+      {%- endif -%}
+      {%- if section.settings.intro != blank -%}
+        <p class="ps-lede ps-center" data-ps-reveal="up" style="--ps-delay:200ms">{{ section.settings.intro }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="ps-idx__grid" data-ps-stagger="{{ section.settings.stagger }}">
+      {%- comment -%}
+        One card. Rendered from a block when the merchant has chosen an order,
+        and straight from `collections` when they have not.
+      {%- endcomment -%}
+      {%- if use_blocks -%}
+
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign col = collections[block.settings.collection]
+            assign pig = block.settings.pigment
+            if pig == blank or pig == 'auto'
+              case col.handle
+                when 'stitches-of-the-wild'
+                  assign pig = 'wild'
+                when 'a-tale-in-beads'
+                  assign pig = 'beads'
+                when 'pretty-past'
+                  assign pig = 'past'
+                else
+                  assign pig = blank
+              endcase
+            endif
+
+            assign img = block.settings.image
+            if img == blank and col.image != blank
+              assign img = col.image
+            endif
+            if img == blank and col.products.first.featured_media != blank
+              assign img = col.products.first.featured_media.preview_image
+            endif
+
+            assign body = block.settings.body
+            if body == blank
+              assign body = col.description | strip_html | truncatewords: 26
+            endif
+          -%}
+
+          {%- if col != blank -%}
+            <article
+              class="ps-ccard"
+              {% if pig != blank %}data-ps-pigment="{{ pig }}"{% endif %}
+              data-ps-reveal="set"
+              {{ block.shopify_attributes }}>
+
+              <div class="ps-ccard__frame" data-ps-cursor="{{ section.settings.cursor | default: 'Open' | escape }}">
+                <span class="ps-ccard__ring" aria-hidden="true"></span>
+                <span class="ps-ccard__ring ps-ccard__ring--2" aria-hidden="true"></span>
+
+                <div class="ps-ccard__plate ps-plate" data-ps-rotate="{{ section.settings.rotation }}">
+                  {%- if img != blank -%}
+                    {{
+                      img
+                      | image_url: width: 1200
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '360,520,700,900,1200',
+                        sizes: '(max-width: 760px) 80vw, 40vw',
+                        alt: col.title | escape
+                    }}
+                  {%- else -%}
+                    {{ 'collection-1' | placeholder_svg_tag: '' }}
+                  {%- endif -%}
+                </div>
+                <span class="ps-plate-shadow" aria-hidden="true"></span>
+              </div>
+
+              <div class="ps-ccard__body">
+                <h2 class="ps-ccard__title">
+                  <a class="ps-ccard__link" href="{{ col.url }}">
+                    <span class="ps-sr">{{ col.title | escape }}</span>
+                  </a>
+                  <span aria-hidden="true">{{ col.title }}</span>
+                </h2>
+
+                {%- if body != blank -%}
+                  <p class="ps-ccard__body-text">{{ body }}</p>
+                {%- endif -%}
+
+                <p class="ps-ccard__count ps-num">
+                  {{ col.all_products_count }}
+                  {%- if col.all_products_count == 1 -%}
+                    {{ 'collections.general.piece' | t | default: 'piece' }}
+                  {%- else -%}
+                    {{ 'collections.general.pieces' | t | default: 'pieces' }}
+                  {%- endif -%}
+                  <span class="ps-ccard__arrow" aria-hidden="true">
+                    {% render 'icon', name: 'arrow-right', size: 15 %}
+                  </span>
+                </p>
+              </div>
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+
+      {%- else -%}
+
+        {%- for col in collections -%}
+          {%- liquid
+            assign pig = blank
+            case col.handle
+              when 'stitches-of-the-wild'
+                assign pig = 'wild'
+              when 'a-tale-in-beads'
+                assign pig = 'beads'
+              when 'pretty-past'
+                assign pig = 'past'
+            endcase
+
+            assign img = col.image
+            if img == blank and col.products.first.featured_media != blank
+              assign img = col.products.first.featured_media.preview_image
+            endif
+
+            assign body = col.description | strip_html | truncatewords: 26
+          -%}
+
+          <article
+            class="ps-ccard"
+            {% if pig != blank %}data-ps-pigment="{{ pig }}"{% endif %}
+            data-ps-reveal="set">
+
+            <div class="ps-ccard__frame" data-ps-cursor="{{ section.settings.cursor | default: 'Open' | escape }}">
+              <span class="ps-ccard__ring" aria-hidden="true"></span>
+              <span class="ps-ccard__ring ps-ccard__ring--2" aria-hidden="true"></span>
+
+              <div class="ps-ccard__plate ps-plate" data-ps-rotate="{{ section.settings.rotation }}">
+                {%- if img != blank -%}
+                  {{
+                    img
+                    | image_url: width: 1200
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '360,520,700,900,1200',
+                      sizes: '(max-width: 760px) 80vw, 40vw',
+                      alt: col.title | escape
+                  }}
+                {%- else -%}
+                  {{ 'collection-1' | placeholder_svg_tag: '' }}
+                {%- endif -%}
+              </div>
+              <span class="ps-plate-shadow" aria-hidden="true"></span>
+            </div>
+
+            <div class="ps-ccard__body">
+              <h2 class="ps-ccard__title">
+                <a class="ps-ccard__link" href="{{ col.url }}">
+                  <span class="ps-sr">{{ col.title | escape }}</span>
+                </a>
+                <span aria-hidden="true">{{ col.title }}</span>
+              </h2>
+
+              {%- if body != blank -%}
+                <p class="ps-ccard__body-text">{{ body }}</p>
+              {%- endif -%}
+
+              <p class="ps-ccard__count ps-num">
+                {{ col.all_products_count }}
+                {%- if col.all_products_count == 1 -%}
+                  {{ 'collections.general.piece' | t | default: 'piece' }}
+                {%- else -%}
+                  {{ 'collections.general.pieces' | t | default: 'pieces' }}
+                {%- endif -%}
+                <span class="ps-ccard__arrow" aria-hidden="true">
+                  {% render 'icon', name: 'arrow-right', size: 15 %}
+                </span>
+              </p>
+            </div>
+          </article>
+        {%- endfor -%}
+
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-idx { padding-top: calc(var(--ps-header-h) + clamp(2rem, 6vw, 5rem)); }
+
+  .ps-idx__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ps-s-xs);
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 7vw, 6rem);
+  }
+  .ps-idx__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.8rem, 8vw, 7rem);
+    font-weight: 250;
+    font-variation-settings: "SOFT" 46, "WONK" 1, "opsz" 144;
+    line-height: 0.92;
+    letter-spacing: -0.038em;
+    margin: 0;
+  }
+  .ps-idx__head .ps-lede { text-align: center; }
+
+  .ps-idx__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2.5rem, 6vw, 5.5rem) clamp(1.5rem, 4vw, 4rem);
+  }
+  /* Every second card drops, so the page reads as a hand-set page rather
+     than a table. */
+  .ps-idx__grid > .ps-ccard:nth-child(even) { margin-top: clamp(2rem, 8vw, 7rem); }
+
+  .ps-ccard { position: relative; display: flex; flex-direction: column; gap: var(--ps-s-s); }
+
+  .ps-ccard__frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    display: grid;
+    place-items: center;
+    padding: 10%;
+    border-radius: var(--ps-radius-l);
+    background: var(--ps-wash, var(--ps-linen-warm));
+    overflow: hidden;
+    isolation: isolate;
+    transition: background var(--ps-t-slow) var(--ps-ease-set);
+  }
+
+  /* Two stitched rings, drawn on hover at different speeds, the way a border
+     is embroidered in passes. */
+  .ps-ccard__ring {
+    position: absolute;
+    inset: 8%;
+    border-radius: 50%;
+    border: 1px dashed var(--ps-accent);
+    opacity: 0;
+    transform: scale(0.88) rotate(-28deg);
+    pointer-events: none;
+    transition:
+      opacity var(--ps-t-base) var(--ps-ease-set),
+      transform var(--ps-t-drape) var(--ps-ease-set);
+  }
+  .ps-ccard__ring--2 {
+    inset: 3%;
+    border-style: dotted;
+    border-color: var(--ps-accent-2, var(--ps-accent));
+    transform: scale(1.12) rotate(24deg);
+    transition-delay: 70ms;
+  }
+  .ps-ccard:hover .ps-ccard__ring,
+  .ps-ccard:focus-within .ps-ccard__ring { opacity: 0.62; transform: scale(1) rotate(0deg); }
+  .ps-ccard:hover .ps-ccard__ring--2,
+  .ps-ccard:focus-within .ps-ccard__ring--2 { opacity: 0.34; }
+
+  .ps-ccard__plate {
+    width: 100%;
+    box-shadow: 0 22px 58px rgba(120, 95, 60, 0.20);
+    transition: transform var(--ps-t-slow) var(--ps-ease-set);
+  }
+  .ps-ccard:hover .ps-ccard__plate { transform: rotate(var(--ps-rot, 0deg)) scale(1.035); }
+
+  .ps-ccard__body { display: flex; flex-direction: column; gap: 0.4rem; }
+  .ps-ccard__title {
+    font-family: var(--ps-display);
+    font-size: clamp(1.6rem, 3.2vw, 2.9rem);
+    font-weight: 300;
+    font-variation-settings: "SOFT" 40, "WONK" 1, "opsz" 120;
+    line-height: 1.02;
+    letter-spacing: -0.028em;
+    margin: 0;
+  }
+  .ps-ccard__link { position: absolute; inset: 0; z-index: 2; border-radius: var(--ps-radius-l); }
+  .ps-ccard__link:focus-visible { outline-offset: -6px; }
+
+  .ps-ccard__body-text {
+    max-width: 40ch;
+    font-size: var(--ps-step--1);
+    line-height: 1.6;
+    color: var(--ps-ink-soft);
+    text-wrap: pretty;
+  }
+  .ps-ccard__count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-family: var(--ps-body);
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ps-ink-faint);
+    margin-top: 0.25rem;
+  }
+  .ps-ccard__arrow { color: var(--ps-accent); display: grid; place-items: center; }
+  .ps-ccard:hover .ps-ccard__arrow .ps-arrow { transform: translateX(5px); }
+
+  @media (max-width: 760px) {
+    .ps-idx__grid { grid-template-columns: minmax(0, 1fr); gap: clamp(2.5rem, 9vw, 4rem); }
+    .ps-idx__grid > .ps-ccard:nth-child(even) { margin-top: 0; }
+    .ps-ccard__frame { aspect-ratio: 1; padding: 8%; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collections list",
+  "tag": "section",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "With no blocks, every collection in the store is listed. Add blocks to choose the order or override a pigment."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Three worlds" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The collections" },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "Each set is twenty-four pieces: six dinner, six dessert, six salad, six soup. Painted by hand, one at a time."
+    },
+    { "type": "text", "id": "cursor", "label": "Cursor label over a card", "default": "Open" },
+    {
+      "type": "range",
+      "id": "rotation",
+      "label": "Scroll rotation",
+      "min": 0, "max": 120, "step": 5, "unit": "°", "default": 45
+    },
+    {
+      "type": "range",
+      "id": "stagger",
+      "label": "Card arrival stagger",
+      "min": 0, "max": 260, "step": 10, "unit": "ms", "default": 120
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "textarea", "id": "body", "label": "Description override" },
+        { "type": "image_picker", "id": "image", "label": "Plate image override" },
+        {
+          "type": "select",
+          "id": "pigment",
+          "label": "Pigment",
+          "options": [
+            { "value": "auto", "label": "Detect from the handle" },
+            { "value": "wild", "label": "Stitches of the Wild" },
+            { "value": "beads", "label": "A Tale in Beads" },
+            { "value": "past", "label": "Pretty Past" }
+          ],
+          "default": "auto"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

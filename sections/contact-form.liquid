@@ -1,0 +1,441 @@
+{%- comment -%}
+  CONTACT
+
+  A real Shopify contact form on the left, the studio's details on the right.
+
+  The fields use the floating-label pattern from perset-core.css: input first,
+  label second, placeholder=" " so :not(:placeholder-shown) can do the work.
+  Errors are announced, listed and linked back to the field they belong to.
+{%- endcomment -%}
+
+<section
+  class="ps-contact"
+  {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;">
+
+  <div class="ps-shell ps-contact__inner">
+
+    <div class="ps-contact__main">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+
+      <h2 class="ps-contact__heading" data-ps-split="lines" data-ps-split-step="100">
+        {{- section.settings.heading | default: 'Write to the studio' -}}
+      </h2>
+
+      {%- if section.settings.body != blank -%}
+        <p class="ps-lede ps-contact__lede" data-ps-reveal="up">{{ section.settings.body }}</p>
+      {%- endif -%}
+
+      {% form 'contact', id: 'ps-contact-form', class: 'ps-contact__form' %}
+
+        {%- if form.posted_successfully? -%}
+          <div class="ps-note ps-note--ok" role="status" tabindex="-1" data-ps-reveal="fade">
+            {% render 'icon', name: 'leaf', size: 18 %}
+            <p>
+              {{ 'templates.contact.form.post_success' | t | default: 'Thank you. Your message is with us — we answer from the studio, usually the same day.' }}
+            </p>
+          </div>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+          <div class="ps-note ps-note--bad" role="alert" tabindex="-1">
+            <p class="ps-note__title">
+              {{ 'templates.contact.form.error_heading' | t | default: 'Something in the form needs another look.' }}
+            </p>
+            <ul class="ps-note__list">
+              {%- for field in form.errors -%}
+                <li>
+                  {%- if field == 'form' -%}
+                    {{ form.errors.messages[field] }}
+                  {%- else -%}
+                    <a href="#ps-contact-{{ field }}">
+                      {{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}
+                    </a>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <div class="ps-contact__fields">
+          <p class="ps-field">
+            <input
+              class="ps-input"
+              type="text"
+              id="ps-contact-name"
+              name="contact[name]"
+              value="{{ form.name | default: customer.name | escape }}"
+              autocomplete="name"
+              placeholder=" "
+              required>
+            <label class="ps-label" for="ps-contact-name">
+              {{ 'templates.contact.form.name' | t | default: 'Name' }}
+            </label>
+          </p>
+
+          <p class="ps-field">
+            <input
+              class="ps-input"
+              type="email"
+              id="ps-contact-email"
+              name="contact[email]"
+              value="{{ form.email | default: customer.email | escape }}"
+              autocomplete="email"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder=" "
+              required
+              {% if form.errors contains 'email' %}aria-invalid="true"{% endif %}>
+            <label class="ps-label" for="ps-contact-email">
+              {{ 'templates.contact.form.email' | t | default: 'Email' }}
+            </label>
+          </p>
+
+          <p class="ps-field">
+            <input
+              class="ps-input"
+              type="tel"
+              id="ps-contact-phone"
+              name="contact[phone]"
+              value="{{ form.phone | escape }}"
+              autocomplete="tel"
+              placeholder=" ">
+            <label class="ps-label" for="ps-contact-phone">
+              {{ 'templates.contact.form.phone' | t | default: 'Phone (optional)' }}
+            </label>
+          </p>
+
+          {%- if section.settings.show_subject -%}
+            <p class="ps-field">
+              <input
+                class="ps-input"
+                type="text"
+                id="ps-contact-subject"
+                name="contact[subject]"
+                value=""
+                placeholder=" ">
+              <label class="ps-label" for="ps-contact-subject">
+                {{ 'templates.contact.form.subject' | t | default: 'What is this about?' }}
+              </label>
+            </p>
+          {%- endif -%}
+
+          <p class="ps-field ps-field--wide">
+            <textarea
+              class="ps-textarea"
+              id="ps-contact-body"
+              name="contact[body]"
+              rows="6"
+              placeholder=" "
+              required>{{ form.body }}</textarea>
+            <label class="ps-label" for="ps-contact-body">
+              {{ 'templates.contact.form.message' | t | default: 'Your message' }}
+            </label>
+          </p>
+        </div>
+
+        <div class="ps-contact__submit">
+          <button class="ps-btn" type="submit" data-ps-magnetic="0.18">
+            {{ 'templates.contact.form.send' | t | default: 'Send it' }}
+            {% render 'icon', name: 'arrow-right', size: 15 %}
+          </button>
+          {%- if section.settings.form_note != blank -%}
+            <p class="ps-contact__note">{{ section.settings.form_note }}</p>
+          {%- endif -%}
+        </div>
+
+      {% endform %}
+    </div>
+
+    {%- comment -%} The side column: where we are, when we are there, how else to reach us. {%- endcomment -%}
+    <aside class="ps-contact__aside" data-ps-stagger="90">
+
+      {%- if section.settings.address != blank -%}
+        <div class="ps-contact__card" data-ps-reveal="up">
+          <p class="ps-contact__card-head">
+            {{ 'templates.contact.studio' | t | default: 'The studio' }}
+          </p>
+          <div class="ps-contact__card-body">{{ section.settings.address }}</div>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.hours != blank -%}
+        <div class="ps-contact__card" data-ps-reveal="up">
+          <p class="ps-contact__card-head">
+            {{ 'templates.contact.hours' | t | default: 'Hours' }}
+          </p>
+          <div class="ps-contact__card-body">{{ section.settings.hours }}</div>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.email != blank or section.settings.phone != blank -%}
+        <div class="ps-contact__card" data-ps-reveal="up">
+          <p class="ps-contact__card-head">
+            {{ 'templates.contact.direct' | t | default: 'Direct' }}
+          </p>
+          <div class="ps-contact__card-body">
+            {%- if section.settings.email != blank -%}
+              <p><a class="ps-contact__a" href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></p>
+            {%- endif -%}
+            {%- if section.settings.phone != blank -%}
+              <p><a class="ps-contact__a" href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a></p>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      <div class="ps-contact__card" data-ps-reveal="up">
+        <p class="ps-contact__card-head">
+          {{ 'templates.contact.elsewhere' | t | default: 'Elsewhere' }}
+        </p>
+        <div class="ps-contact__social">
+          {%- if settings.social_instagram != blank -%}
+            <a class="ps-contact__icon" href="{{ settings.social_instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
+              {% render 'icon', name: 'instagram', size: 19 %}
+            </a>
+          {%- endif -%}
+          {%- if settings.social_tiktok != blank -%}
+            <a class="ps-contact__icon" href="{{ settings.social_tiktok }}" target="_blank" rel="noopener" aria-label="TikTok">
+              {% render 'icon', name: 'tiktok', size: 19 %}
+            </a>
+          {%- endif -%}
+          {%- if settings.social_facebook != blank -%}
+            <a class="ps-contact__icon" href="{{ settings.social_facebook }}" target="_blank" rel="noopener" aria-label="Facebook">
+              {% render 'icon', name: 'facebook', size: 19 %}
+            </a>
+          {%- endif -%}
+          {%- if settings.social_whatsapp != blank -%}
+            <a class="ps-contact__icon" href="https://wa.me/{{ settings.social_whatsapp }}" target="_blank" rel="noopener" aria-label="WhatsApp">
+              {% render 'icon', name: 'whatsapp', size: 19 %}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- if section.settings.map_image != blank -%}
+        <div class="ps-contact__map ps-ratio ps-ratio--43" data-ps-reveal="glaze">
+          {{
+            section.settings.map_image
+            | image_url: width: 900
+            | image_tag:
+              loading: 'lazy',
+              widths: '320,480,700,900',
+              sizes: '(max-width: 900px) 92vw, 30vw',
+              alt: section.settings.map_image.alt | default: 'Map' | escape
+          }}
+        </div>
+      {%- endif -%}
+    </aside>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-contact { position: relative; }
+
+  .ps-contact__inner {
+    display: grid;
+    grid-template-columns: 1.35fr 0.65fr;
+    gap: clamp(2rem, 6vw, 5.5rem);
+    align-items: start;
+  }
+
+  .ps-contact__main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.9rem, 2vw, 1.5rem);
+  }
+
+  .ps-contact__heading {
+    font-family: var(--ps-display);
+    font-size: clamp(2.1rem, 5.2vw, 4rem);
+    font-weight: 300;
+    font-variation-settings: "SOFT" 42, "WONK" 1, "opsz" 144;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    margin: 0;
+    max-width: 14ch;
+  }
+  .ps-contact__lede { max-width: 46ch; }
+
+  .ps-contact__form { width: 100%; margin-top: var(--ps-s-s); }
+
+  .ps-contact__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ps-s-s) var(--ps-s-m);
+  }
+  .ps-field--wide { grid-column: 1 / -1; }
+
+  .ps-contact__submit {
+    display: flex;
+    align-items: center;
+    gap: var(--ps-s-m);
+    flex-wrap: wrap;
+    margin-top: var(--ps-s-l);
+  }
+  .ps-contact__note {
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-faint);
+    max-width: 34ch;
+  }
+
+  /* Notices — success in pigment, errors in ink so they never read as decoration. */
+  .ps-note {
+    display: flex;
+    gap: var(--ps-s-xs);
+    align-items: flex-start;
+    padding: var(--ps-s-s) var(--ps-s-m);
+    border-radius: var(--ps-radius-m);
+    margin-bottom: var(--ps-s-m);
+    font-size: var(--ps-step--1);
+    line-height: 1.55;
+  }
+  .ps-note--ok {
+    background: var(--ps-wash, var(--ps-linen-warm));
+    color: var(--ps-ink);
+    box-shadow: inset 0 0 0 1px var(--ps-hairline-soft);
+  }
+  .ps-note--ok svg { color: var(--ps-accent); flex: none; margin-top: 0.15em; }
+  .ps-note--bad {
+    display: block;
+    background: var(--ps-ink);
+    color: var(--ps-linen);
+  }
+  .ps-note__title { font-weight: 500; }
+  .ps-note__list { margin-top: 0.4em; }
+  .ps-note__list li { margin-top: 0.25em; }
+  .ps-note__list a { text-decoration: underline; text-underline-offset: 3px; }
+
+  .ps-contact__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ps-s-m);
+    padding-top: var(--ps-s-l);
+  }
+  .ps-contact__card {
+    padding-bottom: var(--ps-s-m);
+    border-bottom: 1px solid var(--ps-hairline);
+  }
+  .ps-contact__card-head {
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--ps-ink-faint);
+    margin-bottom: var(--ps-s-2xs);
+  }
+  .ps-contact__card-body {
+    font-size: var(--ps-step--1);
+    line-height: 1.7;
+    color: var(--ps-ink-soft);
+  }
+  .ps-contact__card-body p + p { margin-top: 0.2em; }
+  .ps-contact__a {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-contact__a:hover { background-size: 0% 1px; }
+
+  .ps-contact__social { display: flex; gap: var(--ps-s-2xs); }
+  .ps-contact__icon {
+    display: grid;
+    place-items: center;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--ps-hairline);
+    color: var(--ps-ink-soft);
+    transition: color var(--ps-t-fast) var(--ps-ease-swap),
+                border-color var(--ps-t-fast) var(--ps-ease-swap),
+                transform var(--ps-t-base) var(--ps-ease-set);
+  }
+  .ps-contact__icon:hover {
+    color: var(--ps-accent);
+    border-color: var(--ps-accent);
+    transform: translateY(-2px);
+  }
+
+  .ps-contact__map { border-radius: var(--ps-radius-m); overflow: hidden; }
+
+  @media (max-width: 900px) {
+    .ps-contact__inner { grid-template-columns: 1fr; }
+    .ps-contact__heading { max-width: none; }
+    .ps-contact__aside { padding-top: 0; }
+  }
+  @media (max-width: 560px) {
+    .ps-contact__fields { grid-template-columns: 1fr; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact form",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Say hello" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Write to the studio" },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Intro",
+      "default": "Questions about a set, a piece you want painted, or where your order is. Someone here reads all of it."
+    },
+    { "type": "checkbox", "id": "show_subject", "label": "Show a subject field", "default": true },
+    {
+      "type": "text",
+      "id": "form_note",
+      "label": "Note under the button",
+      "default": "We reply from Sunday to Thursday."
+    },
+    { "type": "header", "content": "Side column" },
+    {
+      "type": "richtext",
+      "id": "address",
+      "label": "Address",
+      "default": "<p>Per Set Atelier<br/>12 Sharia El Nabatat, Garden City<br/>Cairo, Egypt</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "hours",
+      "label": "Hours",
+      "default": "<p>Sunday to Thursday, 10.00 to 18.00<br/>Saturday by appointment</p>"
+    },
+    { "type": "text", "id": "email", "label": "Email", "default": "hello@perset.eg" },
+    { "type": "text", "id": "phone", "label": "Phone", "default": "+20 100 000 0000" },
+    { "type": "image_picker", "id": "map_image", "label": "Map or studio photograph" },
+    { "type": "header", "content": "Appearance" },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "none", "label": "Linen (default)" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "wild"
+    },
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0, "max": 220, "step": 4, "unit": "px", "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0, "max": 220, "step": 4, "unit": "px", "default": 120
+    }
+  ],
+  "presets": [{ "name": "Contact form" }]
+}
+{% endschema %}

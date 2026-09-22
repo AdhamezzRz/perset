@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-article",
+      "settings": {
+        "show_author": true,
+        "show_reading_time": true,
+        "show_share": true,
+        "pigment": "past",
+        "padding_top": 168,
+        "padding_bottom": 120
+      }
+    },
+    "invite": {
+      "type": "rich-text",
+      "settings": {
+        "eyebrow": "While you are here",
+        "heading": "Three collections, one table",
+        "body": "<p>Each set is twenty-four pieces: six dinner, six dessert, six salad, six soup. Painted one at a time, fired in small runs.</p>",
+        "cta_label": "See the collections",
+        "cta_style": "ink",
+        "pigment": "none",
+        "wash_bg": true,
+        "show_thread": false,
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": ["main", "invite"]
+}

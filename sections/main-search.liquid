@@ -1,0 +1,333 @@
+{%- comment -%}
+  SEARCH
+
+  One large field, then results. Products come through the shared product card
+  so a search result looks exactly like a collection result; articles and pages
+  get their own quieter row.
+
+  The empty state is not an apology — it offers the three collections instead.
+{%- endcomment -%}
+
+<section
+  class="ps-search"
+  {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;">
+
+  <div class="ps-shell">
+
+    <header class="ps-search__head">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+
+      <h1 class="ps-search__title" data-ps-split="lines" data-ps-split-step="110">
+        {{- section.settings.heading | default: 'Look for something' -}}
+      </h1>
+
+      <form class="ps-search__form" action="{{ routes.search_url }}" method="get" role="search">
+        <input type="hidden" name="options[prefix]" value="last">
+        <p class="ps-field ps-search__field">
+          <input
+            class="ps-input ps-search__input"
+            type="search"
+            id="ps-search-q"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder=" "
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false">
+          <label class="ps-label" for="ps-search-q">
+            {{ 'general.search.placeholder' | t | default: 'Plates, patterns, stories' }}
+          </label>
+        </p>
+        <button class="ps-btn ps-search__submit" type="submit">
+          {% render 'icon', name: 'search', size: 17 %}
+          <span class="ps-sr">{{ 'general.search.submit' | t | default: 'Search' }}</span>
+        </button>
+      </form>
+
+      {%- if search.performed -%}
+        <p class="ps-meta ps-search__count" aria-live="polite">
+          {%- if search.results_count > 0 -%}
+            {{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count
+               | default: search.results_count }}
+          {%- else -%}
+            {{ 'general.search.no_results' | t: terms: search.terms | default: 'Nothing found' }}
+          {%- endif -%}
+        </p>
+      {%- endif -%}
+    </header>
+
+    {%- if search.performed -%}
+      {%- if search.results_count > 0 -%}
+        {%- paginate search.results by section.settings.per_page -%}
+
+          {%- comment -%}
+            Products first, in the card grid. Everything else falls into a
+            list below it, so the two never fight for the same rhythm.
+          {%- endcomment -%}
+          <div class="ps-search__grid" data-ps-stagger="80">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                {% render 'product-card', product: item %}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <ul class="ps-search__list">
+            {%- for item in search.results -%}
+              {%- case item.object_type -%}
+
+                {%- when 'article' -%}
+                  <li class="ps-result" data-ps-reveal="up">
+                    {%- if item.image != blank -%}
+                      <a class="ps-result__media ps-ratio ps-ratio--1 ps-zoom" href="{{ item.url }}">
+                        {{
+                          item.image
+                          | image_url: width: 400
+                          | image_tag:
+                            loading: 'lazy',
+                            widths: '140,200,280,400',
+                            sizes: '(max-width: 640px) 25vw, 120px',
+                            alt: item.image.alt | default: item.title | escape
+                        }}
+                      </a>
+                    {%- endif -%}
+                    <div class="ps-result__body">
+                      <p class="ps-meta">
+                        {{ 'general.search.type_article' | t | default: 'Journal' }}
+                        <span class="ps-meta__dot" aria-hidden="true">·</span>
+                        <time datetime="{{ item.published_at | date: '%Y-%m-%d' }}">
+                          {{- item.published_at | date: format: 'date' -}}
+                        </time>
+                      </p>
+                      <h2 class="ps-result__title"><a href="{{ item.url }}">{{ item.title }}</a></h2>
+                      <p class="ps-result__excerpt">
+                        {{ item.content | strip_html | truncatewords: 28 }}
+                      </p>
+                    </div>
+                  </li>
+
+                {%- when 'page' -%}
+                  <li class="ps-result" data-ps-reveal="up">
+                    <div class="ps-result__body">
+                      <p class="ps-meta">{{ 'general.search.type_page' | t | default: 'Page' }}</p>
+                      <h2 class="ps-result__title"><a href="{{ item.url }}">{{ item.title }}</a></h2>
+                      <p class="ps-result__excerpt">
+                        {{ item.content | strip_html | truncatewords: 28 }}
+                      </p>
+                    </div>
+                  </li>
+
+              {%- endcase -%}
+            {%- endfor -%}
+          </ul>
+
+          {%- if paginate.pages > 1 -%}
+            <nav class="ps-pager" aria-label="{{ 'general.pagination.label' | t | default: 'Pagination' }}">
+              {%- if paginate.previous -%}
+                <a class="ps-pager__link" href="{{ paginate.previous.url }}">
+                  {% render 'icon', name: 'arrow-left', size: 15 %}
+                  {{ 'general.pagination.previous' | t | default: 'Newer' }}
+                </a>
+              {%- endif -%}
+              <span class="ps-pager__count ps-num">{{ paginate.current_page }} / {{ paginate.pages }}</span>
+              {%- if paginate.next -%}
+                <a class="ps-pager__link" href="{{ paginate.next.url }}">
+                  {{ 'general.pagination.next' | t | default: 'Older' }}
+                  {% render 'icon', name: 'arrow-right', size: 15 %}
+                </a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+
+        {%- endpaginate -%}
+      {%- else -%}
+
+        {%- comment -%} Nothing matched. Send them somewhere real. {%- endcomment -%}
+        <div class="ps-search__empty" data-ps-stagger="100">
+          <p class="ps-search__empty-line" data-ps-reveal="up">
+            {{ section.settings.empty_text | default: 'Nothing under that name. Try a colour, a bird, or the word set.' }}
+          </p>
+          <div class="ps-search__empty-links" data-ps-reveal="up">
+            {%- for block in section.blocks -%}
+              {%- assign col = collections[block.settings.collection] -%}
+              {%- if col != blank -%}
+                <a class="ps-btn ps-btn--ghost ps-btn--sm" href="{{ col.url }}">{{ col.title }}</a>
+              {%- endif -%}
+            {%- endfor -%}
+            <a class="ps-btn ps-btn--sm" href="{{ routes.all_products_collection_url }}">
+              {{ 'general.search.browse_all' | t | default: 'Everything we make' }}
+            </a>
+          </div>
+        </div>
+
+      {%- endif -%}
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-search { position: relative; }
+
+  .ps-search__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.8rem, 2vw, 1.3rem);
+    margin-bottom: clamp(2rem, 5vw, 4rem);
+  }
+  .ps-search__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.4rem, 8vw, 5.4rem);
+    font-weight: 280;
+    font-variation-settings: "SOFT" 44, "WONK" 1, "opsz" 144;
+    line-height: 0.95;
+    letter-spacing: -0.036em;
+    margin: 0;
+  }
+
+  .ps-search__form {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--ps-s-s);
+    width: min(100%, 44rem);
+    margin-top: var(--ps-s-2xs);
+  }
+  .ps-search__field { flex: 1; }
+  .ps-search__input {
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-2);
+    padding-top: 1.5rem;
+  }
+  .ps-search__input::-webkit-search-cancel-button { display: none; }
+  .ps-search__field .ps-label { top: 1.35rem; }
+  .ps-search__submit { flex: none; padding: 1.02em 1.4em; }
+
+  .ps-search__count { margin-top: var(--ps-s-2xs); }
+
+  .ps-search__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: clamp(1.6rem, 3.5vw, 3rem) var(--ps-s-m);
+  }
+  .ps-search__grid:empty { display: none; }
+
+  .ps-search__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ps-s-m);
+    margin-top: clamp(2rem, 5vw, 4rem);
+  }
+  .ps-search__list:empty { display: none; margin: 0; }
+
+  .ps-result {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: var(--ps-s-m);
+    align-items: start;
+    padding-bottom: var(--ps-s-m);
+    border-bottom: 1px solid var(--ps-hairline-soft);
+  }
+  .ps-result:has(> .ps-result__body:only-child) { grid-template-columns: 1fr; }
+  .ps-result__media { border-radius: var(--ps-radius-m); display: block; }
+  .ps-result__body { display: flex; flex-direction: column; gap: 0.25rem; }
+  .ps-result__title {
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-2);
+    font-weight: 400;
+    font-variation-settings: "SOFT" 24, "WONK" 0, "opsz" 48;
+    line-height: 1.16;
+  }
+  .ps-result__title a:hover { color: var(--ps-accent); }
+  .ps-result__excerpt {
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-soft);
+    line-height: 1.6;
+    max-width: 62ch;
+  }
+
+  .ps-search__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ps-s-m);
+    padding-block: clamp(2rem, 6vw, 5rem);
+  }
+  .ps-search__empty-line {
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-3);
+    font-style: italic;
+    font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+    line-height: 1.24;
+    max-width: 24ch;
+    color: var(--ps-ink);
+  }
+  .ps-search__empty-links { display: flex; gap: var(--ps-s-2xs); flex-wrap: wrap; }
+
+  @media (max-width: 560px) {
+    .ps-search__form { flex-wrap: wrap; }
+    .ps-search__submit { width: 100%; }
+    .ps-result { grid-template-columns: 84px minmax(0, 1fr); gap: var(--ps-s-s); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Search",
+  "tag": "section",
+  "max_blocks": 3,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Search" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Look for something" },
+    {
+      "type": "textarea",
+      "id": "empty_text",
+      "label": "Empty state",
+      "default": "Nothing under that name. Try a colour, a bird, or the word set."
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Results per page",
+      "min": 8, "max": 48, "step": 4, "default": 24
+    },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "none", "label": "Linen (default)" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "none"
+    },
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0, "max": 260, "step": 4, "unit": "px", "default": 168
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0, "max": 260, "step": 4, "unit": "px", "default": 120
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection shortcut",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" }
+      ]
+    }
+  ]
+}
+{% endschema %}

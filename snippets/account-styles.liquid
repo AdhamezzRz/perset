@@ -1,0 +1,162 @@
+{%- comment -%}
+  Styles shared by the customer account templates.
+
+  These are Liquid templates rather than sections, so they cannot carry a
+  scoped stylesheet block. The style tag below is the sanctioned way to ship
+  CSS from a template, and only one account template renders per page.
+
+  Everything below is built from the tokens in perset-core.css.
+{%- endcomment -%}
+
+{% style %}
+  .ps-account {
+    padding-top: calc(var(--ps-header-h) + clamp(2.5rem, 7vw, 6rem));
+    padding-bottom: clamp(3rem, 9vw, 8rem);
+    position: relative;
+  }
+
+  .ps-account__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ps-s-2xs);
+    margin-bottom: clamp(1.5rem, 4vw, 2.75rem);
+  }
+  .ps-account__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.1rem, 6vw, 4rem);
+    font-weight: 280;
+    font-variation-settings: "SOFT" 44, "WONK" 1, "opsz" 144;
+    line-height: 0.96;
+    letter-spacing: -0.034em;
+    margin: 0;
+  }
+  .ps-account__lede { max-width: 46ch; }
+  .ps-account__thread { width: min(100%, 20rem); margin-top: var(--ps-s-xs); }
+
+  /* ---- panels ---- */
+  .ps-account__panel {
+    background: var(--ps-porcelain);
+    border-radius: var(--ps-radius-l);
+    box-shadow: var(--ps-lift-1);
+    padding: clamp(1.4rem, 4vw, 2.6rem);
+  }
+  .ps-account__panel + .ps-account__panel { margin-top: var(--ps-s-m); }
+  .ps-account__panel-head {
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-2);
+    line-height: 1.2;
+    margin-bottom: var(--ps-s-s);
+  }
+
+  .ps-account__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ps-s-s) var(--ps-s-m);
+  }
+  .ps-account__fields .ps-field--wide { grid-column: 1 / -1; }
+
+  .ps-account__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--ps-s-m);
+    flex-wrap: wrap;
+    margin-top: var(--ps-s-l);
+  }
+  .ps-account__aside-note {
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-faint);
+  }
+
+  /* ---- the login / recover pair, toggled with :target and no JavaScript ---- */
+  .ps-auth { width: min(100%, 34rem); }
+  .ps-auth__panel--recover { display: none; }
+  #ps-recover:target { display: block; }
+  #ps-recover:target ~ #ps-login { display: none; }
+
+  /* ---- tables: orders, line items, totals ---- */
+  .ps-table { width: 100%; border-collapse: collapse; font-size: var(--ps-step--1); }
+  .ps-table th,
+  .ps-table td {
+    text-align: left;
+    padding: 0.85em 0.9em 0.85em 0;
+    border-bottom: 1px solid var(--ps-hairline-soft);
+    vertical-align: top;
+  }
+  .ps-table th {
+    font-size: var(--ps-step--2);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ps-ink-faint);
+  }
+  .ps-table td:last-child,
+  .ps-table th:last-child { text-align: right; padding-right: 0; }
+  .ps-table__num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ps-table a:hover { color: var(--ps-accent); }
+
+  .ps-tag {
+    display: inline-block;
+    padding: 0.3em 0.75em;
+    border-radius: 999px;
+    border: 1px solid var(--ps-hairline);
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ps-ink-soft);
+    white-space: nowrap;
+  }
+  .ps-tag--paid { border-color: var(--ps-sage); color: var(--ps-forest); }
+  .ps-tag--open { border-color: var(--ps-accent); color: var(--ps-accent); }
+
+  /* ---- addresses ---- */
+  .ps-addr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+    gap: var(--ps-s-m);
+  }
+  .ps-addr {
+    background: var(--ps-porcelain);
+    border-radius: var(--ps-radius-m);
+    box-shadow: var(--ps-lift-1);
+    padding: var(--ps-s-m);
+    display: flex;
+    flex-direction: column;
+    gap: var(--ps-s-2xs);
+  }
+  .ps-addr__body { font-size: var(--ps-step--1); line-height: 1.7; color: var(--ps-ink-soft); }
+  .ps-addr__row { display: flex; align-items: center; gap: var(--ps-s-s); margin-top: auto; padding-top: var(--ps-s-xs); }
+  .ps-addr__del { font-size: var(--ps-step--2); text-transform: uppercase; letter-spacing: 0.16em; color: var(--ps-ink-faint); }
+  .ps-addr__del:hover { color: var(--ps-coral-deep); }
+  .ps-addr__edit summary {
+    list-style: none;
+    cursor: pointer;
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ps-ink-soft);
+  }
+  .ps-addr__edit summary::-webkit-details-marker { display: none; }
+  .ps-addr__edit summary:hover { color: var(--ps-accent); }
+  .ps-addr__edit[open] { margin-top: var(--ps-s-s); }
+
+  .ps-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-soft);
+    cursor: pointer;
+  }
+  .ps-check input { width: 16px; height: 16px; accent-color: var(--ps-accent); }
+
+  .ps-account__empty {
+    color: var(--ps-ink-faint);
+    padding-block: var(--ps-s-m);
+  }
+
+  @media (max-width: 640px) {
+    .ps-account__fields { grid-template-columns: 1fr; }
+    .ps-table th, .ps-table td { padding: 0.7em 0.5em 0.7em 0; }
+  }
+{% endstyle %}

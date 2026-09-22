@@ -1,0 +1,114 @@
+{%- comment -%}
+  ACCOUNT — REGISTER
+
+  Four fields and nothing else. An account here exists to hold orders and
+  addresses, so there is no reason to ask for more than that.
+{%- endcomment -%}
+
+{% render 'account-styles' %}
+
+<div class="ps-account">
+  <div class="ps-shell ps-shell--narrow">
+
+    <header class="ps-account__head">
+      <p class="ps-eyebrow" data-ps-reveal="fade">{{ 'customer.account.title' | t | default: 'Account' }}</p>
+      <h1 class="ps-account__title" data-ps-split="lines">
+        {{- 'customer.register.title' | t | default: 'Make an account' -}}
+      </h1>
+      <p class="ps-lede ps-account__lede" data-ps-reveal="up">
+        {{ 'customer.register.lede' | t | default: 'So your orders and addresses are waiting for you next time.' }}
+      </p>
+      <div class="ps-account__thread" aria-hidden="true">
+        {% render 'icon', name: 'thread', draw: true %}
+      </div>
+    </header>
+
+    <div class="ps-auth">
+      <section class="ps-account__panel">
+        {% form 'create_customer' %}
+          {%- if form.errors -%}
+            <div class="ps-note ps-note--bad" role="alert">
+              <p class="ps-note__title">{{ 'customer.register.error' | t | default: 'Something in the form needs another look.' }}</p>
+              <ul class="ps-note__list">
+                {%- for field in form.errors -%}
+                  <li>{{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}</li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+
+          <div class="ps-account__fields">
+            <p class="ps-field">
+              <input
+                class="ps-input"
+                type="text"
+                id="ps-register-first"
+                name="customer[first_name]"
+                value="{{ form.first_name | escape }}"
+                autocomplete="given-name"
+                placeholder=" ">
+              <label class="ps-label" for="ps-register-first">
+                {{ 'customer.register.first_name' | t | default: 'First name' }}
+              </label>
+            </p>
+
+            <p class="ps-field">
+              <input
+                class="ps-input"
+                type="text"
+                id="ps-register-last"
+                name="customer[last_name]"
+                value="{{ form.last_name | escape }}"
+                autocomplete="family-name"
+                placeholder=" ">
+              <label class="ps-label" for="ps-register-last">
+                {{ 'customer.register.last_name' | t | default: 'Last name' }}
+              </label>
+            </p>
+
+            <p class="ps-field ps-field--wide">
+              <input
+                class="ps-input"
+                type="email"
+                id="ps-register-email"
+                name="customer[email]"
+                value="{{ form.email | escape }}"
+                autocomplete="email"
+                autocapitalize="off"
+                spellcheck="false"
+                placeholder=" "
+                required>
+              <label class="ps-label" for="ps-register-email">
+                {{ 'customer.register.email' | t | default: 'Email' }}
+              </label>
+            </p>
+
+            <p class="ps-field ps-field--wide">
+              <input
+                class="ps-input"
+                type="password"
+                id="ps-register-password"
+                name="customer[password]"
+                autocomplete="new-password"
+                placeholder=" "
+                required>
+              <label class="ps-label" for="ps-register-password">
+                {{ 'customer.register.password' | t | default: 'Password' }}
+              </label>
+            </p>
+          </div>
+
+          <div class="ps-account__actions">
+            <button class="ps-btn" type="submit" data-ps-magnetic="0.18">
+              {{ 'customer.register.submit' | t | default: 'Create it' }}
+            </button>
+            <a class="ps-link" href="{{ routes.account_login_url }}">
+              {{ 'customer.register.have_account' | t | default: 'I already have one' }}
+            </a>
+          </div>
+        {% endform %}
+      </section>
+    </div>
+
+  </div>
+</div>

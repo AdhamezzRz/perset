@@ -1,0 +1,670 @@
+{%- comment -%}
+  THE COLLECTION
+
+  A grid of plates, a real storefront filter form, and a pager. The filtering
+  is a plain GET form first: it works with JavaScript switched off, it is
+  bookmarkable, and the back button behaves. The script at the bottom only
+  removes the need to press Apply.
+{%- endcomment -%}
+
+{%- liquid
+  assign pig = section.settings.pigment
+  if pig == blank or pig == 'auto'
+    case collection.handle
+      when 'stitches-of-the-wild'
+        assign pig = 'wild'
+      when 'a-tale-in-beads'
+        assign pig = 'beads'
+      when 'pretty-past'
+        assign pig = 'past'
+      else
+        assign pig = blank
+    endcase
+  endif
+
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign filter_form_id = 'ps-filters-' | append: section.id
+
+  comment
+    Count the filters the visitor has actually applied, so the chip row and
+    the "clear all" only appear when there is something to clear.
+  endcomment
+  assign active_count = 0
+  for filter in collection.filters
+    assign active_count = active_count | plus: filter.active_values.size
+    if filter.type == 'price_range'
+      if filter.min_value.value != nil or filter.max_value.value != nil
+        assign active_count = active_count | plus: 1
+      endif
+    endif
+  endfor
+-%}
+
+{%- paginate collection.products by section.settings.per_page -%}
+
+<section
+  class="ps-coll ps-section ps-section--tight"
+  id="ps-coll-{{ section.id }}"
+  {% if pig != blank %}data-ps-pigment="{{ pig }}"{% endif %}>
+
+  <div class="ps-shell">
+
+    {%- comment -%} ---------------------------------------- filters + sort {%- endcomment -%}
+    {%- liquid
+      assign has_filters = false
+      if section.settings.show_filters and collection.filters.size > 0
+        assign has_filters = true
+      endif
+      assign has_sort = false
+      if section.settings.show_sort and collection.sort_options.size > 0
+        assign has_sort = true
+      endif
+    -%}
+
+    {%- if has_filters or has_sort -%}
+      <form
+        class="ps-filters"
+        id="{{ filter_form_id }}"
+        method="get"
+        action="{{ collection.url }}"
+        data-ps-filter-form>
+
+        <div class="ps-filters__bar">
+
+          {%- if has_filters -%}
+            <div class="ps-filters__groups" data-ps-accordion>
+              {%- for filter in collection.filters -%}
+                <details class="ps-filters__group">
+                  <summary class="ps-filters__summary">
+                    <span>{{ filter.label }}</span>
+                    {%- if filter.active_values.size > 0 -%}
+                      <span class="ps-filters__count ps-num">{{ filter.active_values.size }}</span>
+                    {%- endif -%}
+                    <span class="ps-filters__mark" aria-hidden="true">
+                      {% render 'icon', name: 'chevron-down', size: 16 %}
+                    </span>
+                  </summary>
+
+                  <div class="ps-filters__panel">
+                    {%- case filter.type -%}
+
+                      {%- when 'price_range' -%}
+                        <div class="ps-filters__price">
+                          <label class="ps-filters__price-field">
+                            <span class="ps-eyebrow ps-eyebrow--bare">
+                              {{ 'collections.filters.from' | t | default: 'From' }}
+                            </span>
+                            <input
+                              class="ps-input ps-filters__price-input ps-num"
+                              type="number"
+                              inputmode="decimal"
+                              name="{{ filter.min_value.param_name }}"
+                              min="0"
+                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              step="1"
+                              placeholder="0"
+                              {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %}>
+                          </label>
+                          <label class="ps-filters__price-field">
+                            <span class="ps-eyebrow ps-eyebrow--bare">
+                              {{ 'collections.filters.to' | t | default: 'To' }}
+                            </span>
+                            <input
+                              class="ps-input ps-filters__price-input ps-num"
+                              type="number"
+                              inputmode="decimal"
+                              name="{{ filter.max_value.param_name }}"
+                              min="0"
+                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              step="1"
+                              placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %}>
+                          </label>
+                          <p class="ps-filters__price-note">
+                            {{ 'collections.filters.max_price' | t | default: 'Highest price' }}
+                            {{ filter.range_max | money }}
+                          </p>
+                        </div>
+
+                      {%- else -%}
+                        <ul class="ps-filters__list">
+                          {%- for value in filter.values -%}
+                            <li>
+                              <label class="ps-filters__choice{% if value.count == 0 and value.active == false %} is-empty{% endif %}">
+                                <input
+                                  type="checkbox"
+                                  class="ps-sr ps-filters__box"
+                                  name="{{ value.param_name }}"
+                                  value="{{ value.value | escape }}"
+                                  {% if value.active %}checked{% endif %}
+                                  {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                                <span class="ps-filters__tick" aria-hidden="true"></span>
+                                <span class="ps-filters__label">{{ value.label }}</span>
+                                <span class="ps-filters__n ps-num">{{ value.count }}</span>
+                              </label>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+
+                    {%- endcase -%}
+                  </div>
+                </details>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          <div class="ps-filters__right">
+            <p class="ps-filters__total ps-num">
+              {{ collection.products_count }}
+              {%- if collection.products_count == 1 -%}
+                {{ 'collections.general.piece' | t | default: 'piece' }}
+              {%- else -%}
+                {{ 'collections.general.pieces' | t | default: 'pieces' }}
+              {%- endif -%}
+            </p>
+
+            {%- if has_sort -%}
+              <div class="ps-filters__sort">
+                <label class="ps-sr" for="ps-sort-{{ section.id }}">
+                  {{ 'collections.sorting.title' | t | default: 'Sort by' }}
+                </label>
+                <select class="ps-select ps-filters__select" id="ps-sort-{{ section.id }}" name="sort_by">
+                  {%- for option in collection.sort_options -%}
+                    <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>
+                      {{ option.name }}
+                    </option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            {%- endif -%}
+
+            {%- comment -%}
+              The only control that JavaScript takes away: with it on, every
+              input submits the form itself.
+            {%- endcomment -%}
+            <button class="ps-btn ps-btn--sm ps-filters__apply" type="submit">
+              {{ 'collections.filters.apply' | t | default: 'Apply' }}
+            </button>
+          </div>
+        </div>
+
+        {%- if active_count > 0 -%}
+          <div class="ps-filters__active">
+            <span class="ps-eyebrow ps-eyebrow--bare">
+              {{ 'collections.filters.applied' | t | default: 'Filtering by' }}
+            </span>
+
+            {%- for filter in collection.filters -%}
+              {%- for value in filter.active_values -%}
+                <a class="ps-chip" href="{{ value.url_to_remove }}">
+                  <span>{{ value.label }}</span>
+                  <span class="ps-chip__x" aria-hidden="true">
+                    {% render 'icon', name: 'close', size: 13 %}
+                  </span>
+                  <span class="ps-sr">{{ 'collections.filters.remove' | t | default: 'Remove filter' }}</span>
+                </a>
+              {%- endfor -%}
+
+              {%- liquid
+                assign price_active = false
+                if filter.type == 'price_range'
+                  if filter.min_value.value != nil or filter.max_value.value != nil
+                    assign price_active = true
+                  endif
+                endif
+              -%}
+              {%- if price_active -%}
+                <a class="ps-chip" href="{{ filter.url_to_remove }}">
+                  <span>
+                    {{ filter.min_value.value | default: 0 | money }}
+                    &ndash;
+                    {{ filter.max_value.value | default: filter.range_max | money }}
+                  </span>
+                  <span class="ps-chip__x" aria-hidden="true">
+                    {% render 'icon', name: 'close', size: 13 %}
+                  </span>
+                  <span class="ps-sr">{{ 'collections.filters.remove' | t | default: 'Remove filter' }}</span>
+                </a>
+              {%- endif -%}
+            {%- endfor -%}
+
+            <a class="ps-link ps-filters__clear" href="{{ collection.url }}">
+              {{ 'collections.filters.clear_all' | t | default: 'Clear all' }}
+            </a>
+          </div>
+        {%- endif -%}
+      </form>
+    {%- endif -%}
+
+    {%- comment -%} ------------------------------------------------- grid {%- endcomment -%}
+    {%- if collection.products.size > 0 -%}
+      <div
+        class="ps-coll__grid ps-grid"
+        style="--cols-d: {{ section.settings.columns_desktop }}; --cols-m: {{ section.settings.columns_mobile }};"
+        data-ps-stagger="{{ section.settings.stagger }}"
+        role="list">
+        {%- for product in collection.products -%}
+          <div role="listitem">
+            {% render 'product-card', product: product, pigment: pig, heading: 'h3' %}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} -------------------------------------------- pagination {%- endcomment -%}
+      {%- if paginate.pages > 1 -%}
+        <nav class="ps-pager" aria-label="{{ 'general.pagination.label' | t | default: 'Pagination' }}">
+          {%- if paginate.previous -%}
+            <a class="ps-pager__step" href="{{ paginate.previous.url }}" rel="prev">
+              {% render 'icon', name: 'arrow-left', size: 15 %}
+              <span class="ps-hide@sm">{{ 'general.pagination.previous' | t | default: 'Previous' }}</span>
+            </a>
+          {%- else -%}
+            <span class="ps-pager__step is-off" aria-hidden="true">
+              {% render 'icon', name: 'arrow-left', size: 15 %}
+            </span>
+          {%- endif -%}
+
+          <ol class="ps-pager__list">
+            {%- for part in paginate.parts -%}
+              <li>
+                {%- if part.is_link -%}
+                  <a class="ps-pager__page ps-num" href="{{ part.url }}">{{ part.title }}</a>
+                {%- elsif part.title == paginate.current_page -%}
+                  <span class="ps-pager__page ps-num is-current" aria-current="page">{{ part.title }}</span>
+                {%- else -%}
+                  <span class="ps-pager__page ps-num is-gap" aria-hidden="true">{{ part.title }}</span>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ol>
+
+          {%- if paginate.next -%}
+            <a class="ps-pager__step" href="{{ paginate.next.url }}" rel="next">
+              <span class="ps-hide@sm">{{ 'general.pagination.next' | t | default: 'Next' }}</span>
+              {% render 'icon', name: 'arrow-right', size: 15 %}
+            </a>
+          {%- else -%}
+            <span class="ps-pager__step is-off" aria-hidden="true">
+              {% render 'icon', name: 'arrow-right', size: 15 %}
+            </span>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+
+    {%- else -%}
+      {%- comment -%} ------------------------------------------ empty state {%- endcomment -%}
+      <div class="ps-coll__empty" data-ps-reveal="up">
+        <span class="ps-coll__empty-mark" aria-hidden="true">
+          {% render 'icon', name: 'knot', size: 26 %}
+        </span>
+        <h2 class="ps-h3 ps-coll__empty-title">
+          {%- if active_count > 0 -%}
+            {{ section.settings.empty_filtered | default: 'Nothing matches that combination' }}
+          {%- else -%}
+            {{ section.settings.empty_title | default: 'Nothing here yet' }}
+          {%- endif -%}
+        </h2>
+        <p class="ps-lede ps-coll__empty-body">{{ section.settings.empty_body }}</p>
+        <div class="ps-coll__empty-actions">
+          {%- if active_count > 0 -%}
+            <a class="ps-btn" href="{{ collection.url }}" data-ps-magnetic="0.2">
+              {{ 'collections.filters.clear_all' | t | default: 'Clear all' }}
+            </a>
+          {%- endif -%}
+          <a class="ps-link" href="{{ routes.collections_url }}">
+            {{ section.settings.empty_link | default: 'Browse every collection' }}
+            {% render 'icon', name: 'arrow-right', size: 15 %}
+          </a>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- endpaginate -%}
+
+<script>
+  /* Submit the filter form whenever a control changes, so "Apply" is only
+     ever needed without JavaScript. Scoped to this section's form. */
+  (function () {
+    var form = document.getElementById('{{ filter_form_id }}');
+    if (!form) return;
+
+    var timer;
+    function send() { form.requestSubmit ? form.requestSubmit() : form.submit(); }
+
+    form.addEventListener('change', function (e) {
+      if (e.target.type === 'number') return; // handled on input, debounced
+      send();
+    });
+
+    // Typed prices wait until the visitor stops typing.
+    form.addEventListener('input', function (e) {
+      if (e.target.type !== 'number') return;
+      clearTimeout(timer);
+      timer = setTimeout(send, 800);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .ps-coll { background: var(--ps-bg); }
+
+  /* ---- filters ---------------------------------------------------------- */
+
+  .ps-filters {
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+    border-block: 1px solid var(--ps-hairline);
+  }
+  .ps-filters__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ps-s-s);
+    flex-wrap: wrap;
+    padding-block: 0.6rem;
+  }
+  .ps-filters__groups { display: flex; gap: var(--ps-s-2xs); flex-wrap: wrap; }
+
+  .ps-filters__group { position: relative; }
+  .ps-filters__summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.62em 1.05em;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--ps-hairline);
+    cursor: pointer;
+    list-style: none;
+    font-size: var(--ps-step--1);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    transition: box-shadow var(--ps-t-fast) var(--ps-ease-swap), color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-filters__summary::-webkit-details-marker { display: none; }
+  .ps-filters__summary:hover { box-shadow: inset 0 0 0 1px var(--ps-accent); }
+  .ps-filters__group[open] .ps-filters__summary {
+    box-shadow: inset 0 0 0 1px var(--ps-ink);
+    color: var(--ps-ink);
+  }
+  .ps-filters__group[open] .ps-filters__mark { transform: rotate(180deg); }
+  .ps-filters__mark {
+    display: grid;
+    place-items: center;
+    color: var(--ps-ink-faint);
+    transition: transform var(--ps-t-base) var(--ps-ease-set);
+  }
+  .ps-filters__count {
+    display: grid;
+    place-items: center;
+    min-width: 1.35em;
+    height: 1.35em;
+    padding: 0 0.3em;
+    border-radius: 999px;
+    background: var(--ps-accent);
+    color: var(--ps-porcelain);
+    font-size: var(--ps-step--2);
+  }
+
+  .ps-filters__panel {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    min-width: 15rem;
+    max-width: min(22rem, 86vw);
+    max-height: 22rem;
+    overflow-y: auto;
+    padding: var(--ps-s-s);
+    border-radius: var(--ps-radius-m);
+    background: var(--ps-porcelain);
+    box-shadow: var(--ps-lift-2);
+  }
+
+  .ps-filters__list { display: flex; flex-direction: column; gap: 0.15rem; }
+  .ps-filters__choice {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    padding: 0.4em 0.2em;
+    cursor: pointer;
+    font-size: var(--ps-step--1);
+    transition: color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-filters__choice:hover { color: var(--ps-accent); }
+  .ps-filters__choice.is-empty { opacity: 0.4; cursor: default; }
+  .ps-filters__tick {
+    position: relative;
+    width: 15px;
+    height: 15px;
+    flex: none;
+    border-radius: 3px;
+    box-shadow: inset 0 0 0 1px var(--ps-hairline);
+    transition: background var(--ps-t-fast) var(--ps-ease-swap), box-shadow var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-filters__tick::after {
+    content: "";
+    position: absolute;
+    left: 4px; top: 1px;
+    width: 5px; height: 9px;
+    border: solid var(--ps-porcelain);
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform var(--ps-t-fast) var(--ps-ease-set);
+  }
+  .ps-filters__box:checked + .ps-filters__tick {
+    background: var(--ps-ink);
+    box-shadow: inset 0 0 0 1px var(--ps-ink);
+  }
+  .ps-filters__box:checked + .ps-filters__tick::after { transform: rotate(45deg) scale(1); }
+  .ps-filters__box:focus-visible + .ps-filters__tick { outline: 2px solid var(--ps-accent); outline-offset: 2px; }
+  .ps-filters__label { flex: 1 1 auto; }
+  .ps-filters__n { color: var(--ps-ink-faint); font-size: var(--ps-step--2); }
+
+  .ps-filters__price { display: flex; flex-wrap: wrap; gap: var(--ps-s-2xs); }
+  .ps-filters__price-field { flex: 1 1 6rem; }
+  .ps-filters__price-input { padding-top: 0.4rem; }
+  .ps-filters__price-note {
+    flex: 1 0 100%;
+    font-size: var(--ps-step--2);
+    color: var(--ps-ink-faint);
+  }
+
+  .ps-filters__right { display: flex; align-items: center; gap: var(--ps-s-s); margin-left: auto; }
+  .ps-filters__total {
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ps-ink-faint);
+  }
+  .ps-filters__select { padding: 0.9rem 2rem 0.5rem 0; border-bottom-color: transparent; font-size: var(--ps-step--1); }
+  .ps-filters__select:hover { border-bottom-color: var(--ps-hairline); }
+  html.ps-js .ps-filters__apply { display: none; }
+
+  .ps-filters__active {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding-block: 0.7rem;
+    border-top: 1px solid var(--ps-hairline-soft);
+  }
+  .ps-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    padding: 0.38em 0.85em;
+    border-radius: 999px;
+    background: var(--ps-wash, var(--ps-linen-warm));
+    font-size: var(--ps-step--1);
+    transition: background var(--ps-t-fast) var(--ps-ease-swap), color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-chip:hover { background: var(--ps-ink); color: var(--ps-porcelain); }
+  .ps-chip__x { display: grid; place-items: center; opacity: 0.6; }
+  .ps-filters__clear { margin-left: auto; color: var(--ps-ink-soft); }
+
+  /* ---- grid ------------------------------------------------------------- */
+
+  .ps-coll__grid {
+    grid-template-columns: repeat(var(--cols-d, 3), minmax(0, 1fr));
+    gap: clamp(1.25rem, 3vw, 2.75rem) var(--ps-s-m);
+  }
+
+  /* ---- pager ------------------------------------------------------------ */
+
+  .ps-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ps-s-s);
+    margin-top: clamp(2.5rem, 6vw, 5rem);
+    padding-top: var(--ps-s-m);
+    border-top: 1px solid var(--ps-hairline);
+  }
+  .ps-pager__step {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: var(--ps-step--1);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ps-ink-soft);
+    transition: color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-pager__step:hover { color: var(--ps-accent); }
+  .ps-pager__step.is-off { opacity: 0.25; }
+  .ps-pager__list { display: flex; align-items: center; gap: 0.15rem; }
+  .ps-pager__page {
+    display: grid;
+    place-items: center;
+    min-width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-soft);
+    transition: background var(--ps-t-fast) var(--ps-ease-swap), color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  a.ps-pager__page:hover { background: var(--ps-linen-warm); color: var(--ps-ink); }
+  .ps-pager__page.is-current {
+    background: var(--ps-ink);
+    color: var(--ps-porcelain);
+  }
+  .ps-pager__page.is-gap { color: var(--ps-ink-faint); }
+
+  /* ---- empty ------------------------------------------------------------ */
+
+  .ps-coll__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ps-s-s);
+    text-align: center;
+    padding-block: clamp(3.5rem, 12vw, 8rem);
+    max-width: 44ch;
+    margin-inline: auto;
+  }
+  .ps-coll__empty-mark { color: var(--ps-accent); }
+  .ps-coll__empty-title { font-weight: 300; }
+  .ps-coll__empty-body { text-align: center; }
+  .ps-coll__empty-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--ps-s-m);
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: var(--ps-s-2xs);
+  }
+
+  /* ---- responsive ------------------------------------------------------- */
+
+  @media (max-width: 1024px) {
+    .ps-coll__grid { grid-template-columns: repeat(min(var(--cols-d, 3), 3), minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 760px) {
+    .ps-filters__bar { gap: 0.6rem; }
+    .ps-filters__right { width: 100%; margin-left: 0; justify-content: space-between; }
+    .ps-coll__grid { grid-template-columns: repeat(var(--cols-m, 2), minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 480px) {
+    .ps-filters__groups { width: 100%; }
+    .ps-filters__group { flex: 1 1 auto; }
+    .ps-filters__summary { width: 100%; justify-content: space-between; }
+    /* The dropdown becomes a full-width sheet rather than a clipped popover. */
+    .ps-filters__panel { left: 0; right: 0; width: 100%; max-width: none; }
+    .ps-pager__step span { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection grid",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Pieces per page",
+      "min": 4, "max": 48, "step": 2, "default": 12
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "options": [
+        { "value": "2", "label": "Two" },
+        { "value": "3", "label": "Three" },
+        { "value": "4", "label": "Four" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "One" },
+        { "value": "2", "label": "Two" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "stagger",
+      "label": "Card arrival stagger",
+      "min": 0, "max": 220, "step": 10, "unit": "ms", "default": 90
+    },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "auto", "label": "Detect from the collection" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "auto"
+    },
+    { "type": "header", "content": "Filtering" },
+    {
+      "type": "paragraph",
+      "content": "Filters come from Search & Discovery. Add them there and they appear here."
+    },
+    { "type": "checkbox", "id": "show_filters", "label": "Show filters", "default": true },
+    { "type": "checkbox", "id": "show_sort", "label": "Show sorting", "default": true },
+    { "type": "header", "content": "Nothing here yet" },
+    { "type": "text", "id": "empty_title", "label": "Empty heading", "default": "Nothing here yet" },
+    { "type": "text", "id": "empty_filtered", "label": "Heading when filters match nothing", "default": "Nothing matches that combination" },
+    {
+      "type": "textarea",
+      "id": "empty_body",
+      "label": "Empty message",
+      "default": "The next run is still being painted. Take a look at the other collections in the meantime."
+    },
+    { "type": "text", "id": "empty_link", "label": "Empty link label", "default": "Browse every collection" }
+  ]
+}
+{% endschema %}
+

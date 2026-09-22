@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "settings": {
+        "heading": "Your cart",
+        "checkout_label": "Checkout",
+        "tax_note": "Taxes and shipping calculated at checkout.",
+        "continue_label": "Keep looking",
+        "show_note": true,
+        "note_label": "A note with your order",
+        "note_placeholder": "Gift wrapping, a delivery window, a message on the card.",
+        "empty_title": "Nothing on the table yet",
+        "empty_body": "Three collections are waiting, each one painted by hand and sold as a service for six.",
+        "empty_cta": "See the collections"
+      }
+    }
+  },
+  "order": ["main"]
+}

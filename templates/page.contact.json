@@ -1,0 +1,85 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "eyebrow": "Per Set",
+        "heading": "Come and find us",
+        "heading_tag": "h1",
+        "lede": "The studio is in Garden City, five minutes from the Corniche. Knock, or write first — both work.",
+        "image_shape": "plate",
+        "pigment": "wild",
+        "show_wash": true,
+        "show_thread": true,
+        "padding_top": 168,
+        "padding_bottom": 40
+      }
+    },
+    "form": {
+      "type": "contact-form",
+      "settings": {
+        "eyebrow": "Say hello",
+        "heading": "Write to the studio",
+        "body": "Questions about a set, a piece you want painted, or where your order is. Someone here reads all of it.",
+        "show_subject": true,
+        "form_note": "We reply from Sunday to Thursday.",
+        "address": "<p>Per Set Atelier<br/>12 Sharia El Nabatat, Garden City<br/>Cairo, Egypt</p>",
+        "hours": "<p>Sunday to Thursday, 10.00 to 18.00<br/>Saturday by appointment</p>",
+        "email": "hello@perset.eg",
+        "phone": "+20 100 000 0000",
+        "pigment": "wild",
+        "padding_top": 40,
+        "padding_bottom": 120
+      }
+    },
+    "faq": {
+      "type": "faq-accordion",
+      "settings": {
+        "eyebrow": "Before you write",
+        "heading": "The quick answers",
+        "body": "Most notes we get are one of these four.",
+        "cta_label": "",
+        "pigment": "none",
+        "wash_bg": true,
+        "padding_top": 100,
+        "padding_bottom": 100
+      },
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How long does an order take?",
+            "answer": "<p>Sets in stock leave the studio in two to three working days. If a piece has to be painted for you, allow two to three weeks. We write to you when it goes into the kiln.</p>",
+            "open": true
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Do you ship outside Egypt?",
+            "answer": "<p>Yes. Rates are calculated at checkout from the studio address. Everything travels double-boxed with foam between each piece.</p>",
+            "open": false
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Can I use these every day?",
+            "answer": "<p>Please do. The glaze is fired hard and the paint sits under it. Dishwasher on a normal cycle is fine. Keep them out of the microwave — the gold does not like it.</p>",
+            "open": false
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "My plates are not identical. Is that right?",
+            "answer": "<p>That is right. Every piece is painted by hand, so no two are identical. That is the point.</p>",
+            "open": false
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4"]
+    }
+  },
+  "order": ["hero", "form", "faq"]
+}

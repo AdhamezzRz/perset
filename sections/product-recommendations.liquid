@@ -1,0 +1,182 @@
+{%- comment -%}
+  COMPLETES THE SETTING
+
+  Shopify's recommendations are fetched after the page has painted, through
+  the Section Rendering API, so the product page never waits on them. Until
+  they arrive — or if they never do, or if JavaScript is off — the section
+  falls back to the rest of the collection the piece belongs to, which is a
+  perfectly good answer to "what else is on this table".
+{%- endcomment -%}
+
+{%- liquid
+  assign pig = product.metafields.perset.pigment.value
+  assign home_collection = collection
+  if home_collection == blank or home_collection.handle == 'all'
+    for col in product.collections
+      unless col.handle == 'all' or col.handle == 'frontpage'
+        assign home_collection = col
+        break
+      endunless
+    endfor
+  endif
+
+  if pig == blank
+    case home_collection.handle
+      when 'stitches-of-the-wild'
+        assign pig = 'wild'
+      when 'a-tale-in-beads'
+        assign pig = 'beads'
+      when 'pretty-past'
+        assign pig = 'past'
+    endcase
+  endif
+
+  assign limit = section.settings.products_to_show
+  assign recs_url = routes.product_recommendations_url
+    | append: '?section_id=' | append: section.id
+    | append: '&product_id=' | append: product.id
+    | append: '&limit=' | append: limit
+-%}
+
+<section
+  class="ps-recs ps-section ps-section--tight"
+  id="ps-recs-{{ section.id }}"
+  data-ps-recs
+  data-ps-recs-url="{{ recs_url }}"
+  data-ps-recs-loaded="{% if recommendations.performed %}true{% else %}false{% endif %}"
+  {% if pig != blank %}data-ps-pigment="{{ pig }}"{% endif %}
+  aria-label="{{ section.settings.heading | default: 'Completes the setting' | escape }}">
+
+  <div class="ps-shell">
+
+    <div class="ps-recs__head">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="ps-h3 ps-recs__title" data-ps-split="lines" data-ps-split-step="80">
+          {{- section.settings.heading -}}
+        </h2>
+      {%- endif -%}
+      {%- if home_collection != blank -%}
+        <a class="ps-link ps-recs__all" href="{{ home_collection.url }}">
+          {{ section.settings.link_label | default: 'See the whole collection' }}
+          {% render 'icon', name: 'arrow-right', size: 15 %}
+        </a>
+      {%- endif -%}
+    </div>
+
+    {% render 'icon', name: 'thread', draw: true %}
+
+    <div class="ps-recs__grid ps-grid ps-grid--auto" data-ps-recs-grid data-ps-stagger="90">
+      {%- if recommendations.performed -%}
+        {%- for rec in recommendations.products -%}
+          {% render 'product-card', product: rec, heading: 'h3' %}
+        {%- endfor -%}
+      {%- else -%}
+        {%- comment -%}
+          The server-rendered fallback: siblings from the same collection,
+          the current piece left out.
+        {%- endcomment -%}
+        {%- assign shown = 0 -%}
+        {%- for sibling in home_collection.products -%}
+          {%- if sibling.id != product.id and shown < limit -%}
+            {% render 'product-card', product: sibling, heading: 'h3' %}
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- comment -%}
+  Only the outermost render of this section boots the fetch. When the Section
+  Rendering API returns this same file, `recommendations.performed` is true
+  and the script below is a no-op.
+{%- endcomment -%}
+{%- unless recommendations.performed -%}
+  <script>
+    (function () {
+      var root = document.getElementById('ps-recs-{{ section.id }}');
+      if (!root || !window.fetch || !window.DOMParser) return;
+
+      var url = root.getAttribute('data-ps-recs-url');
+      var grid = root.querySelector('[data-ps-recs-grid]');
+      if (!url || !grid) return;
+
+      function load() {
+        fetch(url)
+          .then(function (r) { return r.text(); })
+          .then(function (html) {
+            var fresh = new DOMParser()
+              .parseFromString(html, 'text/html')
+              .querySelector('[data-ps-recs-grid]');
+            // An empty answer is not an improvement on the fallback.
+            if (!fresh || !fresh.children.length) return;
+            grid.innerHTML = fresh.innerHTML;
+            root.setAttribute('data-ps-recs-loaded', 'true');
+            document.dispatchEvent(new CustomEvent('shopify:section:load'));
+          })
+          .catch(function () { /* the collection fallback is already on screen */ });
+      }
+
+      // Wait until the visitor is on their way down to it.
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          if (!entries[0].isIntersecting) return;
+          io.disconnect();
+          load();
+        }, { rootMargin: '600px 0px' });
+        io.observe(root);
+      } else {
+        load();
+      }
+    })();
+  </script>
+{%- endunless -%}
+
+{% stylesheet %}
+  .ps-recs { background: var(--ps-bg); }
+
+  .ps-recs__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--ps-s-m);
+    flex-wrap: wrap;
+    margin-bottom: var(--ps-s-s);
+  }
+  .ps-recs__title {
+    font-variation-settings: "SOFT" 38, "WONK" 1, "opsz" 120;
+    font-weight: 300;
+    margin: 0.35rem 0 0;
+  }
+  .ps-recs__all { color: var(--ps-ink-soft); }
+  .ps-recs__all:hover { color: var(--ps-accent); }
+
+  .ps-recs__grid { margin-top: clamp(1.5rem, 4vw, 3rem); }
+
+  @media (max-width: 560px) {
+    .ps-recs__head { flex-direction: column; align-items: flex-start; gap: var(--ps-s-xs); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product recommendations",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Goes with" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Completes the setting" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "See the whole collection" },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Pieces to show",
+      "min": 2, "max": 10, "step": 1, "default": 4
+    }
+  ],
+  "presets": [{ "name": "Product recommendations" }]
+}
+{% endschema %}

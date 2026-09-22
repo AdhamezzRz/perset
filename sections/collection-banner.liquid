@@ -1,0 +1,232 @@
+{%- comment -%}
+  COLLECTION BANNER
+
+  Full-bleed wash of the collection's own pigment, the title set line by line
+  behind a mask, and the collection image turning as a plate beside it. The
+  same three moves as the hero, at a quieter volume, because the grid below
+  is the point of the page.
+{%- endcomment -%}
+
+{%- liquid
+  assign pig = section.settings.pigment
+  if pig == blank or pig == 'auto'
+    case collection.handle
+      when 'stitches-of-the-wild'
+        assign pig = 'wild'
+      when 'a-tale-in-beads'
+        assign pig = 'beads'
+      when 'pretty-past'
+        assign pig = 'past'
+      else
+        assign pig = blank
+    endcase
+  endif
+
+  assign img = section.settings.image
+  if img == blank and collection.image != blank
+    assign img = collection.image
+  endif
+  if img == blank and collection.products.first.featured_media != blank
+    assign img = collection.products.first.featured_media.preview_image
+  endif
+
+  assign heading = collection.title
+  if section.settings.heading != blank
+    assign heading = section.settings.heading
+  endif
+
+  assign body = section.settings.body
+  if body == blank
+    assign body = collection.description
+  endif
+-%}
+
+<section
+  class="ps-cbanner"
+  {% if pig != blank %}data-ps-pigment="{{ pig }}"{% endif %}
+  style="--cbanner-pb: {{ section.settings.padding_bottom }}px;">
+
+  <div class="ps-cbanner__wash" aria-hidden="true"></div>
+
+  <div class="ps-shell ps-shell--wide ps-cbanner__inner">
+
+    <div class="ps-cbanner__text">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+
+      <h1 class="ps-cbanner__title" data-ps-split="lines" data-ps-split-step="95">{{ heading }}</h1>
+
+      {%- if body != blank -%}
+        <div class="ps-lede ps-cbanner__body" data-ps-reveal="up" style="--ps-delay:200ms">
+          {{ body }}
+        </div>
+      {%- endif -%}
+
+      <div class="ps-cbanner__meta" data-ps-reveal="up" style="--ps-delay:300ms">
+        <span class="ps-cbanner__pill ps-num">
+          {{ collection.products_count }}
+          {%- if collection.products_count == 1 -%}
+            {{ 'collections.general.piece' | t | default: 'piece' }}
+          {%- else -%}
+            {{ 'collections.general.pieces' | t | default: 'pieces' }}
+          {%- endif -%}
+        </span>
+        {%- if section.settings.detail != blank -%}
+          <span class="ps-cbanner__pill">{{ section.settings.detail }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if img != blank -%}
+      <div class="ps-cbanner__figure" aria-hidden="true">
+        <div class="ps-cbanner__plate-wrap" data-ps-parallax="0.07">
+          <div class="ps-plate ps-cbanner__plate" data-ps-rotate="{{ section.settings.rotation }}">
+            {{
+              img
+              | image_url: width: 1400
+              | image_tag:
+                loading: 'eager',
+                fetchpriority: 'high',
+                widths: '420,600,800,1100,1400',
+                sizes: '(max-width: 900px) 62vw, 36vw',
+                alt: ''
+            }}
+          </div>
+          <span class="ps-plate-shadow" aria-hidden="true"></span>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.show_thread -%}
+    <div class="ps-shell ps-cbanner__rule">
+      {% render 'icon', name: 'thread', draw: true %}
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .ps-cbanner {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: calc(var(--ps-header-h) + clamp(2.5rem, 7vw, 6rem)) var(--cbanner-pb, 48px);
+  }
+
+  /* The wash runs the full bleed of the viewport, not just the shell. */
+  .ps-cbanner__wash {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to bottom, var(--ps-wash, var(--ps-linen-warm)), transparent 92%),
+      radial-gradient(70% 60% at 82% 28%, var(--ps-wash, transparent), transparent 66%);
+    opacity: 0.9;
+  }
+
+  .ps-cbanner__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: clamp(1.5rem, 5vw, 4.5rem);
+  }
+
+  .ps-cbanner__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.7rem, 1.6vw, 1.3rem);
+  }
+
+  .ps-cbanner__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.7rem, 7.2vw, 6.2rem);
+    font-weight: 250;
+    font-variation-settings: "SOFT" 46, "WONK" 1, "opsz" 144;
+    line-height: 0.92;
+    letter-spacing: -0.038em;
+    margin: 0;
+  }
+
+  .ps-cbanner__body { max-width: 48ch; }
+  .ps-cbanner__body p { margin: 0; }
+  .ps-cbanner__body p + p { margin-top: 0.7em; }
+
+  .ps-cbanner__meta { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+  .ps-cbanner__pill {
+    padding: 0.42em 0.95em;
+    border-radius: 999px;
+    border: 1px solid var(--ps-hairline);
+    font-family: var(--ps-body);
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ps-ink-soft);
+  }
+
+  .ps-cbanner__figure { display: grid; place-items: center; }
+  .ps-cbanner__plate-wrap {
+    position: relative;
+    width: min(100%, 30rem);
+    aspect-ratio: 1;
+    transform: translate3d(0, var(--ps-par, 0px), 0);
+  }
+  .ps-cbanner__plate {
+    width: 100%;
+    box-shadow: 0 26px 70px rgba(120, 95, 60, 0.20);
+  }
+
+  .ps-cbanner__rule { margin-top: clamp(1.5rem, 4vw, 3rem); color: var(--ps-accent); }
+
+  @media (max-width: 900px) {
+    .ps-cbanner__inner { grid-template-columns: minmax(0, 1fr); gap: var(--ps-s-l); }
+    .ps-cbanner__figure { order: -1; justify-items: start; }
+    .ps-cbanner__plate-wrap { width: min(62%, 17rem); }
+  }
+
+  @media (max-width: 480px) {
+    .ps-cbanner { padding-block: calc(var(--ps-header-h) + 2rem) 2rem; }
+    .ps-cbanner__plate-wrap { width: min(58%, 13rem); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection banner",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Pigment is detected from the collection handle. Override it here if a collection needs a different colour."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The collection" },
+    { "type": "text", "id": "heading", "label": "Heading override" },
+    { "type": "richtext", "id": "body", "label": "Description override" },
+    { "type": "text", "id": "detail", "label": "Detail pill", "default": "Painted by hand · Made in Egypt" },
+    { "type": "image_picker", "id": "image", "label": "Plate image override" },
+    {
+      "type": "range",
+      "id": "rotation",
+      "label": "Scroll rotation",
+      "min": 0, "max": 120, "step": 5, "unit": "°", "default": 50
+    },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "auto", "label": "Detect from the collection" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "auto"
+    },
+    { "type": "checkbox", "id": "show_thread", "label": "Show the stitched rule", "default": true },
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 }
+  ],
+  "presets": [{ "name": "Collection banner" }]
+}
+{% endschema %}

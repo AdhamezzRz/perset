@@ -1,0 +1,164 @@
+{%- comment -%}
+  ACCOUNT — SIGN IN
+
+  Two panels sharing one column: sign in, and recover a password. They swap
+  with :target, so the toggle works with no JavaScript at all. The recover
+  panel sits first in the DOM purely so a sibling selector can hide the other.
+{%- endcomment -%}
+
+{% render 'account-styles' %}
+
+<div class="ps-account">
+  <div class="ps-shell ps-shell--narrow">
+
+    <header class="ps-account__head">
+      <p class="ps-eyebrow" data-ps-reveal="fade">{{ 'customer.account.title' | t | default: 'Account' }}</p>
+      <h1 class="ps-account__title" data-ps-split="lines">
+        {{- 'customer.login.title' | t | default: 'Welcome back' -}}
+      </h1>
+      <p class="ps-lede ps-account__lede" data-ps-reveal="up">
+        {{ 'customer.login.lede' | t | default: 'Sign in to see your orders and the addresses we ship to.' }}
+      </p>
+      <div class="ps-account__thread" aria-hidden="true">
+        {% render 'icon', name: 'thread', draw: true %}
+      </div>
+    </header>
+
+    <div class="ps-auth">
+
+      {%- comment -%} ---- Recover a password ---- {%- endcomment -%}
+      <section class="ps-account__panel ps-auth__panel ps-auth__panel--recover" id="ps-recover">
+        <h2 class="ps-account__panel-head">
+          {{ 'customer.recover_password.title' | t | default: 'Reset your password' }}
+        </h2>
+
+        {% form 'recover_customer_password' %}
+          {%- if form.posted_successfully? -%}
+            <div class="ps-note ps-note--ok" role="status">
+              {% render 'icon', name: 'leaf', size: 18 %}
+              <p>{{ 'customer.recover_password.success' | t | default: 'Check your inbox. A link to set a new password is on its way.' }}</p>
+            </div>
+          {%- endif -%}
+
+          {%- if form.errors -%}
+            <div class="ps-note ps-note--bad" role="alert">
+              <p class="ps-note__title">{{ 'customer.recover_password.error' | t | default: 'We could not send that.' }}</p>
+              <ul class="ps-note__list">
+                {%- for field in form.errors -%}
+                  <li>{{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}</li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+
+          <p class="ps-field">
+            <input
+              class="ps-input"
+              type="email"
+              id="ps-recover-email"
+              name="email"
+              autocomplete="email"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder=" "
+              required>
+            <label class="ps-label" for="ps-recover-email">
+              {{ 'customer.login.email' | t | default: 'Email' }}
+            </label>
+          </p>
+
+          <div class="ps-account__actions">
+            <button class="ps-btn" type="submit">
+              {{ 'customer.recover_password.submit' | t | default: 'Send the link' }}
+            </button>
+            <a class="ps-link" href="#ps-login">
+              {{ 'customer.recover_password.cancel' | t | default: 'Back to sign in' }}
+            </a>
+          </div>
+        {% endform %}
+      </section>
+
+      {%- comment -%} ---- Sign in ---- {%- endcomment -%}
+      <section class="ps-account__panel ps-auth__panel" id="ps-login">
+        <h2 class="ps-account__panel-head">
+          {{ 'customer.login.sign_in' | t | default: 'Sign in' }}
+        </h2>
+
+        {%- comment -%}
+          Shopify sends the visitor back here after a successful recover post,
+          so the confirmation belongs on this panel rather than the other one.
+        {%- endcomment -%}
+        {%- if recover_success -%}
+          <div class="ps-note ps-note--ok" role="status">
+            {% render 'icon', name: 'leaf', size: 18 %}
+            <p>{{ 'customer.recover_password.success' | t | default: 'Check your inbox. A link to set a new password is on its way.' }}</p>
+          </div>
+        {%- endif -%}
+
+        {% form 'customer_login' %}
+          {%- if form.errors -%}
+            <div class="ps-note ps-note--bad" role="alert">
+              <p class="ps-note__title">{{ 'customer.login.error' | t | default: 'That did not work.' }}</p>
+              <ul class="ps-note__list">
+                {%- for field in form.errors -%}
+                  <li>{{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}</li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+
+          <div class="ps-account__fields">
+            <p class="ps-field ps-field--wide">
+              <input
+                class="ps-input"
+                type="email"
+                id="ps-login-email"
+                name="customer[email]"
+                autocomplete="email"
+                autocapitalize="off"
+                spellcheck="false"
+                placeholder=" "
+                required>
+              <label class="ps-label" for="ps-login-email">
+                {{ 'customer.login.email' | t | default: 'Email' }}
+              </label>
+            </p>
+
+            <p class="ps-field ps-field--wide">
+              <input
+                class="ps-input"
+                type="password"
+                id="ps-login-password"
+                name="customer[password]"
+                autocomplete="current-password"
+                placeholder=" "
+                required>
+              <label class="ps-label" for="ps-login-password">
+                {{ 'customer.login.password' | t | default: 'Password' }}
+              </label>
+            </p>
+          </div>
+
+          <div class="ps-account__actions">
+            <button class="ps-btn" type="submit" data-ps-magnetic="0.18">
+              {{ 'customer.login.submit' | t | default: 'Sign in' }}
+            </button>
+            <a class="ps-link" href="#ps-recover">
+              {{ 'customer.login.forgot_password' | t | default: 'Forgotten it?' }}
+            </a>
+          </div>
+        {% endform %}
+
+        {%- if shop.customer_accounts_enabled -%}
+          <p class="ps-account__aside-note" style="margin-top: var(--ps-s-m);">
+            {{ 'customer.login.no_account' | t | default: 'No account yet?' }}
+            <a class="ps-contact__a" href="{{ routes.account_register_url }}">
+              {{ 'customer.register.title' | t | default: 'Make one' }}
+            </a>
+          </p>
+        {%- endif -%}
+      </section>
+
+    </div>
+  </div>
+</div>

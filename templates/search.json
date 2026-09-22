@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-search",
+      "settings": {
+        "eyebrow": "Search",
+        "heading": "Look for something",
+        "empty_text": "Nothing under that name. Try a colour, a bird, or the word set.",
+        "per_page": 24,
+        "pigment": "none",
+        "padding_top": 168,
+        "padding_bottom": 120
+      },
+      "blocks": {
+        "wild": { "type": "collection", "settings": { "collection": "stitches-of-the-wild" } },
+        "beads": { "type": "collection", "settings": { "collection": "a-tale-in-beads" } },
+        "past": { "type": "collection", "settings": { "collection": "pretty-past" } }
+      },
+      "block_order": ["wild", "beads", "past"]
+    }
+  },
+  "order": ["main"]
+}

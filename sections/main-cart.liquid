@@ -1,0 +1,517 @@
+{%- comment -%}
+  THE CART
+
+  Line items as rows, each with its plate in the wash circle it was
+  photographed against. Everything here is a plain Shopify cart form first:
+  the quantities post, the remove links navigate, the note saves. perset-cart.js
+  only takes the page reload away — see the contract at the top of that file
+  for the data attributes it reads.
+{%- endcomment -%}
+
+<section class="ps-cart ps-section ps-section--tight" id="ps-cart-{{ section.id }}">
+  <div class="ps-shell ps-shell--narrow">
+
+    <div id="ps-cart-region">
+      {%- if cart.item_count > 0 -%}
+
+        <div class="ps-cart__head">
+          <h1 class="ps-cart__title" data-ps-split="lines" data-ps-split-step="90">
+            {{ section.settings.heading | default: 'Your cart' }}
+          </h1>
+          <p class="ps-cart__count ps-num">
+            {{ cart.item_count }}
+            {%- if cart.item_count == 1 -%}
+              {{ 'cart.general.item' | t | default: 'piece' }}
+            {%- else -%}
+              {{ 'cart.general.items' | t | default: 'pieces' }}
+            {%- endif -%}
+          </p>
+        </div>
+
+        {% render 'icon', name: 'thread', draw: true %}
+
+        {%- form 'cart', cart, class: 'ps-cart__form' -%}
+
+          <ul class="ps-cart__lines">
+            {%- for item in cart.items -%}
+              {%- liquid
+                assign pig = item.product.metafields.perset.pigment.value
+                if pig == blank
+                  for col in item.product.collections
+                    case col.handle
+                      when 'stitches-of-the-wild'
+                        assign pig = 'wild'
+                      when 'a-tale-in-beads'
+                        assign pig = 'beads'
+                      when 'pretty-past'
+                        assign pig = 'past'
+                    endcase
+                  endfor
+                endif
+                assign line_qty_id = 'ps-line-qty-' | append: section.id | append: '-' | append: forloop.index
+              -%}
+
+              <li
+                class="ps-line"
+                data-ps-line
+                data-ps-key="{{ item.key }}"
+                data-ps-removed-message="{{ 'cart.general.removed' | t | default: 'Removed from your cart.' | escape }}"
+                data-ps-updated-message="{{ 'cart.general.updated' | t | default: 'Cart updated.' | escape }}"
+                {% if pig != blank %}data-ps-pigment="{{ pig }}"{% endif %}>
+
+                <a class="ps-line__frame" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+                  <span class="ps-line__media">
+                    {%- if item.image != blank -%}
+                      {{
+                        item.image
+                        | image_url: width: 400
+                        | image_tag:
+                          loading: 'lazy',
+                          widths: '120,180,260,400',
+                          sizes: '(max-width: 560px) 84px, 120px',
+                          alt: ''
+                      }}
+                    {%- else -%}
+                      {{ 'product-1' | placeholder_svg_tag: '' }}
+                    {%- endif -%}
+                  </span>
+                </a>
+
+                <div class="ps-line__body">
+                  <h2 class="ps-line__title">
+                    <a href="{{ item.url }}">{{ item.product.title }}</a>
+                  </h2>
+
+                  {%- unless item.product.has_only_default_variant -%}
+                    <p class="ps-line__variant">{{ item.variant.title }}</p>
+                  {%- endunless -%}
+
+                  {%- if item.selling_plan_allocation != blank -%}
+                    <p class="ps-line__variant">{{ item.selling_plan_allocation.selling_plan.name }}</p>
+                  {%- endif -%}
+
+                  {%- for property in item.properties -%}
+                    {%- unless property.last == blank or property.first.first == '_' -%}
+                      <p class="ps-line__variant">{{ property.first }}: {{ property.last }}</p>
+                    {%- endunless -%}
+                  {%- endfor -%}
+
+                  {%- if item.line_level_discount_allocations.size > 0 -%}
+                    <ul class="ps-line__discounts">
+                      {%- for allocation in item.line_level_discount_allocations -%}
+                        <li>
+                          {% render 'icon', name: 'knot', size: 11 %}
+                          {{ allocation.discount_application.title }}
+                          (&minus;{{ allocation.amount | money }})
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+
+                  <div class="ps-line__controls">
+                    <label class="ps-sr" for="{{ line_qty_id }}">
+                      {{ 'cart.label.quantity' | t | default: 'Quantity' }}
+                    </label>
+                    <div class="ps-qty ps-line__qty">
+                      <button
+                        class="ps-qty__btn"
+                        type="button"
+                        data-ps-step="-1"
+                        aria-controls="{{ line_qty_id }}"
+                        aria-label="{{ 'cart.label.decrease' | t | default: 'Decrease quantity' }}">
+                        {% render 'icon', name: 'minus', size: 15 %}
+                      </button>
+                      <input
+                        class="ps-qty__input ps-num"
+                        id="{{ line_qty_id }}"
+                        name="updates[{{ item.key }}]"
+                        type="number"
+                        inputmode="numeric"
+                        min="0"
+                        step="1"
+                        value="{{ item.quantity }}"
+                        data-ps-qty>
+                      <button
+                        class="ps-qty__btn"
+                        type="button"
+                        data-ps-step="1"
+                        aria-controls="{{ line_qty_id }}"
+                        aria-label="{{ 'cart.label.increase' | t | default: 'Increase quantity' }}">
+                        {% render 'icon', name: 'plus', size: 15 %}
+                      </button>
+                    </div>
+
+                    <a class="ps-line__remove" href="{{ item.url_to_remove }}" data-ps-remove>
+                      {{ 'cart.general.remove' | t | default: 'Remove' }}
+                    </a>
+                  </div>
+                </div>
+
+                <div class="ps-line__price">
+                  {%- if item.original_line_price > item.final_line_price -%}
+                    <s class="ps-line__was ps-num">{{ item.original_line_price | money }}</s>
+                  {%- endif -%}
+                  <span class="ps-line__now ps-num">{{ item.final_line_price | money }}</span>
+                  {%- if item.quantity > 1 -%}
+                    <span class="ps-line__each">{{ item.final_price | money }} {{ 'cart.general.each' | t | default: 'each' }}</span>
+                  {%- endif -%}
+                </div>
+              </li>
+            {%- endfor -%}
+          </ul>
+
+          <div class="ps-cart__foot">
+
+            {%- if section.settings.show_note -%}
+              <div class="ps-cart__note">
+                <label class="ps-eyebrow ps-eyebrow--bare" for="ps-cart-note-{{ section.id }}">
+                  {{ section.settings.note_label | default: 'A note with your order' }}
+                </label>
+                <textarea
+                  class="ps-textarea"
+                  id="ps-cart-note-{{ section.id }}"
+                  name="note"
+                  rows="3"
+                  placeholder="{{ section.settings.note_placeholder | default: 'Gift wrapping, a delivery window, a message on the card.' | escape }}"
+                  data-ps-cart-note
+                  data-ps-saved-message="{{ 'cart.general.note_saved' | t | default: 'Note saved.' | escape }}">{{ cart.note }}</textarea>
+              </div>
+            {%- endif -%}
+
+            <div class="ps-cart__totals">
+              {%- if cart.cart_level_discount_applications.size > 0 -%}
+                <ul class="ps-cart__discounts">
+                  {%- for discount in cart.cart_level_discount_applications -%}
+                    <li>
+                      <span>{{ discount.title }}</span>
+                      <span class="ps-num">&minus;{{ discount.total_allocated_amount | money }}</span>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+
+              <p class="ps-cart__subtotal">
+                <span class="ps-eyebrow ps-eyebrow--bare">
+                  {{ 'cart.general.subtotal' | t | default: 'Subtotal' }}
+                </span>
+                <span class="ps-cart__amount ps-num" data-ps-cart-subtotal>
+                  {{ cart.total_price | money }}
+                </span>
+              </p>
+
+              <p class="ps-cart__tax">
+                {{ section.settings.tax_note | default: 'Taxes and shipping calculated at checkout.' }}
+              </p>
+
+              <button class="ps-btn ps-btn--block ps-cart__checkout" type="submit" name="checkout" data-ps-magnetic="0.14">
+                {{ section.settings.checkout_label | default: 'Checkout' }}
+              </button>
+
+              {%- comment -%}
+                Without JavaScript the steppers are hidden and this button is
+                how a changed quantity gets saved.
+              {%- endcomment -%}
+              <button class="ps-btn ps-btn--ghost ps-btn--block ps-cart__update" type="submit" name="update">
+                {{ 'cart.general.update' | t | default: 'Update cart' }}
+              </button>
+
+              <a class="ps-link ps-cart__keep" href="{{ section.settings.continue_url | default: routes.collections_url }}">
+                {{ section.settings.continue_label | default: 'Keep looking' }}
+                {% render 'icon', name: 'arrow-right', size: 15 %}
+              </a>
+            </div>
+          </div>
+        {%- endform -%}
+
+      {%- else -%}
+
+        {%- comment -%} ---------------------------------------- empty cart {%- endcomment -%}
+        <div class="ps-cart__empty" data-ps-reveal="up">
+          <span class="ps-cart__empty-mark" aria-hidden="true">
+            {% render 'icon', name: 'box', size: 30 %}
+          </span>
+          <h1 class="ps-h3 ps-cart__empty-title">
+            {{ section.settings.empty_title | default: 'Nothing on the table yet' }}
+          </h1>
+          <p class="ps-lede ps-cart__empty-body">{{ section.settings.empty_body }}</p>
+          <div class="ps-cart__empty-actions">
+            <a class="ps-btn" href="{{ routes.collections_url }}" data-ps-magnetic="0.2">
+              {{ section.settings.empty_cta | default: 'See the collections' }}
+            </a>
+          </div>
+        </div>
+
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-cart { padding-top: calc(var(--ps-header-h) + clamp(1.5rem, 5vw, 4rem)); }
+
+  .ps-cart__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--ps-s-s);
+    flex-wrap: wrap;
+    margin-bottom: var(--ps-s-s);
+  }
+  .ps-cart__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.4rem, 6vw, 4.6rem);
+    font-weight: 250;
+    font-variation-settings: "SOFT" 46, "WONK" 1, "opsz" 144;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+  .ps-cart__count {
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ps-ink-faint);
+  }
+
+  .ps-cart__form { margin: 0; }
+
+  /* ---- lines ------------------------------------------------------------ */
+
+  .ps-cart__lines { margin-top: var(--ps-s-m); }
+  .ps-line {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+    gap: var(--ps-s-s) var(--ps-s-m);
+    padding-block: var(--ps-s-m);
+    border-bottom: 1px solid var(--ps-hairline);
+    transition: opacity var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-line.is-busy { opacity: 0.45; pointer-events: none; }
+
+  /* The same wash circle the piece was photographed in, at row size. */
+  .ps-line__frame {
+    display: grid;
+    place-items: center;
+    width: 120px;
+    aspect-ratio: 1;
+    padding: 9%;
+    border-radius: var(--ps-radius-m);
+    background: var(--ps-wash, var(--ps-linen-warm));
+    flex: none;
+  }
+  .ps-line__media {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(120, 95, 60, 0.16);
+    transition: transform var(--ps-t-slow) var(--ps-ease-set);
+  }
+  .ps-line__media img { width: 100%; height: 100%; object-fit: cover; }
+  .ps-line:hover .ps-line__media { transform: rotate(7deg) scale(1.03); }
+
+  .ps-line__body { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+  .ps-line__title {
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-1);
+    font-weight: 400;
+    font-variation-settings: "SOFT" 20, "WONK" 0, "opsz" 36;
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+    margin: 0;
+  }
+  .ps-line__title a:hover { color: var(--ps-accent); }
+  .ps-line__variant { font-size: var(--ps-step--1); color: var(--ps-ink-faint); }
+  .ps-line__discounts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: var(--ps-step--2);
+    color: var(--ps-accent);
+  }
+  .ps-line__discounts li { display: inline-flex; align-items: center; gap: 0.4em; }
+
+  .ps-line__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--ps-s-s);
+    flex-wrap: wrap;
+    margin-top: 0.45rem;
+  }
+  /* The stepper, restated here so the cart does not lean on the product
+     page's stylesheet being compiled alongside it. */
+  .ps-qty {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--ps-hairline);
+    overflow: hidden;
+  }
+  .ps-qty__btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    color: var(--ps-ink-soft);
+    transition: background var(--ps-t-fast) var(--ps-ease-swap), color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-qty__btn:hover { background: var(--ps-linen-warm); color: var(--ps-ink); }
+  .ps-qty__input {
+    width: 3.2rem;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: center;
+    font-size: var(--ps-step-0);
+    -moz-appearance: textfield;
+  }
+  .ps-qty__input::-webkit-outer-spin-button,
+  .ps-qty__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .ps-qty__input:focus { outline: none; }
+  html:not(.ps-js) .ps-qty__btn { display: none; }
+
+  .ps-line__qty .ps-qty__btn { width: 38px; height: 38px; }
+  .ps-line__qty .ps-qty__input { width: 2.8rem; height: 38px; }
+  .ps-line__remove {
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ps-ink-faint);
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+    transition: color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-line__remove:hover { color: var(--ps-coral-deep); }
+
+  .ps-line__price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.15rem;
+    text-align: right;
+  }
+  .ps-line__now { font-family: var(--ps-display); font-size: var(--ps-step-1); }
+  .ps-line__was { color: var(--ps-ink-faint); font-size: var(--ps-step--1); }
+  .ps-line__each { font-size: var(--ps-step--2); color: var(--ps-ink-faint); }
+
+  /* ---- foot ------------------------------------------------------------- */
+
+  .ps-cart__foot {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+    gap: clamp(1.5rem, 5vw, 4rem);
+    align-items: start;
+    margin-top: var(--ps-s-l);
+  }
+  .ps-cart__note { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .ps-cart__totals { display: flex; flex-direction: column; gap: var(--ps-s-xs); }
+  .ps-cart__discounts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: var(--ps-step--1);
+    color: var(--ps-accent);
+  }
+  .ps-cart__discounts li { display: flex; justify-content: space-between; gap: var(--ps-s-s); }
+
+  .ps-cart__subtotal {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--ps-s-s);
+    padding-top: var(--ps-s-2xs);
+    border-top: 1px solid var(--ps-hairline);
+  }
+  .ps-cart__amount { font-family: var(--ps-display); font-size: var(--ps-step-2); }
+  .ps-cart__tax {
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-faint);
+    text-wrap: pretty;
+  }
+  .ps-cart__checkout { margin-top: var(--ps-s-2xs); }
+  html.ps-js .ps-cart__update { display: none; }
+  .ps-cart__keep { align-self: center; margin-top: var(--ps-s-2xs); color: var(--ps-ink-soft); }
+
+  /* ---- empty ------------------------------------------------------------ */
+
+  .ps-cart__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ps-s-s);
+    text-align: center;
+    max-width: 42ch;
+    margin-inline: auto;
+    padding-block: clamp(3rem, 12vw, 8rem);
+  }
+  .ps-cart__empty-mark { color: var(--ps-accent); }
+  .ps-cart__empty-title { font-weight: 300; }
+  .ps-cart__empty-body { text-align: center; }
+  .ps-cart__empty-actions { margin-top: var(--ps-s-2xs); }
+
+  /* ---- responsive ------------------------------------------------------- */
+
+  @media (max-width: 760px) {
+    .ps-cart__foot { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .ps-line {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: var(--ps-s-2xs) var(--ps-s-s);
+    }
+    .ps-line__frame { width: 84px; }
+    /* The price drops under the details rather than squeezing a third column. */
+    .ps-line__price {
+      grid-column: 2;
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 0.6rem;
+      text-align: left;
+    }
+    .ps-line__controls { gap: var(--ps-s-2xs); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cart",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Your cart" },
+    { "type": "text", "id": "checkout_label", "label": "Checkout button", "default": "Checkout" },
+    {
+      "type": "textarea",
+      "id": "tax_note",
+      "label": "Note under the subtotal",
+      "default": "Taxes and shipping calculated at checkout."
+    },
+    { "type": "text", "id": "continue_label", "label": "Continue link label", "default": "Keep looking" },
+    { "type": "url", "id": "continue_url", "label": "Continue link" },
+    { "type": "header", "content": "Order note" },
+    { "type": "checkbox", "id": "show_note", "label": "Show the note field", "default": true },
+    { "type": "text", "id": "note_label", "label": "Note label", "default": "A note with your order" },
+    {
+      "type": "text",
+      "id": "note_placeholder",
+      "label": "Note placeholder",
+      "default": "Gift wrapping, a delivery window, a message on the card."
+    },
+    { "type": "header", "content": "Empty cart" },
+    { "type": "text", "id": "empty_title", "label": "Empty heading", "default": "Nothing on the table yet" },
+    {
+      "type": "textarea",
+      "id": "empty_body",
+      "label": "Empty message",
+      "default": "Three collections are waiting, each one painted by hand and sold as a service for six."
+    },
+    { "type": "text", "id": "empty_cta", "label": "Empty button", "default": "See the collections" }
+  ]
+}
+{% endschema %}

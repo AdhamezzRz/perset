@@ -6,9 +6,12 @@
       "type": "header",
       "settings": {
         "menu": "main-menu",
-        "menu_note": "Every piece is painted by hand, so no two are identical. That is the point."
+        "menu_note": "Every piece is painted by hand, so no two are identical. That is the point.",
+        "menu_image": "shopify://shop_images/perset-beads-setting.jpg"
       }
     }
   },
-  "order": ["header"]
+  "order": [
+    "header"
+  ]
 }

@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-blog",
+      "settings": {
+        "eyebrow": "Journal",
+        "lede": "Notes from the studio: what we are painting, where the patterns come from, and how to keep a set alive.",
+        "feature_first": true,
+        "show_tags": true,
+        "per_page": 10,
+        "pigment": "past",
+        "padding_top": 168,
+        "padding_bottom": 120
+      }
+    }
+  },
+  "order": ["main"]
+}

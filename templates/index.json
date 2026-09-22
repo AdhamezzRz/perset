@@ -8,28 +8,59 @@
         "line_2": "worth",
         "line_3": "staying at",
         "lede": "Three collections, painted by hand, one piece at a time. Made to be used on a Tuesday, not kept behind glass.",
-        "plate_size": 46,
+        "plate_size": 44,
         "rotation": 45,
         "plate_cursor": "Per Set",
-        "pigment": "beads",
+        "pigment": "wild",
         "show_grain": true,
         "cta_label": "Shop the collections",
         "cta_url": "/collections",
         "cta2_label": "How it is made",
         "cta2_url": "/pages/our-story",
-        "scroll_cue": "Scroll"
+        "scroll_cue": "Scroll",
+        "image": "shopify://shop_images/perset-wild-dinner-plate.jpg"
       }
     },
     "marquee-top": {
       "type": "marquee",
       "blocks": {
-        "m1": { "type": "phrase", "settings": { "text": "Stitches of the Wild" } },
-        "m2": { "type": "phrase", "settings": { "text": "A Tale in Beads" } },
-        "m3": { "type": "phrase", "settings": { "text": "Pretty Past" } },
-        "m4": { "type": "phrase", "settings": { "text": "Service for six" } }
+        "m1": {
+          "type": "phrase",
+          "settings": {
+            "text": "Stitches of the Wild"
+          }
+        },
+        "m2": {
+          "type": "phrase",
+          "settings": {
+            "text": "A Tale in Beads"
+          }
+        },
+        "m3": {
+          "type": "phrase",
+          "settings": {
+            "text": "Pretty Past"
+          }
+        },
+        "m4": {
+          "type": "phrase",
+          "settings": {
+            "text": "Service for six"
+          }
+        }
       },
-      "block_order": ["m1", "m2", "m3", "m4"],
-      "settings": { "speed": 40, "reverse": false, "dark": false, "aria": "Collections" }
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4"
+      ],
+      "settings": {
+        "speed": 40,
+        "reverse": false,
+        "dark": false,
+        "aria": "Collections"
+      }
     },
     "stories": {
       "type": "collection-stories",
@@ -65,7 +96,11 @@
           }
         }
       },
-      "block_order": ["wild", "beads", "past"],
+      "block_order": [
+        "wild",
+        "beads",
+        "past"
+      ],
       "settings": {
         "eyebrow": "Three collections",
         "heading": "Every set tells its own story",
@@ -106,7 +141,11 @@
           }
         }
       },
-      "block_order": ["s-wild", "s-beads", "s-past"],
+      "block_order": [
+        "s-wild",
+        "s-beads",
+        "s-past"
+      ],
       "settings": {
         "eyebrow": "The anatomy of a service",
         "heading": "Set your table",
@@ -116,7 +155,7 @@
     "rail": {
       "type": "featured-rail",
       "settings": {
-        "collection": "a-tale-in-beads",
+        "collection": "stitches-of-the-wild",
         "eyebrow": "Start here",
         "heading": "Pieces to begin with",
         "view_all": "View all",
@@ -160,16 +199,29 @@
           }
         }
       },
-      "block_order": ["c1", "c2", "c3", "c4"],
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
       "settings": {
         "eyebrow": "How a piece comes to be",
         "heading": "Drawn, painted, fired, twice",
         "body": "Nothing here is transferred or printed. Every line is laid down by a hand holding a brush, which is why the leopards on your plates will not match the leopards on anyone else's.",
         "cta_label": "Read our story",
         "cta_url": "/pages/our-story",
-        "dark": false
+        "dark": false,
+        "image": "shopify://shop_images/perset-past-lifestyle.jpg"
       }
     }
   },
-  "order": ["hero", "marquee-top", "stories", "setting", "rail", "craft"]
+  "order": [
+    "hero",
+    "marquee-top",
+    "stories",
+    "setting",
+    "rail",
+    "craft"
+  ]
 }

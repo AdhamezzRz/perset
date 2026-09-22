@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-404",
+      "settings": {
+        "eyebrow": "Four hundred and four",
+        "body": "This page is not here. Nothing broke — the table was just set somewhere else.",
+        "cta_label": "Everything we make",
+        "pigment": "wild",
+        "padding_top": 180,
+        "padding_bottom": 140
+      },
+      "blocks": {
+        "wild": {
+          "type": "collection",
+          "settings": { "collection": "stitches-of-the-wild", "pigment": "wild" }
+        },
+        "beads": {
+          "type": "collection",
+          "settings": { "collection": "a-tale-in-beads", "pigment": "beads" }
+        },
+        "past": {
+          "type": "collection",
+          "settings": { "collection": "pretty-past", "pigment": "past" }
+        }
+      },
+      "block_order": ["wild", "beads", "past"]
+    }
+  },
+  "order": ["main"]
+}

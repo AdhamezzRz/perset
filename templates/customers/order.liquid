@@ -1,0 +1,184 @@
+{%- comment -%}
+  ACCOUNT — ONE ORDER
+
+  What was bought, what it cost, where it went. Prices all pass through the
+  money filter so the store currency is never assumed.
+{%- endcomment -%}
+
+{% render 'account-styles' %}
+
+<div class="ps-account">
+  <div class="ps-shell">
+
+    <header class="ps-account__head">
+      <p class="ps-eyebrow" data-ps-reveal="fade">
+        <a href="{{ routes.account_url }}">{{ 'customer.account.title' | t | default: 'Account' }}</a>
+      </p>
+      <h1 class="ps-account__title" data-ps-split="lines">
+        {{- 'customer.order.title' | t: name: order.name | default: order.name -}}
+      </h1>
+      <p class="ps-account__aside-note" data-ps-reveal="fade">
+        <time datetime="{{ order.created_at | date: '%Y-%m-%d' }}">
+          {{- order.created_at | date: format: 'date_at_time' -}}
+        </time>
+        <span class="ps-meta__dot" aria-hidden="true">·</span>
+        <span class="ps-tag{% if order.financial_status == 'paid' %} ps-tag--paid{% else %} ps-tag--open{% endif %}">
+          {{ order.financial_status_label }}
+        </span>
+        {%- if order.fulfillment_status_label != blank -%}
+          <span class="ps-tag">{{ order.fulfillment_status_label }}</span>
+        {%- endif -%}
+      </p>
+      <div class="ps-account__thread" aria-hidden="true">
+        {% render 'icon', name: 'thread', draw: true %}
+      </div>
+    </header>
+
+    {%- if order.cancelled -%}
+      <div class="ps-note ps-note--bad" role="status">
+        <p class="ps-note__title">
+          {{ 'customer.order.cancelled' | t | default: 'This order was cancelled.' }}
+          <time datetime="{{ order.cancelled_at | date: '%Y-%m-%d' }}">
+            {{- order.cancelled_at | date: format: 'date' -}}
+          </time>
+        </p>
+        {%- if order.cancel_reason_label != blank -%}
+          <p>{{ order.cancel_reason_label }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="ps-account__grid">
+
+      <section class="ps-account__panel" data-ps-reveal="up">
+        <h2 class="ps-account__panel-head">
+          {{ 'customer.order.items' | t | default: 'What is in it' }}
+        </h2>
+
+        <table class="ps-table">
+          <caption class="ps-sr">{{ 'customer.order.items' | t | default: 'Order items' }}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{{ 'customer.order.product' | t | default: 'Piece' }}</th>
+              <th scope="col">{{ 'customer.order.quantity' | t | default: 'Qty' }}</th>
+              <th scope="col">{{ 'customer.order.total' | t | default: 'Total' }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for line_item in order.line_items -%}
+              <tr>
+                <td>
+                  <a href="{{ line_item.product.url | default: line_item.url }}">{{ line_item.title }}</a>
+                  {%- if line_item.sku != blank -%}
+                    <span class="ps-account__aside-note"><br>{{ line_item.sku }}</span>
+                  {%- endif -%}
+                  {%- if line_item.fulfillment -%}
+                    <span class="ps-account__aside-note">
+                      <br>
+                      {{ 'customer.order.fulfilled_at' | t | default: 'Sent' }}
+                      <time datetime="{{ line_item.fulfillment.created_at | date: '%Y-%m-%d' }}">
+                        {{- line_item.fulfillment.created_at | date: format: 'date' -}}
+                      </time>
+                      {%- if line_item.fulfillment.tracking_url -%}
+                        &middot;
+                        <a class="ps-contact__a" href="{{ line_item.fulfillment.tracking_url }}">
+                          {{ 'customer.order.track_shipment' | t | default: 'Track it' }}
+                        </a>
+                      {%- endif -%}
+                    </span>
+                  {%- endif -%}
+                </td>
+                <td class="ps-table__num">{{ line_item.quantity }}</td>
+                <td class="ps-table__num">{{ line_item.final_line_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row" colspan="2">{{ 'customer.order.subtotal' | t | default: 'Subtotal' }}</th>
+              <td class="ps-table__num">{{ order.line_items_subtotal_price | money }}</td>
+            </tr>
+
+            {%- for discount_application in order.discount_applications -%}
+              <tr>
+                <th scope="row" colspan="2">
+                  {{ 'customer.order.discount' | t | default: 'Discount' }}
+                  {%- if discount_application.title != blank %} ({{ discount_application.title }}){% endif -%}
+                </th>
+                <td class="ps-table__num">&minus;{{ discount_application.total_allocated_amount | money }}</td>
+              </tr>
+            {%- endfor -%}
+
+            {%- for shipping_method in order.shipping_methods -%}
+              <tr>
+                <th scope="row" colspan="2">
+                  {{ 'customer.order.shipping' | t | default: 'Shipping' }} ({{ shipping_method.title }})
+                </th>
+                <td class="ps-table__num">{{ shipping_method.price | money }}</td>
+              </tr>
+            {%- endfor -%}
+
+            {%- for tax_line in order.tax_lines -%}
+              <tr>
+                <th scope="row" colspan="2">
+                  {{ 'customer.order.tax' | t | default: 'Tax' }} ({{ tax_line.title }} {{ tax_line.rate_percentage }}%)
+                </th>
+                <td class="ps-table__num">{{ tax_line.price | money }}</td>
+              </tr>
+            {%- endfor -%}
+
+            <tr>
+              <th scope="row" colspan="2">{{ 'customer.order.total' | t | default: 'Total' }}</th>
+              <td class="ps-table__num ps-num">{{ order.total_price | money }} {{ order.currency }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+
+      <aside class="ps-account__side" data-ps-reveal="up">
+        <section class="ps-account__panel">
+          <h2 class="ps-account__panel-head">
+            {{ 'customer.order.shipping_address' | t | default: 'Shipping address' }}
+          </h2>
+          <div class="ps-addr__body">{{ order.shipping_address | format_address }}</div>
+        </section>
+
+        <section class="ps-account__panel">
+          <h2 class="ps-account__panel-head">
+            {{ 'customer.order.billing_address' | t | default: 'Billing address' }}
+          </h2>
+          <div class="ps-addr__body">{{ order.billing_address | format_address }}</div>
+        </section>
+
+        <p style="margin-top: var(--ps-s-m);">
+          <a class="ps-link" href="{{ routes.account_url }}">
+            {% render 'icon', name: 'arrow-left', size: 15 %}
+            {{ 'customer.order.back' | t | default: 'All orders' }}
+          </a>
+        </p>
+      </aside>
+
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .ps-account__grid {
+    display: grid;
+    grid-template-columns: 1.6fr 0.9fr;
+    gap: var(--ps-s-m);
+    align-items: start;
+  }
+  .ps-account__side { display: flex; flex-direction: column; gap: var(--ps-s-m); }
+  .ps-account__side .ps-account__panel + .ps-account__panel { margin-top: 0; }
+  .ps-table tfoot th { text-transform: none; letter-spacing: 0.04em; font-size: var(--ps-step--1); color: var(--ps-ink); }
+  .ps-table tfoot tr:last-child th,
+  .ps-table tfoot tr:last-child td {
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-1);
+    border-bottom: 0;
+  }
+  @media (max-width: 860px) {
+    .ps-account__grid { grid-template-columns: 1fr; }
+  }
+{% endstyle %}

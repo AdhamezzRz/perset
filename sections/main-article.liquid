@@ -1,0 +1,478 @@
+{%- comment -%}
+  JOURNAL — ARTICLE
+
+  A wide hero that bleeds past the text column, the body set in .ps-prose at a
+  reading measure, then the meta, share row and comments.
+
+  The share links are plain anchors — no scripts, no third-party widgets.
+{%- endcomment -%}
+
+{%- liquid
+  assign share_url = shop.url | append: article.url
+  assign share_title = article.title | url_encode
+  assign share_encoded = share_url | url_encode
+-%}
+
+<article
+  class="ps-article"
+  {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;">
+
+  <header class="ps-shell ps-article__head">
+    <p class="ps-eyebrow" data-ps-reveal="fade">
+      <a href="{{ blog.url }}">{{ blog.title }}</a>
+    </p>
+
+    <h1 class="ps-article__title" data-ps-split="lines" data-ps-split-step="105">{{ article.title }}</h1>
+
+    {%- if article.excerpt != blank -%}
+      <p class="ps-lede ps-article__lede" data-ps-reveal="up" style="--ps-delay:220ms">
+        {{ article.excerpt | strip_html }}
+      </p>
+    {%- endif -%}
+
+    <p class="ps-meta ps-article__meta" data-ps-reveal="fade">
+      <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+        {{- article.published_at | date: format: 'date' -}}
+      </time>
+      {%- if section.settings.show_author and article.author != blank -%}
+        <span class="ps-meta__dot" aria-hidden="true">·</span>
+        {{ 'blogs.article.by' | t: author: article.author | default: article.author }}
+      {%- endif -%}
+      {%- if section.settings.show_reading_time -%}
+        {%- assign words = article.content | strip_html | split: ' ' | size -%}
+        {%- assign minutes = words | divided_by: 200 | plus: 1 -%}
+        <span class="ps-meta__dot" aria-hidden="true">·</span>
+        {{ 'blogs.article.reading_time' | t: minutes: minutes | default: minutes }}
+      {%- endif -%}
+    </p>
+  </header>
+
+  {%- if article.image != blank -%}
+    <figure class="ps-article__hero" data-ps-reveal="glaze">
+      <div class="ps-shell ps-shell--wide">
+        <div class="ps-ratio ps-ratio--169 ps-article__hero-frame">
+          {{
+            article.image
+            | image_url: width: 2400
+            | image_tag:
+              loading: 'eager',
+              fetchpriority: 'high',
+              widths: '600,900,1200,1600,2000,2400',
+              sizes: '(max-width: 760px) 96vw, 90vw',
+              alt: article.image.alt | default: article.title | escape
+          }}
+        </div>
+        {%- if section.settings.hero_caption != blank -%}
+          <figcaption class="ps-article__caption">{{ section.settings.hero_caption }}</figcaption>
+        {%- endif -%}
+      </div>
+    </figure>
+  {%- endif -%}
+
+  <div class="ps-shell ps-article__body">
+    <div class="ps-prose ps-article__prose" data-ps-reveal="up">
+      {{ article.content }}
+    </div>
+
+    {%- if article.tags.size > 0 -%}
+      <div class="ps-article__tags">
+        <span class="ps-article__tags-head">{{ 'blogs.article.tags' | t | default: 'Tagged' }}</span>
+        {%- for tag in article.tags -%}
+          <a class="ps-blog__tag" href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag }}</a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.show_share -%}
+      <div class="ps-share">
+        <span class="ps-share__head">{{ 'general.share.title' | t | default: 'Share' }}</span>
+        <a
+          class="ps-share__icon"
+          href="https://www.facebook.com/sharer/sharer.php?u={{ share_encoded }}"
+          target="_blank"
+          rel="noopener"
+          aria-label="{{ 'general.share.facebook' | t | default: 'Share on Facebook' }}">
+          {% render 'icon', name: 'facebook', size: 18 %}
+        </a>
+        <a
+          class="ps-share__icon"
+          href="https://wa.me/?text={{ share_title }}%20{{ share_encoded }}"
+          target="_blank"
+          rel="noopener"
+          aria-label="{{ 'general.share.whatsapp' | t | default: 'Share on WhatsApp' }}">
+          {% render 'icon', name: 'whatsapp', size: 18 %}
+        </a>
+        <a
+          class="ps-link ps-share__mail"
+          href="mailto:?subject={{ share_title }}&amp;body={{ share_encoded }}">
+          {{ 'general.share.email' | t | default: 'Email it' }}
+        </a>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Previous / next, so the journal reads as a sequence. {%- endcomment -%}
+    {%- if blog.previous_article or blog.next_article -%}
+      <nav class="ps-article__nav" aria-label="{{ 'blogs.article.more' | t | default: 'More from the journal' }}">
+        {%- if blog.previous_article -%}
+          <a class="ps-article__nav-link" href="{{ blog.previous_article.url }}">
+            {% render 'icon', name: 'arrow-left', size: 15 %}
+            <span>
+              <span class="ps-article__nav-label">{{ 'blogs.article.older' | t | default: 'Older' }}</span>
+              <span class="ps-article__nav-title">{{ blog.previous_article.title }}</span>
+            </span>
+          </a>
+        {%- endif -%}
+        {%- if blog.next_article -%}
+          <a class="ps-article__nav-link ps-article__nav-link--next" href="{{ blog.next_article.url }}">
+            <span>
+              <span class="ps-article__nav-label">{{ 'blogs.article.newer' | t | default: 'Newer' }}</span>
+              <span class="ps-article__nav-title">{{ blog.next_article.title }}</span>
+            </span>
+            {% render 'icon', name: 'arrow-right', size: 15 %}
+          </a>
+        {%- endif -%}
+      </nav>
+    {%- endif -%}
+
+    {%- comment -%} Comments, only when the blog has them switched on. {%- endcomment -%}
+    {%- if blog.comments_enabled? -%}
+      <section class="ps-comments" id="comments">
+        <h2 class="ps-comments__head">
+          {%- if article.comments_count > 0 -%}
+            {{ 'blogs.comments.with_count' | t: count: article.comments_count | default: article.comments_count }}
+          {%- else -%}
+            {{ 'blogs.comments.title' | t | default: 'Comments' }}
+          {%- endif -%}
+        </h2>
+
+        {%- if article.comments_count > 0 -%}
+          {%- paginate article.comments by 20 -%}
+            <ul class="ps-comments__list">
+              {%- for comment in article.comments -%}
+                <li class="ps-comments__item" id="comment-{{ comment.id }}">
+                  <p class="ps-comments__author">{{ comment.author }}</p>
+                  <p class="ps-meta">
+                    <time datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">
+                      {{- comment.created_at | date: format: 'date' -}}
+                    </time>
+                  </p>
+                  <div class="ps-comments__content">{{ comment.content }}</div>
+                </li>
+              {%- endfor -%}
+            </ul>
+
+            {%- if paginate.pages > 1 -%}
+              <nav class="ps-pager" aria-label="{{ 'general.pagination.label' | t | default: 'Pagination' }}">
+                {%- if paginate.previous -%}
+                  <a class="ps-pager__link" href="{{ paginate.previous.url }}#comments">
+                    {% render 'icon', name: 'arrow-left', size: 15 %}
+                    {{ 'general.pagination.previous' | t | default: 'Newer' }}
+                  </a>
+                {%- endif -%}
+                <span class="ps-pager__count ps-num">{{ paginate.current_page }} / {{ paginate.pages }}</span>
+                {%- if paginate.next -%}
+                  <a class="ps-pager__link" href="{{ paginate.next.url }}#comments">
+                    {{ 'general.pagination.next' | t | default: 'Older' }}
+                    {% render 'icon', name: 'arrow-right', size: 15 %}
+                  </a>
+                {%- endif -%}
+              </nav>
+            {%- endif -%}
+          {%- endpaginate -%}
+        {%- endif -%}
+
+        {% form 'new_comment', article, class: 'ps-comments__form' %}
+          {%- if form.posted_successfully? -%}
+            <div class="ps-note ps-note--ok" role="status">
+              {% render 'icon', name: 'leaf', size: 18 %}
+              <p>
+                {%- if blog.moderated? -%}
+                  {{ 'blogs.comments.success_moderated' | t | default: 'Thank you. Your comment is waiting to be approved.' }}
+                {%- else -%}
+                  {{ 'blogs.comments.success' | t | default: 'Thank you. Your comment is up.' }}
+                {%- endif -%}
+              </p>
+            </div>
+          {%- endif -%}
+
+          {%- if form.errors -%}
+            <div class="ps-note ps-note--bad" role="alert">
+              <p class="ps-note__title">
+                {{ 'blogs.comments.error_heading' | t | default: 'Something in the form needs another look.' }}
+              </p>
+              <ul class="ps-note__list">
+                {%- for field in form.errors -%}
+                  <li>{{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}</li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+
+          <div class="ps-comments__fields">
+            <p class="ps-field">
+              <input
+                class="ps-input"
+                type="text"
+                id="ps-comment-author"
+                name="comment[author]"
+                value="{{ form.author | escape }}"
+                autocomplete="name"
+                placeholder=" "
+                required>
+              <label class="ps-label" for="ps-comment-author">
+                {{ 'blogs.comments.name' | t | default: 'Name' }}
+              </label>
+            </p>
+            <p class="ps-field">
+              <input
+                class="ps-input"
+                type="email"
+                id="ps-comment-email"
+                name="comment[email]"
+                value="{{ form.email | escape }}"
+                autocomplete="email"
+                autocapitalize="off"
+                spellcheck="false"
+                placeholder=" "
+                required>
+              <label class="ps-label" for="ps-comment-email">
+                {{ 'blogs.comments.email' | t | default: 'Email' }}
+              </label>
+            </p>
+            <p class="ps-field ps-field--wide">
+              <textarea
+                class="ps-textarea"
+                id="ps-comment-body"
+                name="comment[body]"
+                rows="5"
+                placeholder=" "
+                required>{{ form.body }}</textarea>
+              <label class="ps-label" for="ps-comment-body">
+                {{ 'blogs.comments.message' | t | default: 'Your comment' }}
+              </label>
+            </p>
+          </div>
+
+          {%- if blog.moderated? -%}
+            <p class="ps-comments__note">
+              {{ 'blogs.comments.moderated' | t | default: 'Comments are read before they appear.' }}
+            </p>
+          {%- endif -%}
+
+          <button class="ps-btn ps-btn--sm" type="submit">
+            {{ 'blogs.comments.post' | t | default: 'Post it' }}
+          </button>
+        {% endform %}
+      </section>
+    {%- endif -%}
+  </div>
+</article>
+
+{% stylesheet %}
+  .ps-article { position: relative; }
+
+  .ps-article__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.7rem, 1.8vw, 1.2rem);
+    max-width: 1100px;
+    margin-inline: auto;
+    padding-bottom: clamp(1.6rem, 4vw, 3rem);
+  }
+  .ps-article__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.3rem, 7vw, 5rem);
+    font-weight: 280;
+    font-variation-settings: "SOFT" 44, "WONK" 1, "opsz" 144;
+    line-height: 0.96;
+    letter-spacing: -0.034em;
+    margin: 0;
+    max-width: 18ch;
+  }
+  .ps-article__lede { max-width: 52ch; }
+  .ps-article__meta { margin-top: 0.3rem; }
+
+  .ps-article__hero { margin-bottom: clamp(2rem, 5vw, 4rem); }
+  .ps-article__hero-frame {
+    border-radius: var(--ps-radius-l);
+    box-shadow: var(--ps-lift-2);
+  }
+  .ps-article__caption {
+    margin-top: var(--ps-s-xs);
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-faint);
+  }
+
+  .ps-article__body { max-width: 1100px; margin-inline: auto; }
+  .ps-article__prose {
+    max-width: 66ch;
+    font-size: var(--ps-step-0);
+    line-height: 1.74;
+    color: var(--ps-ink-soft);
+  }
+  .ps-article__prose h2,
+  .ps-article__prose h3,
+  .ps-article__prose strong { color: var(--ps-ink); }
+  .ps-article__prose img { border-radius: var(--ps-radius-m); margin-block: var(--ps-s-m); }
+
+  .ps-article__tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: var(--ps-s-xl);
+  }
+  .ps-article__tags-head {
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ps-ink-faint);
+    margin-right: 0.4rem;
+  }
+
+  .ps-share {
+    display: flex;
+    align-items: center;
+    gap: var(--ps-s-2xs);
+    flex-wrap: wrap;
+    margin-top: var(--ps-s-m);
+    padding-top: var(--ps-s-m);
+    border-top: 1px solid var(--ps-hairline);
+  }
+  .ps-share__head {
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ps-ink-faint);
+    margin-right: 0.5rem;
+  }
+  .ps-share__icon {
+    display: grid;
+    place-items: center;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--ps-hairline);
+    color: var(--ps-ink-soft);
+    transition: color var(--ps-t-fast) var(--ps-ease-swap),
+                border-color var(--ps-t-fast) var(--ps-ease-swap),
+                transform var(--ps-t-base) var(--ps-ease-set);
+  }
+  .ps-share__icon:hover { color: var(--ps-accent); border-color: var(--ps-accent); transform: translateY(-2px); }
+  .ps-share__mail { margin-left: var(--ps-s-2xs); }
+
+  .ps-article__nav {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--ps-s-m);
+    flex-wrap: wrap;
+    margin-top: var(--ps-s-2xl);
+    padding-top: var(--ps-s-m);
+    border-top: 1px solid var(--ps-hairline);
+  }
+  .ps-article__nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    max-width: 22rem;
+  }
+  .ps-article__nav-link--next { margin-left: auto; text-align: right; }
+  .ps-article__nav-label {
+    display: block;
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ps-ink-faint);
+  }
+  .ps-article__nav-title {
+    display: block;
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-1);
+    line-height: 1.2;
+  }
+  .ps-article__nav-link:hover .ps-article__nav-title { color: var(--ps-accent); }
+
+  /* ---- comments ---- */
+  .ps-comments {
+    margin-top: var(--ps-s-2xl);
+    padding-top: var(--ps-s-xl);
+    border-top: 1px solid var(--ps-hairline);
+    max-width: 66ch;
+  }
+  .ps-comments__head {
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-3);
+    margin-bottom: var(--ps-s-m);
+  }
+  .ps-comments__list { display: flex; flex-direction: column; gap: var(--ps-s-m); }
+  .ps-comments__item {
+    padding-bottom: var(--ps-s-m);
+    border-bottom: 1px solid var(--ps-hairline-soft);
+  }
+  .ps-comments__author {
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-1);
+  }
+  .ps-comments__content {
+    margin-top: 0.5rem;
+    color: var(--ps-ink-soft);
+    line-height: 1.68;
+  }
+  .ps-comments__form { margin-top: var(--ps-s-xl); }
+  .ps-comments__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ps-s-s) var(--ps-s-m);
+  }
+  .ps-comments__note {
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-faint);
+    margin-block: var(--ps-s-s);
+  }
+  .ps-comments__form .ps-btn { margin-top: var(--ps-s-m); }
+
+  @media (max-width: 640px) {
+    .ps-article__title { max-width: none; }
+    .ps-comments__fields { grid-template-columns: 1fr; }
+    .ps-article__nav-link--next { margin-left: 0; text-align: left; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "show_author", "label": "Show the author", "default": true },
+    { "type": "checkbox", "id": "show_reading_time", "label": "Show an estimated reading time", "default": true },
+    { "type": "checkbox", "id": "show_share", "label": "Show share links", "default": true },
+    { "type": "text", "id": "hero_caption", "label": "Caption under the hero image" },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "none", "label": "Linen (default)" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "past"
+    },
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0, "max": 260, "step": 4, "unit": "px", "default": 168
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0, "max": 260, "step": 4, "unit": "px", "default": 120
+    }
+  ]
+}
+{% endschema %}

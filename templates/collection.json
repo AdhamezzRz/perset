@@ -1,0 +1,32 @@
+{
+  "sections": {
+    "banner": {
+      "type": "collection-banner",
+      "settings": {
+        "eyebrow": "The collection",
+        "detail": "Painted by hand · Made in Egypt",
+        "rotation": 50,
+        "pigment": "auto",
+        "show_thread": true,
+        "padding_bottom": 48
+      }
+    },
+    "grid": {
+      "type": "main-collection",
+      "settings": {
+        "per_page": 12,
+        "columns_desktop": "3",
+        "columns_mobile": "2",
+        "stagger": 90,
+        "pigment": "auto",
+        "show_filters": true,
+        "show_sort": true,
+        "empty_title": "Nothing here yet",
+        "empty_filtered": "Nothing matches that combination",
+        "empty_body": "The next run is still being painted. Take a look at the other collections in the meantime.",
+        "empty_link": "Browse every collection"
+      }
+    }
+  },
+  "order": ["banner", "grid"]
+}

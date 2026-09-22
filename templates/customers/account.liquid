@@ -1,0 +1,138 @@
+{%- comment -%}
+  ACCOUNT — OVERVIEW
+
+  Orders on the left, the default address on the right. Nothing else: this
+  page exists to answer "where is my order" and "where is it going".
+{%- endcomment -%}
+
+{% render 'account-styles' %}
+
+<div class="ps-account">
+  <div class="ps-shell">
+
+    <header class="ps-account__head">
+      <p class="ps-eyebrow" data-ps-reveal="fade">{{ 'customer.account.title' | t | default: 'Account' }}</p>
+      <h1 class="ps-account__title" data-ps-split="lines">
+        {{- customer.first_name | default: customer.name | default: 'Your account' -}}
+      </h1>
+      <p class="ps-account__aside-note" data-ps-reveal="fade">
+        {{ customer.email }}
+        <span class="ps-meta__dot" aria-hidden="true">·</span>
+        <a class="ps-contact__a" href="{{ routes.account_logout_url }}">
+          {{ 'customer.account.log_out' | t | default: 'Sign out' }}
+        </a>
+      </p>
+      <div class="ps-account__thread" aria-hidden="true">
+        {% render 'icon', name: 'thread', draw: true %}
+      </div>
+    </header>
+
+    <div class="ps-account__grid">
+
+      <section class="ps-account__panel" data-ps-reveal="up">
+        <h2 class="ps-account__panel-head">
+          {{ 'customer.orders.title' | t | default: 'Orders' }}
+        </h2>
+
+        {%- paginate customer.orders by 12 -%}
+          {%- if customer.orders.size > 0 -%}
+            <table class="ps-table">
+              <caption class="ps-sr">{{ 'customer.orders.title' | t | default: 'Orders' }}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">{{ 'customer.orders.order_number' | t | default: 'Order' }}</th>
+                  <th scope="col">{{ 'customer.orders.date' | t | default: 'Date' }}</th>
+                  <th scope="col">{{ 'customer.orders.fulfillment_status' | t | default: 'Status' }}</th>
+                  <th scope="col">{{ 'customer.orders.total' | t | default: 'Total' }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%- for order in customer.orders -%}
+                  <tr>
+                    <td>
+                      <a href="{{ order.customer_url }}">{{ order.name }}</a>
+                    </td>
+                    <td class="ps-table__num">
+                      <time datetime="{{ order.created_at | date: '%Y-%m-%d' }}">
+                        {{- order.created_at | date: format: 'date' -}}
+                      </time>
+                    </td>
+                    <td>
+                      <span class="ps-tag{% if order.financial_status == 'paid' %} ps-tag--paid{% else %} ps-tag--open{% endif %}">
+                        {{ order.fulfillment_status_label | default: order.financial_status_label }}
+                      </span>
+                    </td>
+                    <td class="ps-table__num">{{ order.total_price | money }}</td>
+                  </tr>
+                {%- endfor -%}
+              </tbody>
+            </table>
+
+            {%- if paginate.pages > 1 -%}
+              <nav class="ps-pager" aria-label="{{ 'general.pagination.label' | t | default: 'Pagination' }}">
+                {%- if paginate.previous -%}
+                  <a class="ps-pager__link" href="{{ paginate.previous.url }}">
+                    {% render 'icon', name: 'arrow-left', size: 15 %}
+                    {{ 'general.pagination.previous' | t | default: 'Newer' }}
+                  </a>
+                {%- endif -%}
+                <span class="ps-pager__count ps-num">{{ paginate.current_page }} / {{ paginate.pages }}</span>
+                {%- if paginate.next -%}
+                  <a class="ps-pager__link" href="{{ paginate.next.url }}">
+                    {{ 'general.pagination.next' | t | default: 'Older' }}
+                    {% render 'icon', name: 'arrow-right', size: 15 %}
+                  </a>
+                {%- endif -%}
+              </nav>
+            {%- endif -%}
+          {%- else -%}
+            <p class="ps-account__empty">
+              {{ 'customer.orders.none' | t | default: 'No orders yet. The first set has to start somewhere.' }}
+            </p>
+            <a class="ps-btn ps-btn--sm" href="{{ routes.all_products_collection_url }}">
+              {{ 'general.continue_shopping' | t | default: 'Everything we make' }}
+            </a>
+          {%- endif -%}
+        {%- endpaginate -%}
+      </section>
+
+      <aside class="ps-account__side" data-ps-reveal="up">
+        <section class="ps-account__panel">
+          <h2 class="ps-account__panel-head">
+            {{ 'customer.account.default_address' | t | default: 'Default address' }}
+          </h2>
+
+          {%- if customer.default_address != blank -%}
+            <div class="ps-addr__body">
+              {{ customer.default_address | format_address }}
+            </div>
+          {%- else -%}
+            <p class="ps-account__empty">
+              {{ 'customer.addresses.none' | t | default: 'No address saved yet.' }}
+            </p>
+          {%- endif -%}
+
+          <p style="margin-top: var(--ps-s-m);">
+            <a class="ps-link" href="{{ routes.account_addresses_url }}">
+              {{ 'customer.account.view_addresses' | t | default: 'All addresses' }}
+              {% render 'icon', name: 'arrow-right', size: 15 %}
+            </a>
+          </p>
+        </section>
+      </aside>
+
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .ps-account__grid {
+    display: grid;
+    grid-template-columns: 1.6fr 0.9fr;
+    gap: var(--ps-s-m);
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .ps-account__grid { grid-template-columns: 1fr; }
+  }
+{% endstyle %}

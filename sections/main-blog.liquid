@@ -1,0 +1,367 @@
+{%- comment -%}
+  JOURNAL — INDEX
+
+  The first post gets the whole width: a large image, the title split into
+  lines, an excerpt. Everything after it falls into a three-up grid.
+
+  Tag filtering, if the blog uses tags, sits under the masthead as a quiet row
+  of pills rather than a dropdown.
+{%- endcomment -%}
+
+<section
+  class="ps-blog"
+  {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}
+  style="padding-bottom: {{ section.settings.padding_bottom }}px;">
+
+  <header class="ps-blog__head" style="padding-top: {{ section.settings.padding_top }}px;">
+    <div class="ps-shell ps-blog__head-inner">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+
+      <h1 class="ps-blog__title" data-ps-split="lines" data-ps-split-step="110">{{ blog.title }}</h1>
+
+      {%- if section.settings.lede != blank -%}
+        <p class="ps-lede ps-blog__lede" data-ps-reveal="up" style="--ps-delay:220ms">{{ section.settings.lede }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.show_tags and blog.all_tags.size > 0 -%}
+        <nav class="ps-blog__tags" aria-label="{{ 'blogs.article.tags' | t | default: 'Tags' }}" data-ps-reveal="fade">
+          <a
+            class="ps-blog__tag{% if current_tags == blank %} is-on{% endif %}"
+            href="{{ blog.url }}">{{ 'blogs.general.all' | t | default: 'Everything' }}</a>
+          {%- for tag in blog.all_tags -%}
+            <a
+              class="ps-blog__tag{% if current_tags contains tag %} is-on{% endif %}"
+              href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag }}</a>
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
+
+      <div class="ps-blog__thread" aria-hidden="true">
+        {% render 'icon', name: 'thread', draw: true %}
+      </div>
+    </div>
+  </header>
+
+  <div class="ps-shell">
+    {%- paginate blog.articles by section.settings.per_page -%}
+
+      {%- if blog.articles.size == 0 -%}
+        <p class="ps-blog__empty">
+          {{ 'blogs.general.empty' | t | default: 'Nothing written here yet. It is coming.' }}
+        </p>
+      {%- endif -%}
+
+      {%- for article in blog.articles -%}
+
+        {%- if forloop.first and section.settings.feature_first and paginate.current_page == 1 -%}
+          {%- comment -%} The lead story — full width, image above the fold of the list. {%- endcomment -%}
+          <article class="ps-lead" data-ps-stagger="110">
+            <a class="ps-lead__media ps-ratio ps-ratio--169 ps-zoom" href="{{ article.url }}" data-ps-reveal="glaze" data-ps-cursor="{{ 'blogs.general.read' | t | default: 'Read' | escape }}">
+              {%- if article.image != blank -%}
+                {{
+                  article.image
+                  | image_url: width: 2000
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '600,900,1200,1600,2000',
+                    sizes: '(max-width: 760px) 92vw, 88vw',
+                    alt: article.image.alt | default: article.title | escape
+                }}
+              {%- else -%}
+                {{ 'lifestyle-2' | placeholder_svg_tag: 'ps-lead__ph' }}
+              {%- endif -%}
+            </a>
+
+            <div class="ps-lead__body">
+              <p class="ps-meta" data-ps-reveal="fade">
+                <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                  {{- article.published_at | date: format: 'date' -}}
+                </time>
+                {%- if article.tags.size > 0 -%}
+                  <span class="ps-meta__dot" aria-hidden="true">·</span>{{ article.tags.first }}
+                {%- endif -%}
+              </p>
+
+              <h2 class="ps-lead__title" data-ps-split="lines" data-ps-split-step="90">
+                <a href="{{ article.url }}">{{ article.title }}</a>
+              </h2>
+
+              <p class="ps-lead__excerpt" data-ps-reveal="up">
+                {%- if article.excerpt != blank -%}
+                  {{ article.excerpt | strip_html | truncatewords: 42 }}
+                {%- else -%}
+                  {{ article.content | strip_html | truncatewords: 42 }}
+                {%- endif -%}
+              </p>
+
+              <a class="ps-link" href="{{ article.url }}" data-ps-reveal="fade">
+                {{ 'blogs.general.read' | t | default: 'Read it' }}
+                {% render 'icon', name: 'arrow-right', size: 15 %}
+              </a>
+            </div>
+          </article>
+
+          <div class="ps-blog__grid" data-ps-stagger="90">
+        {%- else -%}
+
+          {%- if forloop.first -%}<div class="ps-blog__grid" data-ps-stagger="90">{%- endif -%}
+
+          <article class="ps-post" data-ps-reveal="up">
+            <a class="ps-post__media ps-ratio ps-ratio--43 ps-zoom" href="{{ article.url }}" data-ps-cursor="{{ 'blogs.general.read' | t | default: 'Read' | escape }}">
+              {%- if article.image != blank -%}
+                {{
+                  article.image
+                  | image_url: width: 1000
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '320,480,700,1000',
+                    sizes: '(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 30vw',
+                    alt: article.image.alt | default: article.title | escape
+                }}
+              {%- else -%}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'ps-post__ph' }}
+              {%- endif -%}
+            </a>
+
+            <p class="ps-meta">
+              <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                {{- article.published_at | date: format: 'date' -}}
+              </time>
+            </p>
+
+            <h2 class="ps-post__title">
+              <a href="{{ article.url }}">{{ article.title }}</a>
+            </h2>
+
+            <p class="ps-post__excerpt">
+              {%- if article.excerpt != blank -%}
+                {{ article.excerpt | strip_html | truncatewords: 24 }}
+              {%- else -%}
+                {{ article.content | strip_html | truncatewords: 24 }}
+              {%- endif -%}
+            </p>
+          </article>
+
+        {%- endif -%}
+
+        {%- if forloop.last -%}</div>{%- endif -%}
+      {%- endfor -%}
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="ps-pager" aria-label="{{ 'general.pagination.label' | t | default: 'Pagination' }}">
+          {%- if paginate.previous -%}
+            <a class="ps-pager__link" href="{{ paginate.previous.url }}">
+              {% render 'icon', name: 'arrow-left', size: 15 %}
+              {{ 'general.pagination.previous' | t | default: 'Newer' }}
+            </a>
+          {%- endif -%}
+
+          <span class="ps-pager__count ps-num">
+            {{ paginate.current_page }} / {{ paginate.pages }}
+          </span>
+
+          {%- if paginate.next -%}
+            <a class="ps-pager__link" href="{{ paginate.next.url }}">
+              {{ 'general.pagination.next' | t | default: 'Older' }}
+              {% render 'icon', name: 'arrow-right', size: 15 %}
+            </a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-blog { position: relative; }
+
+  .ps-blog__head { padding-bottom: clamp(1.5rem, 4vw, 3rem); }
+  .ps-blog__head-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.8rem, 2vw, 1.4rem);
+  }
+  .ps-blog__title {
+    font-family: var(--ps-display);
+    font-size: clamp(2.7rem, 9vw, 6.4rem);
+    font-weight: 270;
+    font-variation-settings: "SOFT" 46, "WONK" 1, "opsz" 144;
+    line-height: 0.93;
+    letter-spacing: -0.038em;
+    margin: 0;
+  }
+  .ps-blog__lede { max-width: 48ch; }
+  .ps-blog__thread { width: min(100%, 24rem); margin-top: 0.3rem; }
+
+  .ps-blog__tags { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .ps-blog__tag {
+    padding: 0.4em 0.95em;
+    border-radius: 999px;
+    border: 1px solid var(--ps-hairline);
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ps-ink-soft);
+    transition: color var(--ps-t-fast) var(--ps-ease-swap),
+                border-color var(--ps-t-fast) var(--ps-ease-swap),
+                background var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-blog__tag:hover { border-color: var(--ps-accent); color: var(--ps-accent); }
+  .ps-blog__tag.is-on { background: var(--ps-ink); border-color: var(--ps-ink); color: var(--ps-porcelain); }
+
+  .ps-blog__empty { color: var(--ps-ink-faint); padding-block: var(--ps-s-xl); }
+
+  /* ---- the lead story ---- */
+  .ps-lead {
+    display: grid;
+    gap: clamp(1.2rem, 3vw, 2.4rem);
+    margin-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .ps-lead__media {
+    display: block;
+    border-radius: var(--ps-radius-l);
+    box-shadow: var(--ps-lift-2);
+  }
+  .ps-lead__ph, .ps-post__ph { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ps-lead__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ps-s-2xs);
+    max-width: 62ch;
+  }
+  .ps-lead__title {
+    font-family: var(--ps-display);
+    font-size: clamp(1.9rem, 5vw, 3.6rem);
+    font-weight: 320;
+    font-variation-settings: "SOFT" 38, "WONK" 1, "opsz" 120;
+    line-height: 1.01;
+    letter-spacing: -0.028em;
+    margin: 0.2rem 0 0;
+  }
+  .ps-lead__title a:hover { color: var(--ps-accent); }
+  .ps-lead__excerpt {
+    color: var(--ps-ink-soft);
+    line-height: 1.66;
+    margin-block: 0.4rem 0.6rem;
+    text-wrap: pretty;
+  }
+
+  /* ---- the grid ---- */
+  .ps-blog__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.8rem, 4vw, 3.2rem) var(--ps-s-m);
+  }
+  .ps-post { display: flex; flex-direction: column; gap: 0.35rem; }
+  .ps-post__media {
+    display: block;
+    border-radius: var(--ps-radius-m);
+    margin-bottom: var(--ps-s-2xs);
+    box-shadow: var(--ps-lift-1);
+  }
+  .ps-post__title {
+    font-family: var(--ps-display);
+    font-size: var(--ps-step-2);
+    font-weight: 400;
+    font-variation-settings: "SOFT" 24, "WONK" 0, "opsz" 48;
+    line-height: 1.16;
+    letter-spacing: -0.016em;
+  }
+  .ps-post__title a:hover { color: var(--ps-accent); }
+  .ps-post__excerpt {
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-soft);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .ps-meta {
+    font-size: var(--ps-step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ps-ink-faint);
+  }
+  .ps-meta__dot { margin-inline: 0.55em; }
+
+  /* ---- pager ---- */
+  .ps-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.2rem, 4vw, 3rem);
+    margin-top: clamp(3rem, 7vw, 6rem);
+    padding-top: var(--ps-s-m);
+    border-top: 1px solid var(--ps-hairline);
+  }
+  .ps-pager__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: var(--ps-step--1);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  .ps-pager__link:hover { color: var(--ps-accent); }
+  .ps-pager__count { font-size: var(--ps-step--1); color: var(--ps-ink-faint); }
+
+  @media (max-width: 1024px) {
+    .ps-blog__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .ps-blog__grid { grid-template-columns: 1fr; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Blog",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Journal" },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Lede",
+      "default": "Notes from the studio: what we are painting, where the patterns come from, and how to keep a set alive."
+    },
+    { "type": "checkbox", "id": "feature_first", "label": "Feature the first post", "default": true },
+    { "type": "checkbox", "id": "show_tags", "label": "Show tag filters", "default": true },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Posts per page",
+      "min": 4, "max": 24, "step": 1, "default": 10
+    },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "none", "label": "Linen (default)" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "past"
+    },
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0, "max": 260, "step": 4, "unit": "px", "default": 168
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0, "max": 260, "step": 4, "unit": "px", "default": 120
+    }
+  ]
+}
+{% endschema %}
