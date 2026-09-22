@@ -31,9 +31,17 @@
     endfor
   endif
 
-  assign rev = reveal | default: 'set'
+  assign rev = reveal
+  if rev == blank
+    assign rev = settings.card_reveal | default: 'set'
+  endif
+
   assign tag = heading | default: 'h3'
-  assign second = product.media[1]
+
+  assign second = nil
+  if settings.card_show_second_image
+    assign second = product.media[1]
+  endif
 -%}
 
 <article
@@ -86,10 +94,20 @@
       <span aria-hidden="true">{{ product.title }}</span>
     </{{ tag }}>
 
-    {%- if show_type and product.type != blank -%}
+    {%- liquid
+      assign want_type = show_type
+      if want_type == nil
+        assign want_type = settings.card_show_type
+      endif
+    -%}
+    {%- if want_type and product.type != blank -%}
       <p class="ps-card__meta">{{ product.type }}</p>
     {%- elsif product.metafields.perset.pieces.value != blank -%}
       <p class="ps-card__meta">{{ product.metafields.perset.pieces.value }}</p>
+    {%- endif -%}
+
+    {%- if settings.card_show_vendor and product.vendor != blank -%}
+      <p class="ps-card__meta">{{ product.vendor }}</p>
     {%- endif -%}
 
     <p class="ps-card__price">

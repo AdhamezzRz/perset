@@ -17,6 +17,7 @@
     "cart_show_note": true,
     "cart_show_shipping_note": true,
     "cart_shipping_note": "Shipping across Egypt is calculated at checkout. Every set travels double-boxed.",
-    "share_description": "Hand-painted porcelain from Egypt. Three collections, each a 24-piece service for six."
+    "share_description": "Hand-painted porcelain from Egypt. Three collections, each a 24-piece service for six.",
+    "text_direction": "ltr"
   }
 }

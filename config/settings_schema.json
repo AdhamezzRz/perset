@@ -8,6 +8,31 @@
     "theme_support_url": "https://perset.shop/pages/contact"
   },
   {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Set right-to-left if you publish the store in Arabic."
+      },
+      {
+        "type": "select",
+        "id": "text_direction",
+        "label": "Text direction",
+        "options": [
+          {
+            "value": "ltr",
+            "label": "Left to right"
+          },
+          {
+            "value": "rtl",
+            "label": "Right to left"
+          }
+        ],
+        "default": "ltr"
+      }
+    ]
+  },
+  {
     "name": "Colours",
     "settings": [
       {
