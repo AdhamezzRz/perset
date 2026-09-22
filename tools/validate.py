@@ -84,9 +84,45 @@ def check_assets():
                 fail(path.relative_to(ROOT), f"references missing asset '{name}'")
 
 
+def check_blank_defaults():
+    """Shopify rejects an empty-string default on a setting. To ship a setting
+       as 'unset', omit the default key entirely rather than defaulting it to
+       "". This is only caught at upload time otherwise, which is far too late."""
+    targets = [ROOT / "config" / "settings_schema.json"]
+    targets += list(ROOT.glob("sections/*.liquid")) + list(ROOT.glob("blocks/*.liquid"))
+
+    for path in targets:
+        if path.suffix == ".json":
+            if not path.exists():
+                continue
+            try:
+                groups = json.loads(path.read_text(encoding="utf-8"))
+            except Exception:
+                continue  # already reported by check_json_files
+            blocks = [g for g in groups if isinstance(g, dict)]
+        else:
+            src = path.read_text(encoding="utf-8")
+            match = re.search(r"\{%-?\s*schema\s*-?%\}(.*?)\{%-?\s*endschema\s*-?%\}", src, re.S)
+            if not match:
+                continue
+            try:
+                schema = json.loads(match.group(1))
+            except Exception:
+                continue
+            blocks = [schema] + schema.get("blocks", [])
+
+        for group in blocks:
+            for setting in group.get("settings", []):
+                if setting.get("default") == "":
+                    fail(path.relative_to(ROOT),
+                         f"setting '{setting.get('id')}' has an empty default — "
+                         f"omit the key instead, Shopify rejects it")
+
+
 def main():
     check_json_files()
     check_schemas()
+    check_blank_defaults()
     check_tag_balance()
     check_renders()
     check_assets()
