@@ -21,7 +21,9 @@
   /* Ink */
   --ps-ink:          #241F1B;
   --ps-ink-soft:     #5C534A;
-  --ps-ink-faint:    #8B8177;
+  /* Darkened from the original #8B8177, which only reached 3.3:1 on linen.
+     Eyebrows and card meta are small text and have to clear 4.5:1. */
+  --ps-ink-faint:    #6F675F;
   --ps-hairline:     rgba(36, 31, 27, 0.14);
   --ps-hairline-soft:rgba(36, 31, 27, 0.07);
 

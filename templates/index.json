@@ -233,34 +233,37 @@
         "r1": {
           "type": "reel",
           "settings": {
-            "caption": "A table laid",
-            "collection": "a-tale-in-beads"
+            "caption": "A Tale in Beads, in motion",
+            "collection": "a-tale-in-beads",
+            "video_url": "https://cdn.shopify.com/videos/c/vp/047ec82f580f41b19aace0d00dedc1a9/047ec82f580f41b19aace0d00dedc1a9.HD-720p-4.5Mbps-95224103.mp4",
+            "poster_url": "https://cdn.shopify.com/s/files/1/0809/2778/5145/files/preview_images/047ec82f580f41b19aace0d00dedc1a9.thumbnail.0000000000.jpg?v=1790094843"
           }
         },
         "r2": {
           "type": "reel",
           "settings": {
-            "caption": "Turning a plate",
-            "collection": "stitches-of-the-wild"
+            "caption": "Pretty Past, laid for six",
+            "collection": "pretty-past",
+            "video_url": "https://cdn.shopify.com/videos/c/vp/4cddd4b1f6694b55956a4a2ec354e0aa/4cddd4b1f6694b55956a4a2ec354e0aa.HD-720p-4.5Mbps-95224105.mp4",
+            "poster_url": "https://cdn.shopify.com/s/files/1/0809/2778/5145/files/preview_images/4cddd4b1f6694b55956a4a2ec354e0aa.thumbnail.0000000000.jpg?v=1790094843"
           }
         },
         "r3": {
           "type": "reel",
           "settings": {
-            "caption": "Light on the glaze",
-            "collection": "pretty-past"
+            "caption": "Stitches of the Wild",
+            "collection": "stitches-of-the-wild",
+            "video_url": "https://cdn.shopify.com/videos/c/vp/158aaecfbec04e4ca9281aef2fbb6b07/158aaecfbec04e4ca9281aef2fbb6b07.HD-720p-4.5Mbps-95224107.mp4",
+            "poster_url": "https://cdn.shopify.com/s/files/1/0809/2778/5145/files/preview_images/158aaecfbec04e4ca9281aef2fbb6b07.thumbnail.0000000000.jpg?v=1790094848"
           }
         },
         "r4": {
           "type": "reel",
           "settings": {
-            "caption": "From the studio"
-          }
-        },
-        "r5": {
-          "type": "reel",
-          "settings": {
-            "caption": "Service for six"
+            "caption": "A table laid",
+            "collection": "pretty-past",
+            "video_url": "https://cdn.shopify.com/videos/c/vp/b25cbb9945bc4a72b5400d7db25dd64c/b25cbb9945bc4a72b5400d7db25dd64c.HD-720p-4.5Mbps-95224108.mp4",
+            "poster_url": "https://cdn.shopify.com/s/files/1/0809/2778/5145/files/preview_images/b25cbb9945bc4a72b5400d7db25dd64c.thumbnail.0000000000.jpg?v=1790094848"
           }
         }
       },
@@ -268,15 +271,15 @@
         "r1",
         "r2",
         "r3",
-        "r4",
-        "r5"
+        "r4"
       ],
       "settings": {
         "eyebrow": "From the studio",
         "heading": "In motion",
-        "body": "Tables laid, plates turned, the light moving across a glaze.",
+        "body": "Short loops from the studio. Tables laid, plates turned, light moving across a glaze.",
         "pigment": "none",
-        "dark": false
+        "dark": false,
+        "ratio": "1"
       }
     }
   },

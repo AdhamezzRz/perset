@@ -1,9 +1,12 @@
 {%- comment -%}
   IN MOTION
 
-  The studio reels, shown at the shape they were shot in. Each one plays only
-  while it is actually on screen and pauses the moment it leaves, so a page
-  with five videos on it costs about as much as a page with one.
+  The studio reels. They were shot in three different shapes — portrait,
+  square and landscape — so the frame is square by default, which is the only
+  crop that treats all three fairly and rhymes with the plates.
+
+  Each reel plays only while it is actually on screen and pauses the moment it
+  leaves, so a page carrying several videos costs roughly what one costs.
 
   Under prefers-reduced-motion nothing autoplays: every card falls back to its
   poster frame with a real play button on it.
@@ -16,6 +19,7 @@
 <section
   class="ps-reels ps-section{% if section.settings.dark %} ps-dark{% endif %}"
   id="reels-{{ sid }}"
+  style="--reel-ratio: {{ section.settings.ratio | default: 1 }};"
   {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}>
 
   <div class="ps-shell ps-shell--wide">
@@ -58,6 +62,7 @@
           <div class="ps-reel__frame" data-ps-cursor="{{ block.settings.caption | default: 'Watch' | escape }}">
 
             {%- if v != blank -%}
+              {%- comment -%} A video chosen through the theme editor. {%- endcomment -%}
               {{
                 v
                 | video_tag:
@@ -70,6 +75,21 @@
                   preload: 'metadata',
                   class: 'ps-reel__video'
               }}
+            {%- elsif block.settings.video_url != blank -%}
+              {%- comment -%}
+                A direct CDN source. Shopify's own video_tag needs a file the
+                editor has picked; this path lets the section be wired up
+                ahead of that, and still hands the browser a real <video>.
+              {%- endcomment -%}
+              <video
+                class="ps-reel__video"
+                loop
+                muted
+                playsinline
+                preload="metadata"
+                {% if block.settings.poster_url != blank %}poster="{{ block.settings.poster_url }}"{% endif %}>
+                <source src="{{ block.settings.video_url }}" type="video/mp4">
+              </video>
             {%- elsif block.settings.poster != blank -%}
               {{
                 block.settings.poster
@@ -80,7 +100,7 @@
               {{ 'lifestyle-1' | placeholder_svg_tag: 'ps-reel__video' }}
             {%- endif -%}
 
-            {%- if v != blank -%}
+            {%- if v != blank or block.settings.video_url != blank -%}
               <button
                 class="ps-reel__toggle"
                 type="button"
@@ -153,10 +173,10 @@
     gap: 0.7rem;
   }
 
-  /* Shot on a phone, shown as a phone. */
+  /* Shape is set per section; square by default. */
   .ps-reel__frame {
     position: relative;
-    aspect-ratio: 9 / 16;
+    aspect-ratio: var(--reel-ratio, 1);
     border-radius: var(--ps-radius-l);
     overflow: hidden;
     background: var(--ps-wash, var(--ps-linen-warm));
@@ -327,6 +347,17 @@
       ],
       "default": "none"
     },
+    {
+      "type": "select",
+      "id": "ratio",
+      "label": "Frame shape",
+      "options": [
+        { "value": "1", "label": "Square" },
+        { "value": "0.8", "label": "Portrait 4:5" },
+        { "value": "0.5625", "label": "Phone 9:16" }
+      ],
+      "default": "1"
+    },
     { "type": "checkbox", "id": "dark", "label": "Dark background", "default": false }
   ],
   "blocks": [
@@ -335,6 +366,8 @@
       "name": "Reel",
       "settings": [
         { "type": "video", "id": "video", "label": "Video" },
+        { "type": "text", "id": "video_url", "label": "Video URL (used when no video is picked)" },
+        { "type": "text", "id": "poster_url", "label": "Poster URL" },
         { "type": "image_picker", "id": "poster", "label": "Fallback image" },
         { "type": "text", "id": "caption", "label": "Caption" },
         { "type": "collection", "id": "collection", "label": "Links to collection" },
