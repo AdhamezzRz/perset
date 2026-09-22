@@ -226,6 +226,58 @@
         "dark": false,
         "image": "shopify://shop_images/perset-past-lifestyle.jpg"
       }
+    },
+    "reels": {
+      "type": "reel-strip",
+      "blocks": {
+        "r1": {
+          "type": "reel",
+          "settings": {
+            "caption": "A table laid",
+            "collection": "a-tale-in-beads"
+          }
+        },
+        "r2": {
+          "type": "reel",
+          "settings": {
+            "caption": "Turning a plate",
+            "collection": "stitches-of-the-wild"
+          }
+        },
+        "r3": {
+          "type": "reel",
+          "settings": {
+            "caption": "Light on the glaze",
+            "collection": "pretty-past"
+          }
+        },
+        "r4": {
+          "type": "reel",
+          "settings": {
+            "caption": "From the studio"
+          }
+        },
+        "r5": {
+          "type": "reel",
+          "settings": {
+            "caption": "Service for six"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ],
+      "settings": {
+        "eyebrow": "From the studio",
+        "heading": "In motion",
+        "body": "Tables laid, plates turned, the light moving across a glaze.",
+        "pigment": "none",
+        "dark": false
+      }
     }
   },
   "order": [
@@ -234,6 +286,7 @@
     "stories",
     "setting",
     "rail",
+    "reels",
     "craft"
   ]
 }

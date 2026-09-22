@@ -1,0 +1,352 @@
+{%- comment -%}
+  IN MOTION
+
+  The studio reels, shown at the shape they were shot in. Each one plays only
+  while it is actually on screen and pauses the moment it leaves, so a page
+  with five videos on it costs about as much as a page with one.
+
+  Under prefers-reduced-motion nothing autoplays: every card falls back to its
+  poster frame with a real play button on it.
+{%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id | replace: '_', '-'
+-%}
+
+<section
+  class="ps-reels ps-section{% if section.settings.dark %} ps-dark{% endif %}"
+  id="reels-{{ sid }}"
+  {% if section.settings.pigment != 'none' %}data-ps-pigment="{{ section.settings.pigment }}"{% endif %}>
+
+  <div class="ps-shell ps-shell--wide">
+    <header class="ps-reels__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="ps-h3 ps-reels__title" data-ps-split="lines">{{ section.settings.heading }}</h2>
+      </div>
+
+      <div class="ps-reels__controls">
+        {%- if section.settings.body != blank -%}
+          <p class="ps-reels__body ps-hide@sm">{{ section.settings.body }}</p>
+        {%- endif -%}
+        <div class="ps-row">
+          <button class="ps-icon-btn ps-reels__btn" type="button" data-ps-rail-prev aria-label="{{ 'general.previous' | t | default: 'Previous' }}">
+            {% render 'icon', name: 'arrow-left', size: 18 %}
+          </button>
+          <button class="ps-icon-btn ps-reels__btn" type="button" data-ps-rail-next aria-label="{{ 'general.next' | t | default: 'Next' }}">
+            {% render 'icon', name: 'arrow-right', size: 18 %}
+          </button>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <div class="ps-reels__outer">
+    <ul class="ps-reels__rail" data-ps-rail data-ps-stagger="90">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign v = block.settings.video
+          assign col = collections[block.settings.collection]
+          assign href = block.settings.link
+          if href == blank and col != blank
+            assign href = col.url
+          endif
+        -%}
+        <li class="ps-reel" data-ps-reveal="set" {{ block.shopify_attributes }}>
+          <div class="ps-reel__frame" data-ps-cursor="{{ block.settings.caption | default: 'Watch' | escape }}">
+
+            {%- if v != blank -%}
+              {{
+                v
+                | video_tag:
+                  image_size: '700x',
+                  autoplay: false,
+                  loop: true,
+                  muted: true,
+                  controls: false,
+                  playsinline: true,
+                  preload: 'metadata',
+                  class: 'ps-reel__video'
+              }}
+            {%- elsif block.settings.poster != blank -%}
+              {{
+                block.settings.poster
+                | image_url: width: 900
+                | image_tag: loading: 'lazy', widths: '320,480,700,900', sizes: '(max-width: 760px) 68vw, 24vw', alt: block.settings.caption | escape, class: 'ps-reel__video'
+              }}
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'ps-reel__video' }}
+            {%- endif -%}
+
+            {%- if v != blank -%}
+              <button
+                class="ps-reel__toggle"
+                type="button"
+                data-ps-reel-toggle
+                aria-label="{{ 'sections.reels.play' | t | default: 'Play' }}">
+                <span class="ps-reel__icon ps-reel__icon--play" aria-hidden="true"></span>
+                <span class="ps-reel__icon ps-reel__icon--pause" aria-hidden="true"></span>
+              </button>
+            {%- endif -%}
+
+            {%- if href != blank -%}
+              <a class="ps-reel__cover" href="{{ href }}">
+                <span class="ps-sr">{{ block.settings.caption | default: col.title | escape }}</span>
+              </a>
+            {%- endif -%}
+          </div>
+
+          {%- if block.settings.caption != blank -%}
+            <p class="ps-reel__caption">{{ block.settings.caption }}</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-reels { overflow: hidden; }
+  .ps-reels.ps-dark { background: var(--ps-ink); }
+
+  .ps-reels__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--ps-s-m);
+    flex-wrap: wrap;
+    margin-bottom: clamp(1.5rem, 3.5vw, 2.75rem);
+  }
+  .ps-reels__title { margin-top: 0.35rem; }
+  .ps-reels__controls {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--ps-s-m);
+  }
+  .ps-reels__body { max-width: 34ch; color: var(--ps-ink-soft); font-size: var(--ps-step--1); }
+  .ps-dark .ps-reels__body { color: rgba(244,238,228,0.7); }
+  .ps-reels__btn { border: 1px solid var(--ps-hairline); }
+  .ps-dark .ps-reels__btn { border-color: rgba(244,238,228,0.25); }
+
+  .ps-reels__rail {
+    display: flex;
+    gap: clamp(0.8rem, 1.6vw, 1.4rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--ps-gutter);
+    padding-inline: var(--ps-gutter);
+    padding-bottom: var(--ps-s-s);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  .ps-reels__rail::-webkit-scrollbar { display: none; }
+
+  .ps-reel {
+    flex: 0 0 auto;
+    width: clamp(200px, 21vw, 300px);
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  /* Shot on a phone, shown as a phone. */
+  .ps-reel__frame {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    border-radius: var(--ps-radius-l);
+    overflow: hidden;
+    background: var(--ps-wash, var(--ps-linen-warm));
+    box-shadow: var(--ps-lift-1);
+    transition: box-shadow var(--ps-t-base) var(--ps-ease-set),
+                transform var(--ps-t-base) var(--ps-ease-set);
+  }
+  .ps-reel__frame:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ps-lift-2);
+  }
+  .ps-reel__video,
+  .ps-reel__frame video,
+  .ps-reel__frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ps-reel__cover { position: absolute; inset: 0; z-index: 2; }
+
+  .ps-reel__toggle {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: rgba(36, 31, 27, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: var(--ps-porcelain);
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity var(--ps-t-fast) var(--ps-ease-swap),
+                transform var(--ps-t-base) var(--ps-ease-set),
+                background var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-reel__frame:hover .ps-reel__toggle,
+  .ps-reel__toggle:focus-visible { opacity: 1; transform: scale(1); }
+  .ps-reel__toggle:hover { background: rgba(36, 31, 27, 0.78); }
+
+  /* Two glyphs drawn in CSS so there is no icon request for a control that
+     is mostly invisible. */
+  .ps-reel__icon--play {
+    width: 0; height: 0;
+    border-left: 10px solid currentColor;
+    border-top: 6.5px solid transparent;
+    border-bottom: 6.5px solid transparent;
+    margin-left: 3px;
+  }
+  .ps-reel__icon--pause {
+    width: 10px; height: 12px;
+    border-left: 3px solid currentColor;
+    border-right: 3px solid currentColor;
+    display: none;
+  }
+  .ps-reel__frame.is-playing .ps-reel__icon--play { display: none; }
+  .ps-reel__frame.is-playing .ps-reel__icon--pause { display: block; }
+  /* While a reel is playing the control stays visible, so pausing is always
+     one click away rather than something you have to hunt for. */
+  .ps-reel__frame.is-playing .ps-reel__toggle { opacity: 1; transform: scale(1); }
+
+  .ps-reel__caption {
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-soft);
+    letter-spacing: 0.03em;
+  }
+  .ps-dark .ps-reel__caption { color: rgba(244,238,228,0.7); }
+
+  @media (max-width: 640px) {
+    .ps-reel { width: 62vw; }
+    .ps-reels__head { align-items: flex-start; }
+    .ps-reel__toggle { opacity: 1; transform: scale(1); }
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    var root = document.getElementById('reels-{{ sid }}');
+    if (!root) return;
+
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var saver = navigator.connection && navigator.connection.saveData;
+    var frames = Array.prototype.slice.call(root.querySelectorAll('.ps-reel__frame'));
+
+    function video(frame) { return frame.querySelector('video'); }
+
+    function play(frame) {
+      var v = video(frame);
+      if (!v) return;
+      v.muted = true;                     // required for autoplay on every browser
+      var p = v.play();
+      if (p && p.catch) p.catch(function () { /* blocked; the button still works */ });
+      frame.classList.add('is-playing');
+      setLabel(frame, true);
+    }
+
+    function pause(frame) {
+      var v = video(frame);
+      if (!v) return;
+      v.pause();
+      frame.classList.remove('is-playing');
+      setLabel(frame, false);
+    }
+
+    function setLabel(frame, playing) {
+      var btn = frame.querySelector('[data-ps-reel-toggle]');
+      if (btn) btn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    }
+
+    frames.forEach(function (frame) {
+      var btn = frame.querySelector('[data-ps-reel-toggle]');
+      if (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          frame.classList.contains('is-playing') ? pause(frame) : play(frame);
+        });
+      }
+    });
+
+    // Autoplay only what is actually on screen, and only when the visitor has
+    // not asked us to calm down or to save data.
+    if (!calm && !saver && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) play(en.target);
+          else pause(en.target);
+        });
+      }, { threshold: 0.55 });
+      frames.forEach(function (f) { io.observe(f); });
+    }
+
+    // A backgrounded tab should not be decoding video.
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) frames.forEach(pause);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "In motion",
+  "tag": "section",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "From the studio" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "In motion" },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Text",
+      "default": "Tables laid, plates turned, the light moving across a glaze."
+    },
+    {
+      "type": "select",
+      "id": "pigment",
+      "label": "Pigment",
+      "options": [
+        { "value": "none", "label": "Linen (default)" },
+        { "value": "wild", "label": "Stitches of the Wild" },
+        { "value": "beads", "label": "A Tale in Beads" },
+        { "value": "past", "label": "Pretty Past" }
+      ],
+      "default": "none"
+    },
+    { "type": "checkbox", "id": "dark", "label": "Dark background", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "reel",
+      "name": "Reel",
+      "settings": [
+        { "type": "video", "id": "video", "label": "Video" },
+        { "type": "image_picker", "id": "poster", "label": "Fallback image" },
+        { "type": "text", "id": "caption", "label": "Caption" },
+        { "type": "collection", "id": "collection", "label": "Links to collection" },
+        { "type": "url", "id": "link", "label": "Link override" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "In motion",
+      "blocks": [{ "type": "reel" }, { "type": "reel" }, { "type": "reel" }, { "type": "reel" }]
+    }
+  ]
+}
+{% endschema %}
