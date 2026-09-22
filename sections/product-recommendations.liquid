@@ -33,8 +33,8 @@
 
   assign limit = section.settings.products_to_show
   comment
-    Inside a {% liquid %} tag every line is its own statement, so a filter
-    chain cannot be wrapped across lines. This has to stay on one line.
+    Inside a liquid tag every line is its own statement, so a filter chain
+    cannot be wrapped across lines. This has to stay on one line.
   endcomment
   assign recs_url = routes.product_recommendations_url | append: '?section_id=' | append: section.id | append: '&product_id=' | append: product.id | append: '&limit=' | append: limit
 -%}

@@ -162,6 +162,23 @@ def check_liquid_tag_continuations():
                          "filter chain wrapped inside a {% liquid %} tag — keep it on one line")
 
 
+def check_liquid_tag_delimiters():
+    """A literal {% or {{ inside a {% liquid %} body closes the tag early —
+       even inside a comment statement, because the tag ends at the first %}.
+       Write about Liquid tags without the braces."""
+    for path in ROOT.rglob("*.liquid"):
+        src = path.read_text(encoding="utf-8")
+        for match in re.finditer(r"\{%-?\s*liquid\b", src):
+            rest = src[match.end():]
+            end = rest.find("%}")
+            if end == -1:
+                continue
+            body = rest[:end]
+            if "{%" in body or "{{" in body:
+                fail(f"{path.relative_to(ROOT)}:{src[:match.start()].count(chr(10)) + 1}",
+                     "literal tag delimiter inside a {% liquid %} body closes it early")
+
+
 def check_range_settings():
     """Shopify range settings take whole numbers only. A fractional min, max,
        step or default is rejected at upload — silently, when uploading by
@@ -193,6 +210,7 @@ def main():
     check_piped_filter_args()
     check_range_settings()
     check_liquid_tag_continuations()
+    check_liquid_tag_delimiters()
     check_tag_balance()
     check_renders()
     check_assets()
