@@ -39,6 +39,10 @@
   --ps-peacock-soft: #7FB0AE;
   --ps-gold:         #BE9B3E;
 
+  /* The logo's own two colours, sampled from the mark itself */
+  --ps-oxblood:      #500C02;
+  --ps-blush:        #F2A4B6;
+
   /* Semantic */
   --ps-bg:           var(--ps-linen);
   --ps-fg:           var(--ps-ink);
@@ -185,7 +189,7 @@ hr {
   border-radius: 2px;
 }
 
-::selection { background: var(--ps-coral-mist); color: var(--ps-ink); }
+::selection { background: var(--ps-blush); color: var(--ps-oxblood); }
 
 .ps-sr {
   position: absolute !important;
@@ -440,7 +444,7 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
    -------------------------------------------------------------------------- */
 
 .ps-btn {
-  --btn-bg: var(--ps-ink);
+  --btn-bg: var(--ps-oxblood);
   --btn-fg: var(--ps-porcelain);
   position: relative;
   display: inline-flex;
@@ -470,14 +474,14 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--ps-accent);
+  background: var(--ps-blush);
   transform: translateY(101%);
   transition: transform var(--ps-t-base) var(--ps-ease-set);
 }
 .ps-btn:hover::before,
 .ps-btn:focus-visible::before { transform: translateY(0); }
 .ps-btn:hover {
-  color: var(--ps-accent-ink);
+  color: var(--ps-oxblood);
   transform: translateY(-2px);
   box-shadow: var(--ps-lift-2);
 }
@@ -1077,13 +1081,13 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
    -------------------------------------------------------------------------- */
 
 .ps-footer {
-  background: var(--ps-ink);
+  background: var(--ps-oxblood);
   color: var(--ps-linen);
   padding-block: clamp(3.5rem, 7vw, 6.5rem) var(--ps-s-l);
   position: relative;
   z-index: 1;
 }
-.ps-footer a:hover { color: var(--ps-coral); }
+.ps-footer a:hover { color: var(--ps-blush); }
 .ps-footer__grid {
   display: grid;
   grid-template-columns: 1.6fr repeat(3, 1fr);
@@ -1112,24 +1116,22 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
   letter-spacing: 0.06em;
 }
 .ps-wordmark {
-  font-family: var(--ps-display);
-  font-size: clamp(3.5rem, 15vw, 15rem);
-  font-weight: 200;
-  font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
-  line-height: 0.8;
-  letter-spacing: -0.03em;
-  color: rgba(244, 238, 228, 0.1);
-  text-align: center;
-  user-select: none;
+  display: flex;
+  justify-content: center;
   margin-top: var(--ps-s-xl);
+  color: var(--ps-blush);
+  user-select: none;
   overflow: hidden;
 }
+/* Ghosted. The opacity sits on the mark, not the wrapper, because the
+   wrapper's reveal rule sets opacity: 1 once it is in view. */
+.ps-wordmark .ps-logomark { opacity: 0.16; }
 
 /* --------------------------------------------------------------------------
    16. UTILITIES
    -------------------------------------------------------------------------- */
 
-.ps-dark { background: var(--ps-ink); color: var(--ps-linen); }
+.ps-dark { background: var(--ps-oxblood); color: var(--ps-linen); }
 .ps-dark .ps-eyebrow { color: rgba(244,238,228,0.55); }
 .ps-dark .ps-lede { color: rgba(244,238,228,0.72); }
 .ps-dark .ps-btn--ghost { --btn-fg: var(--ps-linen); box-shadow: inset 0 0 0 1px rgba(244,238,228,0.28); }
@@ -1172,50 +1174,53 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
 }
 
 /* --------------------------------------------------------------------------
-   17. THE CURTAIN
-   A linen panel that draws across between pages. It is decoration only:
-   perset-motion.js navigates on whichever comes first, the transition ending
-   or a 700ms timer, so a stalled animation can never trap a visitor on a
-   page. Without JavaScript the element is never inserted at all.
+   17. THE MARK
+   The hand-lettered script from the logo, as a mask over currentColor so
+   it can be oxblood on linen or blush on oxblood from the same file.
    -------------------------------------------------------------------------- */
 
-.ps-curtain {
-  position: fixed;
-  inset: 0;
-  z-index: 400;
-  display: grid;
-  place-items: center;
-  background: var(--ps-linen);
-  pointer-events: none;
-  /* Open: clipped away to nothing at the top edge. */
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 620ms var(--ps-ease-set);
+.ps-logomark {
+  display: inline-block;
+  width: var(--logo-w, 112px);
+  aspect-ratio: 819 / 445;
+  flex: none;
+  vertical-align: middle;
+  background-color: currentColor;
+  -webkit-mask: var(--ps-logo-url) center / contain no-repeat;
+          mask: var(--ps-logo-url) center / contain no-repeat;
 }
-.ps-curtain.is-closed {
-  clip-path: inset(0 0 0 0);
-  pointer-events: auto;
+.ps-logomark img { display: none; }
+@supports not ((mask-image: url("")) or (-webkit-mask-image: url(""))) {
+  .ps-logomark { background: none; -webkit-mask: none; mask: none; }
+  .ps-logomark img { display: block; width: 100%; height: auto; }
 }
+.ps-logo { color: var(--ps-oxblood); }
 
-.ps-curtain__mark {
-  font-family: var(--ps-display);
-  font-size: clamp(1.4rem, 3.4vw, 2.4rem);
-  font-weight: 300;
-  font-variation-settings: "SOFT" 40, "WONK" 1, "opsz" 72;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--ps-ink);
+/* --------------------------------------------------------------------------
+   18. THE VEIL
+   An oxblood cloth with the mark on it. It covers every page as it arrives
+   and lifts once the page is ready; on the way out it is drawn back down
+   before the next page loads. Its resting rules live inline in
+   layout/theme.liquid so it is there before first paint; these are the
+   parts that can wait for the stylesheet.
+
+   It is decoration only: layout/theme.liquid opens it on load or after a
+   hard timeout, and perset-motion.js navigates on whichever comes first,
+   the transition ending or a 700ms timer. Without JavaScript it is never
+   shown, and reduced motion removes it entirely.
+   -------------------------------------------------------------------------- */
+
+.ps-veil__mark {
+  color: var(--ps-blush);
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 320ms var(--ps-ease-set) 140ms,
-              transform 520ms var(--ps-ease-set) 140ms;
+  transform: translateY(14px) scale(0.97);
+  transition: opacity 480ms var(--ps-ease-set) 120ms,
+              transform 720ms var(--ps-ease-set) 120ms;
 }
-.ps-curtain__mark em {
-  font-style: italic;
-  font-variation-settings: "SOFT" 60, "WONK" 1, "opsz" 144;
-  letter-spacing: 0.1em;
-}
-.ps-curtain.is-closed .ps-curtain__mark { opacity: 1; transform: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .ps-curtain { display: none; }
+.ps-veil.is-in .ps-veil__mark { opacity: 1; transform: none; }
+.ps-veil.is-open .ps-veil__mark {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition-delay: 0ms;
+  transition-duration: 260ms, 400ms;
 }

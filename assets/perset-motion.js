@@ -500,28 +500,20 @@
   }
 
   /* ------------------------------------------------------------ transition
-     A linen panel draws across between pages, so moving through the site
-     feels like a cloth being laid rather than a browser reloading.
+     The veil (see layout/theme.liquid) covers each page as it arrives and
+     is lifted once the page is ready. Here it is drawn back down when the
+     visitor leaves, so moving through the site feels like a cloth being laid
+     rather than a browser reloading.
 
      Navigation is never the animation's responsibility. Every path through
-     this code ends in a real navigation: if anything throws, if the panel
+     this code ends in a real navigation: if anything throws, if the veil
      never animates, if a timer is throttled in a background tab, the link
      still goes where it was going. */
 
   function initTransition() {
     if (reduced.matches) return;
-
-    var panel = document.createElement('div');
-    panel.className = 'ps-curtain';
-    panel.setAttribute('aria-hidden', 'true');
-    panel.innerHTML = '<span class="ps-curtain__mark">Per <em>Set</em></span>';
-    document.body.appendChild(panel);
-
-    // Draw the panel back on arrival, including when the page comes out of
-    // the back/forward cache with the panel already closed.
-    function open() { panel.classList.remove('is-closed'); }
-    window.addEventListener('pageshow', open);
-    open();
+    var veil = $('[data-ps-veil]');
+    if (!veil) return;
 
     var leaving = false;
 
@@ -557,10 +549,10 @@
       var go = function () {
         if (!go.done) { go.done = true; window.location.href = href; }
       };
-      panel.addEventListener('transitionend', go, { once: true });
+      veil.addEventListener('transitionend', go, { once: true });
       setTimeout(go, 700);
 
-      try { panel.classList.add('is-closed'); } catch (err) { go(); }
+      try { veil.classList.remove('is-open'); } catch (err) { go(); }
     });
   }
 

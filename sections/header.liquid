@@ -43,7 +43,7 @@
               class: 'ps-logo__img'
           }}
         {%- else -%}
-          Per <em>Set</em>
+          {% render 'logo', width: 'clamp(88px, 11vw, 118px)' %}
         {%- endif -%}
       </a>
 
@@ -93,7 +93,7 @@
 {%- comment -%} Full-screen menu. Wipes open from the top like a cloth drawn over a table. {%- endcomment -%}
 <div class="ps-menu" id="ps-menu" data-ps-menu aria-hidden="true">
   <div class="ps-shell ps-shell--wide ps-menu__top">
-    <span class="ps-logo">Per <em>Set</em></span>
+    <span class="ps-logo">{% render 'logo', width: 'clamp(88px, 11vw, 118px)' %}</span>
     <button
       class="ps-icon-btn"
       type="button"

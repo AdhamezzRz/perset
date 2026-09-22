@@ -45,12 +45,27 @@
     {{ 'perset-core.css' | asset_url | stylesheet_tag }}
 
     <style>
+      :root { --ps-logo-url: url({{ 'perset-logo-mask.png' | asset_url | json }}); }
       {%- if settings.color_accent != blank -%}
         :root { --ps-accent: {{ settings.color_accent }}; }
       {%- endif -%}
       {%- if settings.color_background != blank -%}
         :root { --ps-linen: {{ settings.color_background }}; }
       {%- endif -%}
+
+      /* The veil's resting state has to exist before first paint, so it lives
+         here rather than in the stylesheet. Gated on .ps-js: without a script
+         to lift it, it is never shown at all. */
+      .ps-js .ps-veil {
+        position: fixed; inset: 0; z-index: 400;
+        display: grid; place-items: center;
+        background: #500C02;
+        clip-path: inset(0 0 0 0);
+        transition: clip-path 640ms cubic-bezier(0.16, 1, 0.30, 1);
+      }
+      .ps-js .ps-veil.is-open { clip-path: inset(0 0 100% 0); pointer-events: none; }
+      html:not(.ps-js) .ps-veil { display: none; }
+      @media (prefers-reduced-motion: reduce) { .ps-veil { display: none !important; } }
     </style>
 
     <script>
@@ -68,6 +83,32 @@
           if (!el.classList.contains('ps-ready')) el.classList.remove('ps-js');
         }, 2500);
       });
+
+      // The veil. Covers the page as it arrives, lifts once it is ready.
+      // First visit in a session holds a beat longer so the mark can be read;
+      // every page after that lifts almost at once. A hard timeout lifts it
+      // regardless, so a slow image can never trap anyone behind it.
+      (function () {
+        var veil = null;
+        function find() { return veil || (veil = document.querySelector('[data-ps-veil]')); }
+        function open() { var v = find(); if (v) v.classList.add('is-open'); }
+        var first = true;
+        try { first = !sessionStorage.getItem('ps-seen'); sessionStorage.setItem('ps-seen', '1'); } catch (e) {}
+        var hold = first ? 1100 : 320;
+        var t0 = Date.now();
+        function ready() {
+          var left = hold - (Date.now() - t0);
+          setTimeout(open, left > 0 ? left : 0);
+        }
+        if (document.readyState === 'complete') ready();
+        else window.addEventListener('load', ready);
+        window.addEventListener('pageshow', function (e) { if (e.persisted) open(); });
+        document.addEventListener('DOMContentLoaded', function () {
+          var v = find();
+          if (v) requestAnimationFrame(function () { v.classList.add('is-in'); });
+        });
+        setTimeout(open, 3200);
+      })();
     </script>
 
     {{ content_for_header }}
@@ -80,6 +121,10 @@
     <a class="ps-skip" href="#ps-main">{{ 'accessibility.skip_to_text' | t | default: 'Skip to content' }}</a>
 
     <div class="ps-progress" data-ps-progress aria-hidden="true"></div>
+
+    <div class="ps-veil" data-ps-veil aria-hidden="true">
+      <div class="ps-veil__mark">{% render 'logo', width: 'clamp(150px, 24vw, 280px)' %}</div>
+    </div>
 
     {% sections 'header-group' %}
 

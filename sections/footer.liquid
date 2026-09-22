@@ -48,7 +48,7 @@
 
     <div class="ps-footer__grid">
       <div class="ps-footer__brand">
-        <span class="ps-logo">Per <em>Set</em></span>
+        <span class="ps-footer__mark">{% render 'logo', width: '136px' %}</span>
         {%- if section.settings.blurb != blank -%}
           <p class="ps-footer__blurb">{{ section.settings.blurb }}</p>
         {%- endif -%}
@@ -96,11 +96,22 @@
 
     <div class="ps-footer__bottom">
       <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ section.settings.rights | default: 'All rights reserved.' }}</p>
-      <p>{{ powered_by_link }}</p>
+      <p class="ps-footer__credit">
+        {%- if section.settings.credit_text != blank -%}
+          {%- if section.settings.credit_url != blank -%}
+            <a href="{{ section.settings.credit_url }}" rel="noopener" target="_blank">{{ section.settings.credit_text }}</a>
+          {%- else -%}
+            {{ section.settings.credit_text }}
+          {%- endif -%}
+        {%- endif -%}
+        {%- if section.settings.show_shopify_credit -%}
+          <span class="ps-footer__dot" aria-hidden="true">&middot;</span> {{ powered_by_link }}
+        {%- endif -%}
+      </p>
     </div>
 
-    <div class="ps-wordmark ps-lines" aria-hidden="true">
-      <span class="ps-line-mask"><span class="ps-line-inner">PER SET</span></span>
+    <div class="ps-wordmark" aria-hidden="true" data-ps-reveal="fade">
+      {% render 'logo', width: 'min(72vw, 640px)', label: '' %}
     </div>
   </div>
 </footer>
@@ -144,6 +155,9 @@
   .ps-footer__err { color: var(--ps-coral); font-size: var(--ps-step--1); margin-top: 0.5rem; }
 
   .ps-footer__brand { display: flex; flex-direction: column; gap: var(--ps-s-s); align-items: flex-start; }
+  .ps-footer__mark { color: var(--ps-blush); display: inline-block; }
+  .ps-footer__credit a { color: var(--ps-blush); }
+  .ps-footer__dot { margin-inline: 0.4em; }
   .ps-footer__blurb { color: rgba(244, 238, 228, 0.68); max-width: 34ch; font-size: var(--ps-step--1); }
   .ps-footer__social { display: flex; gap: 0.25rem; margin-top: 0.2rem; }
   .ps-footer__social .ps-icon-btn:hover { background: rgba(244,238,228,0.12); }
@@ -177,7 +191,11 @@
       "label": "Brand line",
       "default": "Hand-painted porcelain, made in small runs in Egypt."
     },
-    { "type": "text", "id": "rights", "label": "Rights line", "default": "All rights reserved." }
+    { "type": "text", "id": "rights", "label": "Rights line", "default": "All rights reserved." },
+    { "type": "header", "content": "Credit" },
+    { "type": "text", "id": "credit_text", "label": "Credit line", "default": "Powered by Najmarketing.co" },
+    { "type": "url", "id": "credit_url", "label": "Credit link" },
+    { "type": "checkbox", "id": "show_shopify_credit", "label": "Also show Shopify's credit", "default": false }
   ],
   "blocks": [
     {

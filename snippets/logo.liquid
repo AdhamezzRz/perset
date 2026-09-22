@@ -1,0 +1,19 @@
+{%- comment -%}
+  The Per Set mark: the hand-lettered script from the logo.
+
+  Rendered as a CSS mask over `currentColor`, so the same asset can be
+  oxblood on linen, blush on oxblood, or anything else the surface needs.
+  Browsers without mask support get the blush PNG instead.
+
+  Usage: {% render 'logo', width: '112px' %}
+    width  {String}  any CSS length; the mark keeps its 819:445 aspect
+    label  {String}  accessible name, defaults to the shop name
+{%- endcomment -%}
+
+{%- liquid
+  assign w = width | default: '112px'
+  assign name = label | default: shop.name
+-%}
+<span class="ps-logomark" role="img" aria-label="{{ name | escape }}" style="--logo-w: {{ w }};">
+  <img src="{{ 'perset-logo-blush.png' | asset_url }}" alt="" width="819" height="445" loading="eager" decoding="async">
+</span>

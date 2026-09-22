@@ -78,7 +78,10 @@
         "news_heading": "First look at the next firing",
         "news_body": "Small runs sell out quietly. We will tell you before they do.",
         "blurb": "Hand-painted porcelain, made in small runs in Egypt.",
-        "rights": "All rights reserved."
+        "rights": "All rights reserved.",
+        "credit_text": "Powered by Najmarketing.co",
+        "credit_url": "https://najmarketing.co",
+        "show_shopify_credit": false
       }
     }
   },
