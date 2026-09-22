@@ -52,18 +52,24 @@
         {%- if section.settings.blurb != blank -%}
           <p class="ps-footer__blurb">{{ section.settings.blurb }}</p>
         {%- endif -%}
+        {%- comment -%}
+          These ids must match config/settings_schema.json exactly. Each icon
+          is omitted entirely when its setting is empty, so an account the
+          shop does not actually have never appears in the footer.
+        {%- endcomment -%}
         <div class="ps-footer__social">
-          {%- if settings.instagram != blank -%}
-            <a href="{{ settings.instagram }}" rel="noopener" target="_blank" aria-label="Instagram" class="ps-icon-btn">{% render 'icon', name: 'instagram', size: 19 %}</a>
+          {%- if settings.social_instagram != blank -%}
+            <a href="{{ settings.social_instagram }}" rel="noopener" target="_blank" aria-label="Instagram" class="ps-icon-btn">{% render 'icon', name: 'instagram', size: 19 %}</a>
           {%- endif -%}
-          {%- if settings.tiktok != blank -%}
-            <a href="{{ settings.tiktok }}" rel="noopener" target="_blank" aria-label="TikTok" class="ps-icon-btn">{% render 'icon', name: 'tiktok', size: 19 %}</a>
+          {%- if settings.social_tiktok != blank -%}
+            <a href="{{ settings.social_tiktok }}" rel="noopener" target="_blank" aria-label="TikTok" class="ps-icon-btn">{% render 'icon', name: 'tiktok', size: 19 %}</a>
           {%- endif -%}
-          {%- if settings.facebook != blank -%}
-            <a href="{{ settings.facebook }}" rel="noopener" target="_blank" aria-label="Facebook" class="ps-icon-btn">{% render 'icon', name: 'facebook', size: 19 %}</a>
+          {%- if settings.social_facebook != blank -%}
+            <a href="{{ settings.social_facebook }}" rel="noopener" target="_blank" aria-label="Facebook" class="ps-icon-btn">{% render 'icon', name: 'facebook', size: 19 %}</a>
           {%- endif -%}
-          {%- if settings.whatsapp != blank -%}
-            <a href="{{ settings.whatsapp }}" rel="noopener" target="_blank" aria-label="WhatsApp" class="ps-icon-btn">{% render 'icon', name: 'whatsapp', size: 19 %}</a>
+          {%- if settings.social_whatsapp != blank -%}
+            {%- assign wa = settings.social_whatsapp | remove: ' ' | remove: '+' | remove: '-' -%}
+            <a href="https://wa.me/{{ wa }}" rel="noopener" target="_blank" aria-label="WhatsApp" class="ps-icon-btn">{% render 'icon', name: 'whatsapp', size: 19 %}</a>
           {%- endif -%}
         </div>
       </div>

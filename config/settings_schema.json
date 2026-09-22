@@ -79,7 +79,7 @@
         "id": "social_whatsapp",
         "label": "WhatsApp number",
         "info": "Digits only, with the country code. 201xxxxxxxxx for Egypt.",
-        "default": "201000000000"
+        "default": ""
       },
       {
         "type": "text",
