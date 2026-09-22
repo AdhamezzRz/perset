@@ -62,13 +62,28 @@ If you shoot anything next, shoot that.
   complete service. Sizes, piece counts and descriptions are yours as written.
 - **22 photographs** processed and uploaded, including square crops of the
   individual pieces cut from the high-resolution flat lays.
-- **5 studio reels** uploaded and shown in the "In motion" strip.
+- **5 studio reels** uploaded. Four are shown in the "In motion" strip.
 - **6 pages** written: Our Story, Care, Shipping, Returns, FAQ, and the
   existing Contact page.
 - **Navigation** rebuilt: main menu, footer shop menu, footer information menu.
 
 The four placeholder demo products that came with the store have been
 archived, not deleted. They are recoverable if you want them.
+
+---
+
+### 5. The reels are very short
+
+All five clips run between 0.8 and 2.0 seconds, so they read as looping
+cinemagraphs rather than films. That is what was in the folder, not something
+that happened in processing — they transcoded cleanly at full length.
+
+They also arrived in three different shapes: reels 1 and 2 are portrait, reel
+3 is landscape, reel 4 is square, and reel 5 is reel 4 letterboxed to 16:9.
+The strip uses square frames, which is the only crop that treats all three
+shapes fairly, and reel 5 is not used because it duplicates reel 4 with black
+bars. If you shoot longer clips, the frame shape is a section setting and the
+strip takes up to eight.
 
 ---
 
