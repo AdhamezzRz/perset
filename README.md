@@ -109,3 +109,30 @@ and locale parses, and that Liquid tags are balanced across the theme.
 Prices on the catalogue are **placeholders** and every product ships with zero
 tracked inventory and a deny policy, so nothing is purchasable until real
 prices and stock are set in admin. That guard is deliberate.
+
+## Deploying
+
+Files go to the theme with `themeFilesUpsert` (Admin GraphQL). **Order
+matters**, and getting it wrong fails quietly:
+
+1. `assets/`, `layout/`, `snippets/`
+2. `sections/*.liquid`
+3. `config/settings_schema.json`, then `config/settings_data.json`
+4. `locales/`
+5. `sections/*-group.json` and `templates/*.json` — **last**
+
+Shopify validates a JSON template against the section files already on the
+theme. Upload a template before its section exists and it is either rejected
+with *"Section type 'x' does not refer to an existing section file"*, or —
+worse — accepted with its `settings` silently emptied. If a section's settings
+come back blank after a deploy, that is what happened; re-upload the template.
+
+Two more things the API will not warn you about:
+
+- `.json` files report a **normalised** size, so comparing it to the local
+  byte count is meaningless. Verify JSON by reading the content back.
+- A setting with `"default": ""` is rejected outright. To ship a setting unset,
+  omit the `default` key. `tools/validate.py` checks for this.
+
+`tools/deploy_manifest.py` groups the theme into upload batches that stay
+under a byte budget.
