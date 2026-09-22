@@ -1,0 +1,141 @@
+{
+  "theme_info": {
+    "name": "Per Set · Atelier",
+    "author": "Per Set",
+    "description": "A theme for hand-painted porcelain. Linen, glaze and thread: one plate, turning.",
+    "documentation": "Theme guide",
+    "support": "Ask the studio"
+  },
+  "settings_schema": {
+    "colours": {
+      "name": "Colours",
+      "paragraph": "The linen ground and the pigment. Everything else in the theme is derived from these two, so change them sparingly.",
+      "accent": {
+        "label": "Accent pigment",
+        "info": "Used for buttons, rules and the stitched ring on the product cards."
+      },
+      "background": {
+        "label": "Background linen",
+        "info": "The warm cloth every piece is photographed on."
+      }
+    },
+    "typography": {
+      "name": "Typography",
+      "paragraph": "Per Set sets Fraunces for anything expressive and Jost for body copy, labels and buttons. The pairing is part of the identity and is not editable.",
+      "uppercase_headings": { "label": "Uppercase the largest headings" },
+      "measure": {
+        "label": "Body measure",
+        "info": "How many characters a line of body copy runs to before it wraps."
+      }
+    },
+    "social": {
+      "name": "Social",
+      "instagram": { "label": "Instagram" },
+      "tiktok": { "label": "TikTok" },
+      "facebook": { "label": "Facebook" },
+      "whatsapp": {
+        "label": "WhatsApp number",
+        "info": "Digits only, with the country code."
+      },
+      "twitter_handle": {
+        "label": "X / Twitter handle",
+        "info": "Used only for the Twitter card attribution."
+      }
+    },
+    "favicon": {
+      "name": "Favicon",
+      "image": { "label": "Favicon", "info": "32 × 32 px or larger, square." }
+    },
+    "product_cards": {
+      "name": "Product cards",
+      "second_image": { "label": "Cross-fade to the second image on hover" },
+      "show_type": { "label": "Show the product type under the title" },
+      "show_vendor": { "label": "Show the vendor" },
+      "reveal": { "label": "How cards arrive" }
+    },
+    "cart": {
+      "name": "Cart",
+      "type": { "label": "Cart behaviour" },
+      "note": { "label": "Let customers leave a note" },
+      "shipping_note": { "label": "Show a delivery note at checkout" }
+    },
+    "seo": {
+      "name": "SEO and sharing",
+      "share_image": {
+        "label": "Social share image",
+        "info": "Used when a page has no image of its own."
+      },
+      "share_description": { "label": "Fallback description" }
+    }
+  },
+  "sections": {
+    "all": {
+      "padding": {
+        "heading": "Spacing",
+        "padding_top": "Padding top",
+        "padding_bottom": "Padding bottom"
+      },
+      "pigment": {
+        "label": "Pigment",
+        "none": "Linen (default)",
+        "wild": "Stitches of the Wild",
+        "beads": "A Tale in Beads",
+        "past": "Pretty Past"
+      },
+      "eyebrow": { "label": "Eyebrow" },
+      "heading": { "label": "Heading" },
+      "body": { "label": "Body" },
+      "image": { "label": "Image" },
+      "button_label": { "label": "Button label" },
+      "button_link": { "label": "Button link" }
+    },
+    "page_hero": { "name": "Page hero" },
+    "main_page": { "name": "Page" },
+    "rich_text": { "name": "Rich text" },
+    "image_with_text": {
+      "name": "Image with text",
+      "image_side": { "label": "Image side", "left": "Left", "right": "Right" },
+      "parallax": { "label": "Parallax drift" }
+    },
+    "faq": {
+      "name": "FAQ",
+      "blocks": {
+        "question": { "name": "Question", "question": "Question", "answer": "Answer", "open": "Open by default" }
+      }
+    },
+    "contact_form": {
+      "name": "Contact form",
+      "subject": { "label": "Show a subject field" },
+      "address": { "label": "Address" },
+      "hours": { "label": "Hours" },
+      "map": { "label": "Map or studio photograph" }
+    },
+    "main_blog": {
+      "name": "Blog",
+      "feature_first": { "label": "Feature the first post" },
+      "show_tags": { "label": "Show tag filters" },
+      "per_page": { "label": "Posts per page" }
+    },
+    "main_article": {
+      "name": "Article",
+      "show_author": { "label": "Show the author" },
+      "reading_time": { "label": "Show an estimated reading time" },
+      "share": { "label": "Show share links" }
+    },
+    "main_search": {
+      "name": "Search",
+      "empty": { "label": "Empty state" },
+      "per_page": { "label": "Results per page" },
+      "blocks": { "collection": { "name": "Collection shortcut" } }
+    },
+    "main_404": {
+      "name": "404",
+      "blocks": { "collection": { "name": "Collection" } }
+    },
+    "main_password": {
+      "name": "Password",
+      "signup": { "label": "Show the email signup" },
+      "signup_cta": { "label": "Signup button" }
+    }
+  }
+}

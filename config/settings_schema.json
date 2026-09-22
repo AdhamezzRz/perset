@@ -4,8 +4,8 @@
     "theme_name": "Per Set · Atelier",
     "theme_author": "Per Set",
     "theme_version": "1.0.0",
-    "theme_documentation_url": "https://perset.eg/pages/theme-guide",
-    "theme_support_url": "https://perset.eg/pages/contact"
+    "theme_documentation_url": "https://github.com/AdhamezzRz/perset",
+    "theme_support_url": "https://perset.shop/pages/contact"
   },
   {
     "name": "Colours",
@@ -59,9 +59,21 @@
   {
     "name": "Social",
     "settings": [
-      { "type": "url", "id": "social_instagram", "label": "Instagram" },
-      { "type": "url", "id": "social_tiktok", "label": "TikTok" },
-      { "type": "url", "id": "social_facebook", "label": "Facebook" },
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "social_tiktok",
+        "label": "TikTok"
+      },
+      {
+        "type": "url",
+        "id": "social_facebook",
+        "label": "Facebook"
+      },
       {
         "type": "text",
         "id": "social_whatsapp",
@@ -114,10 +126,22 @@
         "id": "card_reveal",
         "label": "How cards arrive",
         "options": [
-          { "value": "set", "label": "Set down (house default)" },
-          { "value": "up", "label": "Rise" },
-          { "value": "glaze", "label": "Glaze" },
-          { "value": "fade", "label": "Fade" }
+          {
+            "value": "set",
+            "label": "Set down (house default)"
+          },
+          {
+            "value": "up",
+            "label": "Rise"
+          },
+          {
+            "value": "glaze",
+            "label": "Glaze"
+          },
+          {
+            "value": "fade",
+            "label": "Fade"
+          }
         ],
         "default": "set"
       }
@@ -131,8 +155,14 @@
         "id": "cart_type",
         "label": "Cart behaviour",
         "options": [
-          { "value": "drawer", "label": "Slide-out drawer" },
-          { "value": "page", "label": "Go to the cart page" }
+          {
+            "value": "drawer",
+            "label": "Slide-out drawer"
+          },
+          {
+            "value": "page",
+            "label": "Go to the cart page"
+          }
         ],
         "default": "drawer"
       },

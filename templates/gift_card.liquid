@@ -1,0 +1,292 @@
+{% layout none %}
+{%- comment -%}
+  GIFT CARD
+
+  A standalone document — no header, no footer, no navigation. It is hosted on
+  checkout.shopify.com and is very often printed or screenshotted, so it is
+  built to survive both: a large legible code, a QR beside it, and a print
+  stylesheet that drops the linen and the shadows.
+
+  The QR is drawn by Shopify's own hosted qrcode asset. It is not a library
+  added to this theme; it loads on this one page and nowhere else.
+{%- endcomment -%}
+
+{%- liquid
+  assign gc_balance = gift_card.balance | money
+  assign gc_initial = gift_card.initial_value | money
+  assign gc_expiry = gift_card.expires_on | date: format: 'date'
+-%}
+
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" dir="{{ settings.text_direction | default: 'ltr' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#F4EEE4">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>{{ 'gift_cards.issued.title' | t: value: gc_initial | default: 'Your gift card' }} &middot; {{ shop.name }}</title>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..700,0..100,0..1;1,9..144,200..700,0..100,0..1&family=Jost:ital,wght@0,300..600;1,300..500&display=swap">
+
+    {{ 'perset-core.css' | asset_url | stylesheet_tag }}
+
+    {{ content_for_header }}
+
+    <style>
+      {%- if settings.color_accent != blank -%}
+        :root { --ps-accent: {{ settings.color_accent }}; }
+      {%- endif -%}
+      {%- if settings.color_background != blank -%}
+        :root { --ps-linen: {{ settings.color_background }}; }
+      {%- endif -%}
+
+      .ps-gc {
+        min-height: 100svh;
+        display: grid;
+        place-items: center;
+        padding: var(--ps-s-m);
+      }
+      .ps-gc__card {
+        width: min(100%, 44rem);
+        background: var(--ps-porcelain);
+        border-radius: var(--ps-radius-l);
+        box-shadow: var(--ps-lift-3);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .ps-gc__top {
+        padding: clamp(1.6rem, 5vw, 3rem) clamp(1.4rem, 5vw, 3rem) clamp(1.2rem, 3vw, 2rem);
+        background: var(--ps-wash, var(--ps-linen-warm));
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .ps-gc__logo {
+        font-family: var(--ps-display);
+        font-size: var(--ps-step-1);
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+      .ps-gc__logo em {
+        font-style: italic;
+        font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+        letter-spacing: 0.06em;
+      }
+      .ps-gc__label {
+        margin-top: var(--ps-s-s);
+        font-size: var(--ps-step--2);
+        text-transform: uppercase;
+        letter-spacing: 0.24em;
+        color: var(--ps-ink-faint);
+      }
+      .ps-gc__amount {
+        font-family: var(--ps-display);
+        font-size: clamp(3rem, 12vw, 5.6rem);
+        font-weight: 250;
+        font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        font-variant-numeric: tabular-nums;
+        margin-top: var(--ps-s-2xs);
+      }
+      .ps-gc__spent {
+        margin-top: var(--ps-s-2xs);
+        font-size: var(--ps-step--1);
+        color: var(--ps-ink-faint);
+      }
+      .ps-gc__spent del { opacity: 0.8; }
+
+      .ps-gc__body {
+        padding: clamp(1.4rem, 5vw, 2.6rem);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: clamp(1.2rem, 4vw, 2.4rem);
+        align-items: center;
+      }
+
+      .ps-gc__code-label {
+        font-size: var(--ps-step--2);
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        color: var(--ps-ink-faint);
+      }
+      .ps-gc__code {
+        margin-top: var(--ps-s-2xs);
+        padding: 0.7em 0.8em;
+        border: 1px dashed var(--ps-accent);
+        border-radius: var(--ps-radius-m);
+        font-family: var(--ps-body);
+        font-size: clamp(1.05rem, 4.4vw, 1.5rem);
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-align: center;
+        word-break: break-all;
+        background: var(--ps-linen);
+      }
+      .ps-gc__note {
+        margin-top: var(--ps-s-s);
+        font-size: var(--ps-step--1);
+        line-height: 1.6;
+        color: var(--ps-ink-soft);
+        max-width: 40ch;
+      }
+
+      .ps-gc__qr { display: grid; justify-items: center; gap: var(--ps-s-2xs); }
+      .ps-gc__qr canvas, .ps-gc__qr img {
+        border-radius: var(--ps-radius-s);
+        background: #fff;
+        padding: 8px;
+      }
+      .ps-gc__qr-note {
+        font-size: var(--ps-step--2);
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--ps-ink-faint);
+      }
+
+      .ps-gc__foot {
+        padding: var(--ps-s-m) clamp(1.4rem, 5vw, 2.6rem) clamp(1.4rem, 4vw, 2.2rem);
+        border-top: 1px solid var(--ps-hairline-soft);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--ps-s-s);
+        flex-wrap: wrap;
+      }
+      .ps-gc__expiry { font-size: var(--ps-step--1); color: var(--ps-ink-faint); }
+
+      .ps-gc__status {
+        display: block;
+        margin: 0 clamp(1.4rem, 5vw, 2.6rem) var(--ps-s-s);
+        padding: var(--ps-s-xs) var(--ps-s-s);
+        border-radius: var(--ps-radius-m);
+        background: var(--ps-ink);
+        color: var(--ps-linen);
+        font-size: var(--ps-step--1);
+      }
+
+      .ps-gc__print {
+        margin-top: var(--ps-s-m);
+        display: flex;
+        justify-content: center;
+      }
+
+      @media (max-width: 560px) {
+        .ps-gc__body { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+        .ps-gc__note { text-align: center; }
+      }
+
+      /* Printed, this should be one clean card on white paper. */
+      @media print {
+        body::before { display: none; }
+        body { background: #fff; }
+        .ps-gc { min-height: auto; padding: 0; }
+        .ps-gc__card { box-shadow: none; border: 1px solid #ddd; width: 100%; }
+        .ps-gc__top { background: #fff; border-bottom: 1px solid #eee; }
+        .ps-gc__print, .ps-gc__shop { display: none !important; }
+      }
+    </style>
+  </head>
+
+  <body class="ps-body template--gift-card" data-template="gift_card" data-ps-pigment="beads">
+
+    <div class="ps-gc">
+      <main class="ps-gc__card" role="main">
+
+        <div class="ps-gc__top">
+          <p class="ps-gc__logo">Per <em>Set</em></p>
+          <p class="ps-gc__label">
+            {{ 'gift_cards.issued.subtext' | t | default: 'A gift card for the table' }}
+          </p>
+          <p class="ps-gc__amount ps-num">{{ gift_card.balance | money }}</p>
+
+          {%- if gift_card.balance != gift_card.initial_value -%}
+            <p class="ps-gc__spent">
+              {{ 'gift_cards.issued.remaining' | t: balance: gc_balance | default: 'Left on the card' }}
+              &middot;
+              <del>{{ gift_card.initial_value | money }}</del>
+            </p>
+          {%- endif -%}
+        </div>
+
+        {%- if gift_card.expired or gift_card.enabled == false -%}
+          <p class="ps-gc__status" role="status">
+            {%- if gift_card.enabled == false -%}
+              {{ 'gift_cards.issued.disabled' | t | default: 'This card has been switched off.' }}
+            {%- else -%}
+              {{ 'gift_cards.issued.expired' | t: expiry: gc_expiry | default: 'This card has expired.' }}
+            {%- endif -%}
+          </p>
+        {%- endif -%}
+
+        <div class="ps-gc__body">
+          <div>
+            <p class="ps-gc__code-label">
+              {{ 'gift_cards.issued.gift_card_code' | t | default: 'Your code' }}
+            </p>
+            <p class="ps-gc__code">{{ gift_card.code | format_code }}</p>
+            <p class="ps-gc__note">
+              {{ 'gift_cards.issued.how_to_use' | t | default: 'Type this code at checkout, or scan the square. It works on everything we make, and what you do not spend stays on the card.' }}
+            </p>
+          </div>
+
+          <div class="ps-gc__qr">
+            <div id="ps-gc-qr" aria-hidden="true"></div>
+            <p class="ps-gc__qr-note">
+              {{ 'gift_cards.issued.qr_image_alt' | t | default: 'Scan to use' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="ps-gc__foot">
+          {%- if gift_card.expires_on and gift_card.expired == false -%}
+            <p class="ps-gc__expiry">
+              {{ 'gift_cards.issued.expires_on' | t: expiry: gc_expiry | default: gc_expiry }}
+            </p>
+          {%- else -%}
+            <p class="ps-gc__expiry">
+              {{ 'gift_cards.issued.no_expiry' | t | default: 'No expiry date.' }}
+            </p>
+          {%- endif -%}
+
+          <a class="ps-btn ps-btn--sm ps-gc__shop" href="{{ shop.url }}">
+            {{ 'gift_cards.issued.shop_link' | t | default: 'Spend it' }}
+          </a>
+        </div>
+      </main>
+    </div>
+
+    <div class="ps-gc__print">
+      <button class="ps-link" type="button" onclick="window.print()">
+        {{ 'gift_cards.issued.print_gift_card' | t | default: 'Print this card' }}
+      </button>
+    </div>
+
+    {{ 'vendor/qrcode.js' | shopify_asset_url | script_tag }}
+    <script>
+      // Shopify's own hosted generator, used only on this page.
+      var tokens = getComputedStyle(document.documentElement);
+      function token(name, fallback) {
+        var v = tokens.getPropertyValue(name);
+        return v && v.trim() ? v.trim() : fallback;
+      }
+      new QRCode(document.getElementById('ps-gc-qr'), {
+        text: {{ gift_card.qr_identifier | json }},
+        width: 120,
+        height: 120,
+        colorDark: token('--ps-ink', '#241F1B'),
+        colorLight: token('--ps-porcelain', '#ffffff')
+      });
+    </script>
+  </body>
+</html>

@@ -117,7 +117,11 @@
             "label": "Stitches of the Wild",
             "note": "Leopards resting in bamboo under a pink parasol, with every border drawn to look softly stitched.",
             "cta": "See the full service",
-            "pigment": "wild"
+            "pigment": "wild",
+            "dinner": "stitches-of-the-wild-dinner-plates-set-of-6",
+            "dessert": "stitches-of-the-wild-dessert-plates-set-of-6",
+            "salad": "stitches-of-the-wild-salad-plates-set-of-6",
+            "soup": "stitches-of-the-wild-soup-bowls-set-of-6"
           }
         },
         "s-beads": {
@@ -127,7 +131,11 @@
             "label": "A Tale in Beads",
             "note": "A palm built from what look like hundreds of tiny placed beads. The closer you look, the more you see.",
             "cta": "See the full service",
-            "pigment": "beads"
+            "pigment": "beads",
+            "dinner": "a-tale-in-beads-dinner-plates-set-of-6",
+            "dessert": "a-tale-in-beads-dessert-plates-set-of-6",
+            "salad": "a-tale-in-beads-salad-plates-set-of-6",
+            "soup": "a-tale-in-beads-soup-bowls-set-of-6"
           }
         },
         "s-past": {
@@ -137,7 +145,11 @@
             "label": "Pretty Past",
             "note": "A peacock among roses, in the warm colours of a plate someone kept for forty years.",
             "cta": "See the full service",
-            "pigment": "past"
+            "pigment": "past",
+            "dinner": "pretty-past-dinner-plates-set-of-6",
+            "dessert": "pretty-past-dessert-plates-set-of-6",
+            "salad": "pretty-past-salad-plates-set-of-6",
+            "soup": "pretty-past-soup-bowls-set-of-6"
           }
         }
       },

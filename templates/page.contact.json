@@ -6,7 +6,7 @@
         "eyebrow": "Per Set",
         "heading": "Come and find us",
         "heading_tag": "h1",
-        "lede": "The studio is in Garden City, five minutes from the Corniche. Knock, or write first — both work.",
+        "lede": "Questions about a set, a piece you would like painted, or an order on its way. Write to us and someone here will read it.",
         "image_shape": "plate",
         "pigment": "wild",
         "show_wash": true,
@@ -23,10 +23,10 @@
         "body": "Questions about a set, a piece you want painted, or where your order is. Someone here reads all of it.",
         "show_subject": true,
         "form_note": "We reply from Sunday to Thursday.",
-        "address": "<p>Per Set Atelier<br/>12 Sharia El Nabatat, Garden City<br/>Cairo, Egypt</p>",
-        "hours": "<p>Sunday to Thursday, 10.00 to 18.00<br/>Saturday by appointment</p>",
-        "email": "hello@perset.eg",
-        "phone": "+20 100 000 0000",
+        "address": "<p>Cairo, Egypt</p>",
+        "hours": "",
+        "email": "",
+        "phone": "",
         "pigment": "wild",
         "padding_top": 40,
         "padding_bottom": 120
@@ -78,8 +78,17 @@
           }
         }
       },
-      "block_order": ["q1", "q2", "q3", "q4"]
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ]
     }
   },
-  "order": ["hero", "form", "faq"]
+  "order": [
+    "hero",
+    "form",
+    "faq"
+  ]
 }

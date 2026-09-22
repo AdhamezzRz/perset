@@ -1,0 +1,434 @@
+{
+  "general": {
+    "home": "Home",
+    "back_home": "Back to the shop",
+    "continue_shopping": "Keep looking",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "loading": "Loading",
+    "meta": {
+      "tags": "Tagged {{ tags }}",
+      "page": "Page {{ page }}"
+    },
+    "404": {
+      "title": "Page not found",
+      "subtext": "This page is not here. Nothing broke — the table was just set somewhere else.",
+      "link": "Everything we make"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Plates, patterns, stories",
+      "submit": "Search",
+      "no_results": "Nothing for “{{ terms }}”",
+      "results_with_count": {
+        "one": "{{ count }} result for “{{ terms }}”",
+        "other": "{{ count }} results for “{{ terms }}”"
+      },
+      "type_article": "Journal",
+      "type_page": "Page",
+      "type_product": "Piece",
+      "browse_all": "Everything we make",
+      "reset": "Clear"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Newer",
+      "next": "Older",
+      "page": "Page {{ page }}"
+    },
+    "share": {
+      "title": "Share",
+      "facebook": "Share on Facebook",
+      "whatsapp": "Share on WhatsApp",
+      "email": "Email it",
+      "copy": "Copy the link",
+      "copied": "Copied"
+    },
+    "password_page": {
+      "opening_soon": "Opening soon",
+      "login_form_heading": "Enter with a password",
+      "login_form_password_label": "Password",
+      "login_form_password_placeholder": "Password",
+      "login_form_submit": "Enter",
+      "login_form_error": "That password is not right.",
+      "admin_link_html": "Are you the shop owner? <a href=\"\/admin\" class=\"ps-contact__a\">Sign in here<\/a>",
+      "powered_by_shopify": "Powered by Shopify",
+      "signup_label": "Your email",
+      "signup_success": "Thank you. We will write to you the day the shop opens."
+    },
+    "social": {
+      "alt_text": {
+        "share_on_facebook": "Share on Facebook",
+        "share_on_instagram": "Find us on Instagram",
+        "share_on_tiktok": "Find us on TikTok",
+        "share_on_whatsapp": "Message us on WhatsApp"
+      }
+    }
+  },
+
+  "newsletter": {
+    "label": "Your email",
+    "button": "Keep me posted",
+    "success": "Thank you. You are on the list.",
+    "error": "That address did not go through."
+  },
+
+  "onboarding": {
+    "product_title": "Example piece",
+    "collection_title": "Example collection",
+    "article_title": "A note from the studio"
+  },
+
+  "accessibility": {
+    "skip_to_text": "Skip to content",
+    "close": "Close",
+    "menu": "Menu",
+    "previous_slide": "Previous",
+    "next_slide": "Next",
+    "refresh_page": "Choosing a selection reloads the page.",
+    "link_messages": {
+      "new_window": "Opens in a new window.",
+      "external": "Opens external website."
+    },
+    "error": "Error",
+    "unit_price_separator": "per"
+  },
+
+  "products": {
+    "product": {
+      "add_to_cart": "Add to the table",
+      "adding": "Adding",
+      "added": "Added",
+      "sold_out": "Sold out",
+      "on_sale": "Sale",
+      "unavailable": "Unavailable",
+      "from_price": "From {{ price }}",
+      "regular_price": "Regular price",
+      "sale_price": "Sale price",
+      "price": "Price",
+      "quantity": "Quantity",
+      "quantity_increase": "Add one",
+      "quantity_decrease": "Take one away",
+      "choose_variant": "Choose an option",
+      "media": "Photographs",
+      "gallery": "Gallery",
+      "view_image": "See this photograph",
+      "zoom": "Look closer",
+      "vendor": "Made by",
+      "sku": "SKU",
+      "description": "About this piece",
+      "share": "Share",
+      "view_full_details": "See the whole piece",
+      "include_taxes": "Tax included.",
+      "shipping_policy_html": "Shipping is worked out at checkout.",
+      "pickup_available": "Ready to collect from the studio",
+      "pickup_unavailable": "Not available to collect"
+    }
+  },
+
+  "collections": {
+    "general": {
+      "piece": "piece",
+      "pieces": "pieces",
+      "no_matches": "Nothing here matches that yet.",
+      "view_all": "See everything",
+      "items_with_count": {
+        "one": "{{ count }} piece",
+        "other": "{{ count }} pieces"
+      }
+    },
+    "sorting": {
+      "title": "Sort by",
+      "featured": "Featured",
+      "best_selling": "Most set",
+      "az": "A to Z",
+      "za": "Z to A",
+      "price_ascending": "Price, low to high",
+      "price_descending": "Price, high to low",
+      "date_descending": "Newest",
+      "date_ascending": "Oldest"
+    },
+    "filters": {
+      "title": "Filter",
+      "apply": "Apply",
+      "applied": "{{ count }} applied",
+      "clear": "Clear",
+      "clear_all": "Clear everything",
+      "remove": "Remove {{ label }}",
+      "from": "From",
+      "to": "To",
+      "max_price": "The highest price is {{ price }}",
+      "no_results": "Nothing matches those filters."
+    }
+  },
+
+  "cart": {
+    "general": {
+      "title": "Your table",
+      "empty": "Nothing on the table yet.",
+      "continue_shopping": "Keep looking",
+      "subtotal": "Subtotal",
+      "total": "Total",
+      "taxes_and_shipping_at_checkout": "Tax and shipping are worked out at checkout.",
+      "checkout": "Checkout",
+      "update": "Update",
+      "updated": "Cart updated.",
+      "remove": "Remove",
+      "removed": "{{ title }} removed.",
+      "item": "item",
+      "items": "items",
+      "each": "each",
+      "note": "Add a note",
+      "note_placeholder": "Anything we should know",
+      "note_saved": "Note saved.",
+      "savings": "You save {{ price }}",
+      "item_count": {
+        "one": "{{ count }} item",
+        "other": "{{ count }} items"
+      }
+    },
+    "label": {
+      "product": "Piece",
+      "price": "Price",
+      "quantity": "Quantity",
+      "total": "Total",
+      "increase": "Add one",
+      "decrease": "Take one away"
+    }
+  },
+
+  "customer": {
+    "account": {
+      "title": "Account",
+      "details": "Your details",
+      "view_addresses": "All addresses",
+      "default_address": "Default address",
+      "return": "Back to the account",
+      "log_out": "Sign out"
+    },
+    "activate_account": {
+      "title": "Finish your account",
+      "subtext": "Pick a password and the account is yours. Your past orders come with it.",
+      "password": "Password",
+      "password_confirm": "Again, to be sure",
+      "submit": "Activate the account",
+      "cancel": "No thank you",
+      "error": "That did not go through."
+    },
+    "addresses": {
+      "title": "Where we send things",
+      "saved": "Saved addresses",
+      "add_new": "Add an address",
+      "add": "Save it",
+      "update": "Save changes",
+      "edit": "Edit",
+      "delete": "Delete",
+      "delete_confirm": "Delete this address?",
+      "cancel": "Cancel",
+      "default": "Default",
+      "set_default": "Make this the default",
+      "none": "No address saved yet.",
+      "error": "Something in the form needs another look.",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "company": "Company",
+      "address1": "Address",
+      "address2": "Apartment, floor, landmark",
+      "city": "City",
+      "province": "Governorate",
+      "zip": "Postal code",
+      "country": "Country",
+      "phone": "Phone"
+    },
+    "login": {
+      "title": "Welcome back",
+      "lede": "Sign in to see your orders and the addresses we ship to.",
+      "sign_in": "Sign in",
+      "submit": "Sign in",
+      "email": "Email",
+      "password": "Password",
+      "forgot_password": "Forgotten it?",
+      "no_account": "No account yet?",
+      "guest_title": "Continue as a guest",
+      "guest_continue": "Continue",
+      "error": "That did not work."
+    },
+    "recover_password": {
+      "title": "Reset your password",
+      "subtext": "We will email you a link.",
+      "submit": "Send the link",
+      "cancel": "Back to sign in",
+      "success": "Check your inbox. A link to set a new password is on its way.",
+      "error": "We could not send that."
+    },
+    "register": {
+      "title": "Make an account",
+      "lede": "So your orders and addresses are waiting for you next time.",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create it",
+      "have_account": "I already have one",
+      "error": "Something in the form needs another look."
+    },
+    "reset_password": {
+      "title": "Set a new password",
+      "subtext": "Choose something you will remember.",
+      "password": "New password",
+      "password_confirm": "Again, to be sure",
+      "submit": "Save it",
+      "error": "That did not go through."
+    },
+    "orders": {
+      "title": "Orders",
+      "order_number": "Order",
+      "date": "Date",
+      "payment_status": "Payment",
+      "fulfillment_status": "Status",
+      "total": "Total",
+      "none": "No orders yet. The first set has to start somewhere."
+    },
+    "order": {
+      "title": "Order {{ name }}",
+      "back": "All orders",
+      "date": "Placed {{ date }}",
+      "cancelled": "This order was cancelled.",
+      "cancelled_reason": "Reason: {{ reason }}",
+      "items": "What is in it",
+      "product": "Piece",
+      "sku": "SKU",
+      "price": "Price",
+      "quantity": "Qty",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "total": "Total",
+      "fulfilled_at": "Sent",
+      "track_shipment": "Track it",
+      "shipping_address": "Shipping address",
+      "billing_address": "Billing address",
+      "payment_status": "Payment",
+      "fulfillment_status": "Status"
+    }
+  },
+
+  "blogs": {
+    "general": {
+      "all": "Everything",
+      "read": "Read it",
+      "empty": "Nothing written here yet. It is coming.",
+      "back": "All posts"
+    },
+    "article": {
+      "by": "By {{ author }}",
+      "tags": "Tagged",
+      "more": "More from the journal",
+      "older": "Older",
+      "newer": "Newer",
+      "reading_time": "{{ minutes }} min read",
+      "read_more": "Read it"
+    },
+    "comments": {
+      "title": "Comments",
+      "with_count": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      },
+      "name": "Name",
+      "email": "Email",
+      "message": "Your comment",
+      "post": "Post it",
+      "moderated": "Comments are read before they appear.",
+      "success": "Thank you. Your comment is up.",
+      "success_moderated": "Thank you. Your comment is waiting to be approved.",
+      "error_heading": "Something in the form needs another look."
+    }
+  },
+
+  "gift_cards": {
+    "issued": {
+      "title": "A {{ value }} gift card",
+      "subtext": "A gift card for the table",
+      "gift_card_code": "Your code",
+      "how_to_use": "Type this code at checkout, or scan the square. It works on everything we make, and what you do not spend stays on the card.",
+      "remaining": "{{ balance }} left on the card",
+      "expired": "This card expired on {{ expiry }}.",
+      "expires_on": "Good until {{ expiry }}",
+      "no_expiry": "No expiry date.",
+      "disabled": "This card has been switched off.",
+      "qr_image_alt": "Scan to use",
+      "print_gift_card": "Print this card",
+      "shop_link": "Spend it",
+      "add_to_apple_wallet": "Add to Apple Wallet"
+    }
+  },
+
+  "templates": {
+    "page": {
+      "empty": "This page has nothing on it yet."
+    },
+    "search": {
+      "title": "Search",
+      "no_results": "Nothing found."
+    },
+    "cart": {
+      "cart": "Cart"
+    },
+    "contact": {
+      "studio": "The studio",
+      "hours": "Hours",
+      "direct": "Direct",
+      "elsewhere": "Elsewhere",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone (optional)",
+        "subject": "What is this about?",
+        "message": "Your message",
+        "send": "Send it",
+        "post_success": "Thank you. Your message is with us — we answer from the studio, usually the same day.",
+        "error_heading": "Something in the form needs another look."
+      }
+    },
+    "404": {
+      "title": "Page not found",
+      "subtext": "This page is not here."
+    }
+  },
+
+  "sections": {
+    "header": {
+      "primary_nav": "Primary",
+      "menu": "Menu",
+      "cart": "Cart",
+      "account": "Account",
+      "search": "Search",
+      "announcement": "Announcement"
+    },
+    "footer": {
+      "newsletter": "Keep in touch",
+      "payment_methods": "Payment methods we take",
+      "copyright": "All rights reserved."
+    },
+    "faq": {
+      "empty": "Add a question in the theme editor."
+    },
+    "setting": {
+      "choose": "Choose your set",
+      "dinner": "Dinner",
+      "dessert": "Dessert",
+      "salad": "Salad",
+      "soup": "Soup",
+      "pieces": "pieces"
+    },
+    "slideshow": {
+      "previous_slide": "Previous",
+      "next_slide": "Next",
+      "pause": "Pause",
+      "play": "Play"
+    }
+  }
+}

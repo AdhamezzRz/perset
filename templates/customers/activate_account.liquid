@@ -1,0 +1,84 @@
+{%- comment -%}
+  ACCOUNT — ACTIVATE
+
+  Reached from the invitation email. The visitor can set a password, or
+  decline the invitation outright; both are plain submit buttons on the same
+  Shopify form.
+{%- endcomment -%}
+
+{% render 'account-styles' %}
+
+<div class="ps-account">
+  <div class="ps-shell ps-shell--narrow">
+
+    <header class="ps-account__head">
+      <p class="ps-eyebrow" data-ps-reveal="fade">{{ 'customer.account.title' | t | default: 'Account' }}</p>
+      <h1 class="ps-account__title" data-ps-split="lines">
+        {{- 'customer.activate_account.title' | t | default: 'Finish your account' -}}
+      </h1>
+      <p class="ps-lede ps-account__lede" data-ps-reveal="up">
+        {{ 'customer.activate_account.subtext' | t | default: 'Pick a password and the account is yours. Your past orders come with it.' }}
+      </p>
+      <div class="ps-account__thread" aria-hidden="true">
+        {% render 'icon', name: 'thread', draw: true %}
+      </div>
+    </header>
+
+    <div class="ps-auth">
+      <section class="ps-account__panel">
+        {% form 'activate_customer_password' %}
+          {%- if form.errors -%}
+            <div class="ps-note ps-note--bad" role="alert">
+              <p class="ps-note__title">{{ 'customer.activate_account.error' | t | default: 'That did not go through.' }}</p>
+              <ul class="ps-note__list">
+                {%- for field in form.errors -%}
+                  <li>{{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}</li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+
+          <div class="ps-account__fields">
+            <p class="ps-field ps-field--wide">
+              <input
+                class="ps-input"
+                type="password"
+                id="ps-activate-password"
+                name="customer[password]"
+                autocomplete="new-password"
+                placeholder=" "
+                required>
+              <label class="ps-label" for="ps-activate-password">
+                {{ 'customer.activate_account.password' | t | default: 'Password' }}
+              </label>
+            </p>
+
+            <p class="ps-field ps-field--wide">
+              <input
+                class="ps-input"
+                type="password"
+                id="ps-activate-confirm"
+                name="customer[password_confirmation]"
+                autocomplete="new-password"
+                placeholder=" "
+                required>
+              <label class="ps-label" for="ps-activate-confirm">
+                {{ 'customer.activate_account.password_confirm' | t | default: 'Again, to be sure' }}
+              </label>
+            </p>
+          </div>
+
+          <div class="ps-account__actions">
+            <button class="ps-btn" type="submit" data-ps-magnetic="0.18">
+              {{ 'customer.activate_account.submit' | t | default: 'Activate the account' }}
+            </button>
+            <button class="ps-link" type="submit" name="decline">
+              {{ 'customer.activate_account.cancel' | t | default: 'No thank you' }}
+            </button>
+          </div>
+        {% endform %}
+      </section>
+    </div>
+
+  </div>
+</div>
