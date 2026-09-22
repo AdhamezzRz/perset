@@ -93,8 +93,16 @@ Installed as **Per Set · Atelier (Claude build)**, unpublished. Your previous
 themes are untouched: `Horizon` is still live and `Whisper` is still there as
 a backup.
 
-Preview it, click through it, and publish it yourself when you are happy. It
-will not go live on its own.
+**Preview link:**
+`https://perset.shop/?preview_theme_id=166988251321`
+
+That link works for anyone you send it to, no login needed. Click through it,
+and publish it yourself when you are happy. It will not go live on its own.
+
+Every page was checked in a real browser at 1440 px and at 390 px: ten pages,
+all passing, with no Liquid errors, no missing translation strings, no stuck
+animations and no horizontal scrolling. Re-run that check any time with
+`node tools/verify-pages.mjs` and `--mobile`.
 
 ### What is worth looking at
 
