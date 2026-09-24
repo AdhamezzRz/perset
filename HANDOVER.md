@@ -198,15 +198,61 @@ thank-you-card PDF as inspiration for the hero. This is what changed:
 - Caught while sweeping the preview afterwards: the reel strip's play
   button had a missing translation string. Fixed, unrelated to the review.
 
-**One thing to confirm with the client:** the note said "not hand painted"
-next to the hero eyebrow. I read that as wanting the line gone from the
-hero specifically — the option offered right next to it was literally
-"remove completely" — so that's the only place it changed. I did **not**
-touch the hand-painted claim anywhere else (FAQ, the craft-process
-section, product pages, the footer). If "not hand painted" is actually a
-statement about the product itself rather than where that line sits, that
-is a much bigger rewrite across the whole site and worth a straight
-answer from the client before anyone touches it.
+~~**One thing to confirm with the client:**~~ Resolved in the next round —
+see below. It was a statement about the product, not just about where
+that line sat.
+
+---
+
+## Round 3 — sold as a set, not by the piece
+
+Judy's next note settled the question round 2 left open, and went
+further: **plates are sold only as the complete 24-piece set, never as
+separate dinner/salad/soup/dessert listings**, and every trace of "hand
+painted", "hand drawn", "fired in small runs" and "no two alike" comes
+off the site.
+
+- **Catalog** — each collection already had a bundled "Complete
+  Service, 24 Pieces" product sitting alongside its four separate piece
+  products (from the very first build). The fix was to stop showing the
+  four separate ones: they're off every collection, off the new "Shop
+  all", off both nav menus — a collection page now shows exactly the one
+  product that's actually for sale. Shopify's automatic "all products"
+  collection can't be filtered, so a real collection (handle
+  `frontpage`, titled "Shop all", reusing the store's unused leftover
+  "Home page" collection) now stands in for it everywhere in the theme.
+  **The four piece products per collection are still live** — status
+  Active — because "Set your table" needs their photos and Liquid can't
+  read a product that isn't published to the Online Store. They're
+  unreachable through any link, nav, or collection the theme controls,
+  but Shopify's own site search still indexes them, so a very specific
+  search could still surface one at its old per-piece price. Closing
+  that fully means either giving the picker its own dedicated images
+  instead of borrowing product photos, or accepting that loss of the
+  picture-per-piece (several pieces, especially in Pretty Past, don't
+  have a distinct clean crop the way the dinner plates do — that's a
+  photography gap, not a code one). Flagging it rather than guessing.
+- **Set your table** — moved off the homepage onto its own page at
+  `/pages/set-your-table`, and into the main nav.
+- **Shop all** — the header's full-screen menu now nests Stitches of
+  the Wild, A Tale in Beads and Pretty Past under "Shop all" as a
+  dropdown, using the browser's native disclosure element so it needs no
+  extra JavaScript.
+- **Footer** — the scrolling "Hand painted · Fired in small runs · No
+  two alike · Made in Egypt" banner is gone; "First look at the next
+  firing" is now a plain "Keep in touch"; the tagline under the logo now
+  reads "Beautiful per piece, perfect per set."
+- **Homepage** — the reel strip ("In motion"), the "Start here" featured
+  row and the craft-process section are removed, per the client's list of
+  pages to drop. Their section files are still in the repo, just unused,
+  in case any of them comes back later.
+- **Copy purge** — "hand painted", "hand drawn", "fired in small runs"
+  and "no two alike" (and close paraphrases like "painted by hand," "not
+  identical") are out of every section default, template, collection
+  description and the three sellable products' own descriptions. Two FAQ
+  questions that existed only to explain hand-variation were removed
+  outright rather than reworded, since there was no honest way to answer
+  them under the new positioning.
 
 ---
 
@@ -219,5 +265,6 @@ answer from the client before anyone touches it.
   in the theme. They carry the old theme's translation keys, not this one's,
   so any missing string falls back to the English written into the templates.
   Harmless, but you may want to delete them.
-- The "Home page" and "Default example products" collections from the original
-  setup are still there and unused.
+- The "Default example products" collection from the original setup is
+  still there and unused. Its sibling, "Home page", is no longer unused —
+  it's now the curated "Shop all" collection, see Round 3 above.
