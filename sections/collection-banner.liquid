@@ -176,6 +176,11 @@
     width: 100%;
     box-shadow: 0 26px 70px rgba(120, 95, 60, 0.20);
   }
+  /* Shown whole, not cropped to a circle: override the shared .ps-plate
+     treatment for this one instance only. */
+  .ps-cbanner__plate.ps-plate,
+  .ps-cbanner__plate.ps-plate::after { border-radius: var(--ps-radius-l); }
+  .ps-cbanner__plate.ps-plate img { object-fit: contain; border-radius: var(--ps-radius-l); }
 
   .ps-cbanner__rule { margin-top: clamp(1.5rem, 4vw, 3rem); color: var(--ps-accent); }
 

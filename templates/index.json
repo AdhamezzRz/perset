@@ -6,7 +6,6 @@
         "show_mark": true,
         "headline_1": "Beautiful per piece",
         "headline_2": "perfect per set",
-        "lede": "Three collections, each a complete set of 24. Made to be used on a Tuesday, not kept behind glass.",
         "show_spark": true,
         "scroll_cue": "Scroll"
       }
@@ -17,24 +16,26 @@
         "m1": {
           "type": "phrase",
           "settings": {
-            "text": "Stitches of the Wild"
+            "text": "Per Set"
           }
         },
         "m2": {
           "type": "phrase",
           "settings": {
-            "text": "A Tale in Beads"
+            "text": "Designed in Cairo"
           }
         },
         "m3": {
           "type": "phrase",
           "settings": {
-            "text": "Pretty Past"
+            "text": "Made for your table"
           }
         },
         "m4": {
-          "type": "mark",
-          "settings": {}
+          "type": "phrase",
+          "settings": {
+            "text": "Beautiful per piece, perfect per set"
+          }
         }
       },
       "block_order": [
@@ -47,7 +48,7 @@
         "speed": 40,
         "reverse": false,
         "dark": false,
-        "aria": "Collections"
+        "aria": "Per Set"
       }
     },
     "stories": {

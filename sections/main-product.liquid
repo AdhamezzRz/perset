@@ -704,23 +704,15 @@
     isolation: isolate;
     transition: background var(--ps-t-slow) var(--ps-ease-set);
   }
-  .ps-pdp__ring {
-    position: absolute;
-    inset: 5%;
-    border-radius: 50%;
-    border: 1px dashed var(--ps-accent);
-    opacity: 0.4;
-    pointer-events: none;
-    transform: rotate(0deg);
-    transition: transform var(--ps-t-drape) var(--ps-ease-set), opacity var(--ps-t-base) var(--ps-ease-set);
-  }
-  .ps-pdp__frame:hover .ps-pdp__ring { opacity: 0.68; transform: rotate(12deg); }
+  /* Shown whole, not cropped to a circle: no ring, square corners on the
+     frame instead. */
+  .ps-pdp__ring { display: none; }
 
   .ps-pdp__media {
     position: relative;
     width: 100%;
     aspect-ratio: 1;
-    border-radius: 50%;
+    border-radius: var(--ps-radius-l);
     overflow: hidden;
     box-shadow: 0 18px 50px rgba(120, 95, 60, 0.18);
   }
@@ -732,7 +724,7 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     opacity: 0;
     transform-origin: var(--ps-gx, 50%) var(--ps-gy, 50%);
     transition:
@@ -747,7 +739,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 50%;
+    border-radius: var(--ps-radius-l);
     pointer-events: none;
     background: radial-gradient(
       140px 140px at var(--ps-gx, 32%) var(--ps-gy, 24%),
@@ -774,7 +766,7 @@
     position: relative;
     width: 72px;
     aspect-ratio: 1;
-    border-radius: 50%;
+    border-radius: var(--ps-radius-m);
     overflow: hidden;
     flex: none;
     background: var(--ps-wash, var(--ps-linen-warm));
@@ -785,7 +777,7 @@
       box-shadow var(--ps-t-fast) var(--ps-ease-swap),
       transform var(--ps-t-base) var(--ps-ease-set);
   }
-  .ps-pdp__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .ps-pdp__thumb img { width: 100%; height: 100%; object-fit: contain; }
   .ps-pdp__thumb:hover { opacity: 1; transform: translateY(-2px); }
   .ps-pdp__thumb.is-active {
     opacity: 1;

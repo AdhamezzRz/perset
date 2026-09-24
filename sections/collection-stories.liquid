@@ -214,7 +214,12 @@
     width: 100%;
     box-shadow: 0 30px 80px rgba(120, 95, 60, 0.22);
   }
-  .ps-story__cover { position: absolute; inset: 0; border-radius: 50%; z-index: 3; }
+  /* Shown whole, not cropped to a circle: override the shared .ps-plate
+     treatment for this one instance only. */
+  .ps-story__plate.ps-plate,
+  .ps-story__plate.ps-plate::after { border-radius: var(--ps-radius-l); }
+  .ps-story__plate.ps-plate img { object-fit: contain; border-radius: var(--ps-radius-l); }
+  .ps-story__cover { position: absolute; inset: 0; border-radius: var(--ps-radius-l); z-index: 3; }
 
   @media (max-width: 900px) {
     .ps-story {

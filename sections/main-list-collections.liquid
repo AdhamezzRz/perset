@@ -254,8 +254,10 @@
   }
 
   /* Two stitched rings, drawn on hover at different speeds, the way a border
-     is embroidered in passes. */
+     is embroidered in passes. Hidden now that the plate beneath them is a
+     rounded rectangle, not a circle — a circular ring no longer traces it. */
   .ps-ccard__ring {
+    display: none;
     position: absolute;
     inset: 8%;
     border-radius: 50%;
@@ -284,7 +286,12 @@
     box-shadow: 0 22px 58px rgba(120, 95, 60, 0.20);
     transition: transform var(--ps-t-slow) var(--ps-ease-set);
   }
-  .ps-ccard:hover .ps-ccard__plate { transform: rotate(var(--ps-rot, 0deg)) scale(1.035); }
+  .ps-ccard:hover .ps-ccard__plate { transform: scale(1.035); }
+  /* Shown whole, not cropped to a circle: override the shared .ps-plate
+     treatment for this one instance only. */
+  .ps-ccard__plate.ps-plate,
+  .ps-ccard__plate.ps-plate::after { border-radius: var(--ps-radius-l); }
+  .ps-ccard__plate.ps-plate img { object-fit: contain; border-radius: var(--ps-radius-l); }
 
   .ps-ccard__body { display: flex; flex-direction: column; gap: 0.4rem; }
   .ps-ccard__title {

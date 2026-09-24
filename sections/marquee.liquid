@@ -1,5 +1,5 @@
 {%- comment -%}
-  A running band of text with a French knot between each phrase. Pauses on
+  A running band of text with a sparkle between each phrase. Pauses on
   hover so anyone who wants to read it, can.
 {%- endcomment -%}
 
@@ -18,12 +18,12 @@
         {%- else -%}
           <span class="ps-marquee__item" {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
         {%- endif -%}
-        {% render 'icon', name: 'knot', size: 16 %}
+        <span class="ps-marquee__spark" aria-hidden="true">{% render 'icon', name: 'spark', size: 16 %}</span>
       {%- else -%}
         {%- assign fallback = 'Made in Egypt · Three collections · Complete sets of 24' | split: ' · ' -%}
         {%- for item in fallback -%}
           <span class="ps-marquee__item">{{ item }}</span>
-          {% render 'icon', name: 'knot', size: 16 %}
+          <span class="ps-marquee__spark" aria-hidden="true">{% render 'icon', name: 'spark', size: 16 %}</span>
         {%- endfor -%}
       {%- endfor -%}
     </div>
@@ -36,7 +36,7 @@
     border-color: rgba(244, 238, 228, 0.16);
   }
   .ps-marquee.ps-dark .ps-marquee__item { color: var(--ps-linen); }
-  .ps-marquee .ps-knot { color: var(--ps-accent); }
+  .ps-marquee__spark { display: inline-flex; align-items: center; color: var(--ps-accent); }
   .ps-marquee__item--mark { display: inline-flex; align-items: center; color: currentColor; }
   .ps-marquee__item--mark .ps-logomark { display: block; }
 {% endstylesheet %}
