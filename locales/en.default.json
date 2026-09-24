@@ -424,6 +424,9 @@
     "faq": {
       "empty": "Add a question in the theme editor."
     },
+    "reels": {
+      "play": "Play"
+    },
     "setting": {
       "choose": "Choose your set",
       "choose_piece": "Choose a piece",
