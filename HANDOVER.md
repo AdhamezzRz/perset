@@ -253,6 +253,13 @@ off the site.
   questions that existed only to explain hand-variation were removed
   outright rather than reworded, since there was no honest way to answer
   them under the new positioning.
+- Two small follow-ups from the same conversation: the **Our Story**
+  page body was replaced with the new copy Dana sent through as an
+  image (I reworded its one "hand drawn details" phrase to "carefully
+  drawn details" to keep it consistent with the purge above — flagging
+  that in case the client wants their exact original wording instead).
+  The **Contact** page's small "quick answers" FAQ block is removed;
+  the page is now just the hero and the form.
 
 ---
 
