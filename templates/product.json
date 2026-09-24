@@ -80,6 +80,13 @@
             "label": "Share this piece",
             "copied_label": "Link copied"
           }
+        },
+        "favorite": {
+          "type": "favorite",
+          "settings": {
+            "label_off": "Save to favourites",
+            "label_on": "Saved to favourites"
+          }
         }
       },
       "block_order": [
@@ -90,6 +97,7 @@
         "variant_picker",
         "quantity",
         "buy_buttons",
+        "favorite",
         "dimensions",
         "care",
         "shipping",

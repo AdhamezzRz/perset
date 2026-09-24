@@ -376,6 +376,23 @@
               {%- endif -%}
             </div>
 
+          {%- when 'favorite' -%}
+            <button
+              class="ps-pdp__fav ps-btn ps-btn--ghost ps-btn--block"
+              type="button"
+              data-ps-fav-toggle
+              data-ps-fav-handle="{{ product.handle }}"
+              data-ps-fav-label-off="{{ block.settings.label_off | default: 'Save to favourites' | escape }}"
+              data-ps-fav-label-on="{{ block.settings.label_on | default: 'Saved to favourites' | escape }}"
+              data-ps-fav-added="{{ 'general.favorites.added' | t | default: 'Saved to your favourites.' | escape }}"
+              data-ps-fav-removed="{{ 'general.favorites.removed' | t | default: 'Removed from your favourites.' | escape }}"
+              aria-pressed="false"
+              {{ block.shopify_attributes }}>
+              <span class="ps-pdp__fav-icon ps-pdp__fav-icon--off">{% render 'icon', name: 'heart', size: 16 %}</span>
+              <span class="ps-pdp__fav-icon ps-pdp__fav-icon--on">{% render 'icon', name: 'heart-filled', size: 16 %}</span>
+              <span data-ps-fav-text>{{ block.settings.label_off | default: 'Save to favourites' }}</span>
+            </button>
+
           {%- when 'accordion' -%}
             {%- unless acc_open -%}
               <div class="ps-pdp__details" data-ps-accordion data-ps-reveal="up">
@@ -975,6 +992,18 @@
 
   .ps-pdp__share { margin-top: var(--ps-s-2xs); color: var(--ps-ink-soft); }
 
+  .ps-pdp__fav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+  }
+  .ps-pdp__fav-icon { display: grid; place-items: center; }
+  .ps-pdp__fav-icon--on { display: none; }
+  .ps-pdp__fav.is-fav { color: var(--ps-accent); border-color: var(--ps-accent); }
+  .ps-pdp__fav.is-fav .ps-pdp__fav-icon--off { display: none; }
+  .ps-pdp__fav.is-fav .ps-pdp__fav-icon--on { display: grid; }
+
   /* ---- responsive ------------------------------------------------------- */
 
   @media (min-width: 1025px) {
@@ -1073,6 +1102,15 @@
         },
         { "type": "text", "id": "waitlist_label", "label": "Waitlist link label", "default": "Tell me when it returns" },
         { "type": "url", "id": "waitlist_url", "label": "Waitlist link" }
+      ]
+    },
+    {
+      "type": "favorite",
+      "name": "Favourites toggle",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "label_off", "label": "Label, not saved", "default": "Save to favourites" },
+        { "type": "text", "id": "label_on", "label": "Label, saved", "default": "Saved to favourites" }
       ]
     },
     {

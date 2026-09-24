@@ -781,6 +781,35 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
 .ps-badge--sold { background: var(--ps-ink-faint); }
 .ps-badge--accent { background: var(--ps-accent); }
 
+.ps-card__fav {
+  position: absolute;
+  top: var(--ps-s-s);
+  right: var(--ps-s-s);
+  z-index: 4;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(244, 238, 228, 0.88);
+  color: var(--ps-ink);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--ps-t-fast) var(--ps-ease-swap),
+              transform var(--ps-t-fast) var(--ps-ease-swap),
+              color var(--ps-t-fast) var(--ps-ease-swap);
+}
+.ps-card:hover .ps-card__fav,
+.ps-card:focus-within .ps-card__fav,
+.ps-card__fav:focus-visible,
+.ps-card__fav.is-fav { opacity: 1; transform: none; }
+.ps-card__fav-icon { display: grid; place-items: center; }
+.ps-card__fav-icon--on { display: none; }
+.ps-card__fav.is-fav { color: var(--ps-accent); }
+.ps-card__fav.is-fav .ps-card__fav-icon--off { display: none; }
+.ps-card__fav.is-fav .ps-card__fav-icon--on { display: grid; }
+
 /* --------------------------------------------------------------------------
    10. MARQUEE
    -------------------------------------------------------------------------- */
@@ -972,12 +1001,6 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
   0% { transform: scale(1); }
   35% { transform: scale(1.5); }
   100% { transform: scale(1); }
-}
-
-.ps-burger { display: none; }
-@media (max-width: 960px) {
-  .ps-nav--main { display: none; }
-  .ps-burger { display: grid; }
 }
 
 /* Scroll progress, drawn as a thread across the very top */

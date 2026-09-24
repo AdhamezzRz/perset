@@ -1,0 +1,105 @@
+{%- comment -%}
+  FAVOURITES
+
+  A quiet wishlist. Shopify keeps no native one, so this renders every
+  product once, hidden, and lets the browser show only the ones saved to
+  localStorage — the same product card used everywhere else on the site,
+  so a favourited piece looks exactly like it does on a collection page.
+{%- endcomment -%}
+
+<section class="ps-favs ps-section" data-ps-favs>
+  <div class="ps-shell">
+
+    <p class="ps-favs__empty" data-ps-favs-empty hidden>
+      {{ section.settings.empty_text | default: 'Nothing saved yet. Tap the heart on any piece to keep it here.' }}
+      <a class="ps-link" href="{{ section.settings.empty_cta_url | default: routes.all_products_collection_url }}">
+        {{ section.settings.empty_cta_label | default: 'Browse the collections' }}
+        {% render 'icon', name: 'arrow-right', size: 15 %}
+      </a>
+    </p>
+
+    <p class="ps-favs__note">
+      {{ 'general.favorites.device_note' | t | default: 'Saved on this device only — favourites do not follow you to a new browser or phone.' }}
+    </p>
+
+    <div class="ps-favs__grid" data-ps-favs-grid>
+      {%- paginate collections.all.products by 50 -%}
+        {%- for product in collections.all.products -%}
+          <div class="ps-favs__item" data-ps-favs-item data-ps-favs-handle="{{ product.handle }}" hidden>
+            {% render 'product-card', product: product %}
+          </div>
+        {%- endfor -%}
+      {%- endpaginate -%}
+    </div>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .ps-favs__empty {
+    max-width: 46ch;
+    margin: 0 auto clamp(1.6rem, 4vw, 2.4rem);
+    padding-top: clamp(1rem, 3vw, 2rem);
+    text-align: center;
+    color: var(--ps-ink-soft);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .ps-favs__note {
+    text-align: center;
+    font-size: var(--ps-step--1);
+    color: var(--ps-ink-faint);
+    margin-bottom: clamp(1.6rem, 4vw, 2.6rem);
+  }
+  .ps-favs__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: clamp(1.2rem, 3vw, 2.2rem);
+  }
+  .ps-favs__item[hidden] { display: none; }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-ps-favs]');
+    if (!root) return;
+    var empty = root.querySelector('[data-ps-favs-empty]');
+    var items = Array.prototype.slice.call(root.querySelectorAll('[data-ps-favs-item]'));
+
+    function paint() {
+      if (!window.PerSetFavorites) return;
+      var saved = window.PerSetFavorites.all();
+      var any = false;
+      items.forEach(function (item) {
+        var on = saved.indexOf(item.getAttribute('data-ps-favs-handle')) !== -1;
+        item.hidden = !on;
+        if (on) any = true;
+      });
+      if (empty) empty.hidden = any;
+    }
+
+    document.addEventListener('ps:favorites-changed', paint);
+    document.addEventListener('DOMContentLoaded', paint);
+    if (document.readyState !== 'loading') paint();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Favourites grid",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "empty_text",
+      "label": "Empty state text",
+      "default": "Nothing saved yet. Tap the heart on any piece to keep it here."
+    },
+    { "type": "text", "id": "empty_cta_label", "label": "Empty state link label", "default": "Browse the collections" },
+    { "type": "url", "id": "empty_cta_url", "label": "Empty state link" }
+  ],
+  "presets": [{ "name": "Favourites grid" }]
+}
+{% endschema %}

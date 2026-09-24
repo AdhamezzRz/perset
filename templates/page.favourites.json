@@ -1,0 +1,30 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "eyebrow": "Per Set",
+        "heading": "Your favourites",
+        "heading_tag": "h1",
+        "lede": "Everything you have saved, kept in one place.",
+        "pigment": "past",
+        "show_wash": true,
+        "show_thread": true,
+        "padding_top": 168,
+        "padding_bottom": 24
+      }
+    },
+    "grid": {
+      "type": "main-favourites",
+      "settings": {
+        "empty_text": "Nothing saved yet. Tap the heart on any piece to keep it here.",
+        "empty_cta_label": "Browse the collections",
+        "empty_cta_url": "/collections"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "grid"
+  ]
+}

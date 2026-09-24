@@ -58,6 +58,21 @@
 
     <span class="ps-card__ring" aria-hidden="true"></span>
 
+    <button
+      class="ps-card__fav"
+      type="button"
+      data-ps-fav-toggle
+      data-ps-fav-handle="{{ product.handle }}"
+      data-ps-fav-label-off="{{ 'general.favorites.add' | t | default: 'Save to favourites' | escape }}"
+      data-ps-fav-label-on="{{ 'general.favorites.remove' | t | default: 'Remove from favourites' | escape }}"
+      data-ps-fav-added="{{ 'general.favorites.added' | t | default: 'Saved to your favourites.' | escape }}"
+      data-ps-fav-removed="{{ 'general.favorites.removed' | t | default: 'Removed from your favourites.' | escape }}"
+      aria-pressed="false"
+      aria-label="{{ 'general.favorites.add' | t | default: 'Save to favourites' | escape }}">
+      <span class="ps-card__fav-icon ps-card__fav-icon--off">{% render 'icon', name: 'heart', size: 16 %}</span>
+      <span class="ps-card__fav-icon ps-card__fav-icon--on">{% render 'icon', name: 'heart-filled', size: 16 %}</span>
+    </button>
+
     <div class="ps-card__media">
       {%- if product.featured_media -%}
         {{

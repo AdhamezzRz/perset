@@ -3,22 +3,12 @@
     "hero": {
       "type": "hero-plate",
       "settings": {
-        "eyebrow": "Hand painted porcelain · Made in Egypt",
-        "line_1": "A table",
-        "line_2": "worth",
-        "line_3": "staying at",
+        "show_mark": true,
+        "headline_1": "Beautiful per piece",
+        "headline_2": "perfect per set",
         "lede": "Three collections, painted by hand, one piece at a time. Made to be used on a Tuesday, not kept behind glass.",
-        "plate_size": 44,
-        "rotation": 45,
-        "plate_cursor": "Per Set",
-        "pigment": "wild",
-        "show_grain": true,
-        "cta_label": "Shop the collections",
-        "cta_url": "/collections",
-        "cta2_label": "How it is made",
-        "cta2_url": "/pages/our-story",
-        "scroll_cue": "Scroll",
-        "image": "shopify://shop_images/perset-wild-dinner-plate.jpg"
+        "show_spark": true,
+        "scroll_cue": "Scroll"
       }
     },
     "marquee-top": {
@@ -43,10 +33,8 @@
           }
         },
         "m4": {
-          "type": "phrase",
-          "settings": {
-            "text": "Service for six"
-          }
+          "type": "mark",
+          "settings": {}
         }
       },
       "block_order": [
@@ -69,8 +57,9 @@
           "type": "story",
           "settings": {
             "collection": "stitches-of-the-wild",
-            "meta": "24 pieces · Service for six",
-            "cta": "Open the collection",
+            "image": "shopify://shop_images/perset-wild-dinner-plate.jpg",
+            "meta": "24-Piece Set",
+            "cta": "View Collection",
             "rotation": 55,
             "pigment": "wild"
           }
@@ -79,8 +68,9 @@
           "type": "story",
           "settings": {
             "collection": "a-tale-in-beads",
-            "meta": "24 pieces · Service for six",
-            "cta": "Open the collection",
+            "image": "shopify://shop_images/perset-beads-dinner-square.jpg",
+            "meta": "24-Piece Set",
+            "cta": "View Collection",
             "rotation": 55,
             "pigment": "beads"
           }
@@ -89,8 +79,9 @@
           "type": "story",
           "settings": {
             "collection": "pretty-past",
-            "meta": "24 pieces · Service for six",
-            "cta": "Open the collection",
+            "image": "shopify://shop_images/perset-past-dinner-square.jpg",
+            "meta": "24-Piece Set",
+            "cta": "View Collection",
             "rotation": 55,
             "pigment": "past"
           }
@@ -102,9 +93,9 @@
         "past"
       ],
       "settings": {
-        "eyebrow": "Three collections",
-        "heading": "Every set tells its own story",
-        "intro": "Drawn by hand, fired in small runs, and finished so no two pieces are quite the same."
+        "eyebrow": "The Collections",
+        "heading": "The making of a set",
+        "intro": "Every collection begins as hand-painted artwork, carefully brought to life on porcelain for a table that feel anything but ordinary."
       }
     },
     "setting": {
@@ -159,9 +150,9 @@
         "s-past"
       ],
       "settings": {
-        "eyebrow": "The anatomy of a service",
+        "eyebrow": "Inside the Set",
         "heading": "Set your table",
-        "body": "Four pieces, twenty-four in all, drawn here at the size they actually arrive. Hover any piece to see what it is."
+        "body": "Everything you need to set a table of six, choose a plate and explore."
       }
     },
     "rail": {

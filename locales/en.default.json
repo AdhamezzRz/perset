@@ -64,6 +64,14 @@
         "share_on_tiktok": "Find us on TikTok",
         "share_on_whatsapp": "Message us on WhatsApp"
       }
+    },
+    "favorites": {
+      "title": "Favourites",
+      "add": "Save to favourites",
+      "remove": "Remove from favourites",
+      "added": "Saved to your favourites.",
+      "removed": "Removed from your favourites.",
+      "device_note": "Saved on this device only — favourites do not follow you to a new browser or phone."
     }
   },
 
@@ -418,6 +426,7 @@
     },
     "setting": {
       "choose": "Choose your set",
+      "choose_piece": "Choose a piece",
       "dinner": "Dinner",
       "dessert": "Dessert",
       "salad": "Salad",

@@ -407,21 +407,30 @@
   /* ---------------------------------------------------------------- menu */
 
   function initMenu() {
-    var toggle = $('[data-ps-menu-toggle]');
+    // There can be more than one toggle button in the DOM (a mobile-only one
+    // and a desktop one, shown and hidden by CSS at different breakpoints).
+    // Binding with $ (querySelector) instead of $$ only ever wired up the
+    // first one — on desktop that button is display:none, so the visible
+    // toggle silently did nothing. Bind every toggle that exists.
+    var toggles = $$('[data-ps-menu-toggle]');
     var menu = $('[data-ps-menu]');
-    if (!toggle || !menu) return;
+    if (!toggles.length || !menu) return;
     var closeBtn = $('[data-ps-menu-close]', menu);
     var links = $$('.ps-menu__link', menu);
     var lastFocus = null;
 
     links.forEach(function (l, i) { l.style.setProperty('--ps-delay', (120 + i * 62) + 'ms'); });
 
+    function setExpanded(on) {
+      toggles.forEach(function (t) { t.setAttribute('aria-expanded', on ? 'true' : 'false'); });
+    }
+
     function open() {
       lastFocus = document.activeElement;
       menu.classList.add('is-open');
       document.documentElement.classList.add('ps-menu-open');
       document.body.style.overflow = 'hidden';
-      toggle.setAttribute('aria-expanded', 'true');
+      setExpanded(true);
       menu.removeAttribute('aria-hidden');
       setTimeout(function () { (closeBtn || links[0] || menu).focus(); }, 260);
     }
@@ -429,13 +438,15 @@
       menu.classList.remove('is-open');
       document.documentElement.classList.remove('ps-menu-open');
       document.body.style.overflow = '';
-      toggle.setAttribute('aria-expanded', 'false');
+      setExpanded(false);
       menu.setAttribute('aria-hidden', 'true');
       if (lastFocus) lastFocus.focus();
     }
 
-    toggle.addEventListener('click', function () {
-      menu.classList.contains('is-open') ? close() : open();
+    toggles.forEach(function (toggle) {
+      toggle.addEventListener('click', function () {
+        menu.classList.contains('is-open') ? close() : open();
+      });
     });
     if (closeBtn) closeBtn.addEventListener('click', close);
     links.forEach(function (l) { l.addEventListener('click', close); });

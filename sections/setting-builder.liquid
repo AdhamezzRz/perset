@@ -1,12 +1,9 @@
 {%- comment -%}
-  SET YOUR TABLE
+  INSIDE THE SET
 
-  An interactive place setting. The four pieces of a service stack up the way
-  they actually would on a table — dinner plate at the base, salad plate on
-  top, dessert beside it, soup bowl crowning the stack — drawn at their true
-  relative sizes. Switching collection re-lays the whole setting.
-
-  This is the one piece of the site that could not be any other brand's.
+  A piece picker. Choose a collection, then choose one piece of the service
+  — dinner, salad, soup, dessert — and see it alone, cropped the same way
+  every time. No stack, no hover reveal: one plate, centred, at a time.
 {%- endcomment -%}
 
 {%- liquid
@@ -87,47 +84,93 @@
               <path d="M12 196V74M12 74c-6 0-8-8-8-26S8 8 12 8s8 22 8 40-2 26-8 26Z"/>
             </svg>
 
-            <div class="ps-setting__stack">
+            <div class="ps-setting__picker">
               {%- comment -%}
-                Sizes are the real ones: 27 cm dinner, 21 cm salad and dessert,
-                12 cm soup bowl, expressed as a share of the stage.
+                One piece shown alone, at a time — same square crop for every
+                piece, in every collection. The picker below chooses which.
               {%- endcomment -%}
+              {%- assign piece_keys = 'dinner,salad,soup,dessert' | split: ',' -%}
 
-              {%- if dinner != blank -%}
-                <a class="ps-piece ps-piece--dinner" href="{{ dinner.url }}" style="--p-size: 100%; --p-delay: 0ms;" data-ps-cursor="Dinner">
-                  <span class="ps-piece__disc">
-                    {{ dinner.featured_media | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '400,640,1000', sizes: '(max-width: 760px) 80vw, 40vw', alt: dinner.title | escape }}
-                  </span>
-                  <span class="ps-piece__tag"><b>{{ 'sections.setting.dinner' | t | default: 'Dinner' }}</b> 27 cm</span>
-                </a>
-              {%- endif -%}
+              <div class="ps-setting__stage">
+                {%- assign piece_i = -1 -%}
+                {%- for key in piece_keys -%}
+                  {%- liquid
+                    case key
+                      when 'dinner'
+                        assign piece = dinner
+                        assign piece_label = 'sections.setting.dinner' | t | default: 'Dinner'
+                        assign piece_cm = '27 cm'
+                      when 'salad'
+                        assign piece = salad
+                        assign piece_label = 'sections.setting.salad' | t | default: 'Salad'
+                        assign piece_cm = '21 cm'
+                      when 'soup'
+                        assign piece = soup
+                        assign piece_label = 'sections.setting.soup' | t | default: 'Soup'
+                        assign piece_cm = '12 cm'
+                      when 'dessert'
+                        assign piece = dessert
+                        assign piece_label = 'sections.setting.dessert' | t | default: 'Dessert'
+                        assign piece_cm = '21 cm'
+                    endcase
+                  -%}
+                  {%- if piece == blank -%}{%- continue -%}{%- endif -%}
+                  {%- assign piece_i = piece_i | plus: 1 -%}
+                  {%- assign piece_alt = piece.title | escape -%}
+                  <a
+                    class="ps-setting__piece{% if piece_i == 0 %} is-active{% endif %}"
+                    href="{{ piece.url }}"
+                    data-ps-piece-panel="{{ piece_i }}"
+                    data-ps-cursor="{{ piece_label }}">
+                    {{
+                      piece.featured_media
+                      | image_url: width: 1000
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '400,640,900,1000',
+                        sizes: '(max-width: 760px) 76vw, 32vw',
+                        alt: piece_alt,
+                        class: 'ps-setting__piece-img'
+                    }}
+                  </a>
+                {%- endfor -%}
+              </div>
 
-              {%- if salad != blank -%}
-                <a class="ps-piece ps-piece--salad" href="{{ salad.url }}" style="--p-size: 78%; --p-delay: 140ms;" data-ps-cursor="Salad">
-                  <span class="ps-piece__disc">
-                    {{ salad.featured_media | image_url: width: 800 | image_tag: loading: 'lazy', widths: '320,520,800', sizes: '(max-width: 760px) 62vw, 31vw', alt: salad.title | escape }}
-                  </span>
-                  <span class="ps-piece__tag"><b>{{ 'sections.setting.salad' | t | default: 'Salad' }}</b> 21 cm</span>
-                </a>
-              {%- endif -%}
-
-              {%- if soup != blank -%}
-                <a class="ps-piece ps-piece--soup" href="{{ soup.url }}" style="--p-size: 45%; --p-delay: 280ms;" data-ps-cursor="Soup">
-                  <span class="ps-piece__disc">
-                    {{ soup.featured_media | image_url: width: 600 | image_tag: loading: 'lazy', widths: '240,400,600', sizes: '(max-width: 760px) 36vw, 18vw', alt: soup.title | escape }}
-                  </span>
-                  <span class="ps-piece__tag"><b>{{ 'sections.setting.soup' | t | default: 'Soup' }}</b> 12 cm</span>
-                </a>
-              {%- endif -%}
-
-              {%- if dessert != blank -%}
-                <a class="ps-piece ps-piece--dessert" href="{{ dessert.url }}" style="--p-size: 62%; --p-delay: 420ms;" data-ps-cursor="Dessert">
-                  <span class="ps-piece__disc">
-                    {{ dessert.featured_media | image_url: width: 700 | image_tag: loading: 'lazy', widths: '280,460,700', sizes: '(max-width: 760px) 44vw, 22vw', alt: dessert.title | escape }}
-                  </span>
-                  <span class="ps-piece__tag"><b>{{ 'sections.setting.dessert' | t | default: 'Dessert' }}</b> 21 cm</span>
-                </a>
-              {%- endif -%}
+              <div class="ps-setting__piece-tabs" role="tablist" aria-label="{{ 'sections.setting.choose_piece' | t | default: 'Choose a piece' }}">
+                {%- assign piece_i = -1 -%}
+                {%- for key in piece_keys -%}
+                  {%- liquid
+                    case key
+                      when 'dinner'
+                        assign piece = dinner
+                        assign piece_label = 'sections.setting.dinner' | t | default: 'Dinner'
+                        assign piece_cm = '27 cm'
+                      when 'salad'
+                        assign piece = salad
+                        assign piece_label = 'sections.setting.salad' | t | default: 'Salad'
+                        assign piece_cm = '21 cm'
+                      when 'soup'
+                        assign piece = soup
+                        assign piece_label = 'sections.setting.soup' | t | default: 'Soup'
+                        assign piece_cm = '12 cm'
+                      when 'dessert'
+                        assign piece = dessert
+                        assign piece_label = 'sections.setting.dessert' | t | default: 'Dessert'
+                        assign piece_cm = '21 cm'
+                    endcase
+                  -%}
+                  {%- if piece == blank -%}{%- continue -%}{%- endif -%}
+                  {%- assign piece_i = piece_i | plus: 1 -%}
+                  <button
+                    class="ps-setting__piece-tab{% if piece_i == 0 %} is-active{% endif %}"
+                    type="button"
+                    role="tab"
+                    aria-selected="{% if piece_i == 0 %}true{% else %}false{% endif %}"
+                    data-ps-piece-tab="{{ piece_i }}">
+                    <b>{{ piece_label }}</b><span>{{ piece_cm }}</span>
+                  </button>
+                {%- endfor -%}
+              </div>
             </div>
           </div>
 
@@ -214,15 +257,12 @@
     align-items: center;
   }
   .ps-setting__panel[hidden] { display: none; }
-  .ps-setting__panel.is-entering .ps-piece { opacity: 0; transform: translateY(34px) rotate(-10deg) scale(0.9); }
 
   /* The cloth: a pigment-washed round table top */
   .ps-setting__cloth {
     position: relative;
-    /* Nearly square. The stack is centred in here and the dessert plate is
-       offset out to one side, so a wide, short cloth pushes that plate off
-       the edge. */
-    aspect-ratio: 1 / 0.98;
+    min-height: clamp(26rem, 32vw, 36rem);
+    padding-block: clamp(2rem, 4vw, 3rem);
     display: grid;
     place-items: center;
     border-radius: var(--ps-radius-l);
@@ -256,83 +296,71 @@
   .ps-setting__cutlery--l { left: 4%; }
   .ps-setting__cutlery--r { right: 4%; transform: translateY(-50%) scaleX(-1); }
 
-  .ps-setting__stack {
+  .ps-setting__picker {
     position: relative;
-    /* 66% leaves room for the dessert plate's offset to stay on the cloth.
-       At 72% with the old offset it spilled past the left edge. */
-    width: 66%;
-    aspect-ratio: 1;
-    display: grid;
-    place-items: center;
+    width: 78%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.1rem, 2.4vw, 1.7rem);
   }
 
-  /* Each piece is a disc sized as a share of the stack, so the 27 cm dinner
-     plate really is 2.25× the 12 cm bowl. */
-  .ps-piece {
+  /* The stage: one square crop, always the same shape, whichever piece
+     is showing. */
+  .ps-setting__stage {
+    position: relative;
+    width: min(100%, 30rem);
+    aspect-ratio: 1;
+  }
+  .ps-setting__piece {
     position: absolute;
-    width: var(--p-size);
-    aspect-ratio: 1;
-    display: grid;
-    place-items: center;
-    opacity: 0;
-    transform: translateY(34px) rotate(-10deg) scale(0.9);
-    transition:
-      opacity 900ms var(--ps-ease-set) var(--p-delay, 0ms),
-      transform 900ms var(--ps-ease-set) var(--p-delay, 0ms);
-  }
-  .is-in .ps-piece,
-  .ps-setting__panel.is-active .ps-piece { opacity: 1; transform: none; }
-
-  .ps-piece__disc {
+    inset: 0;
     display: block;
-    width: 100%;
-    aspect-ratio: 1;
     border-radius: 50%;
     overflow: hidden;
-    box-shadow: 0 14px 34px rgba(120, 95, 60, 0.20);
-    transition: transform var(--ps-t-drape) var(--ps-ease-set),
-                box-shadow var(--ps-t-drape) var(--ps-ease-set);
-  }
-  .ps-piece__disc img { width: 100%; height: 100%; object-fit: cover; }
-
-  .ps-piece--dinner  { z-index: 1; }
-  .ps-piece--salad   { z-index: 2; }
-  .ps-piece--dessert { z-index: 3; transform: translate(-52%, 26%) rotate(-8deg) scale(0.9); }
-  .ps-piece--soup    { z-index: 4; }
-
-  .ps-setting__panel.is-active .ps-piece--dessert,
-  .is-in .ps-piece--dessert { transform: translate(-52%, 18%); }
-
-  .ps-piece:hover { z-index: 6; }
-  .ps-piece:hover .ps-piece__disc {
-    transform: translateY(-9px) rotate(6deg) scale(1.04);
-    box-shadow: 0 26px 52px rgba(120, 95, 60, 0.28);
-  }
-
-  .ps-piece__tag {
-    position: absolute;
-    bottom: -0.4rem;
-    left: 50%;
-    transform: translate(-50%, 10px);
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.45em;
-    padding: 0.4em 0.85em;
-    border-radius: 999px;
-    background: var(--ps-ink);
-    color: var(--ps-porcelain);
-    font-size: var(--ps-step--2);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    white-space: nowrap;
+    box-shadow: 0 20px 48px rgba(120, 95, 60, 0.22);
     opacity: 0;
+    transform: scale(0.94);
     pointer-events: none;
-    transition: opacity var(--ps-t-fast) var(--ps-ease-swap),
+    transition: opacity var(--ps-t-base) var(--ps-ease-set),
                 transform var(--ps-t-base) var(--ps-ease-set);
   }
-  .ps-piece__tag b { font-weight: 600; }
-  .ps-piece:hover .ps-piece__tag,
-  .ps-piece:focus-visible .ps-piece__tag { opacity: 1; transform: translate(-50%, 0); }
+  .ps-setting__piece.is-active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .ps-setting__piece-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .ps-setting__piece-tabs {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ps-setting__piece-tab {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    padding: 0.55em 1.05em;
+    border-radius: 999px;
+    border: 1px solid var(--ps-hairline);
+    background: var(--ps-linen);
+    font-size: var(--ps-step--2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ps-ink-soft);
+    transition: color var(--ps-t-fast) var(--ps-ease-swap),
+                border-color var(--ps-t-fast) var(--ps-ease-swap),
+                background var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-setting__piece-tab span { opacity: 0.7; font-size: 0.92em; }
+  .ps-setting__piece-tab:hover { border-color: var(--ps-ink-faint); color: var(--ps-ink); }
+  .ps-setting__piece-tab.is-active {
+    background: var(--ps-ink);
+    border-color: var(--ps-ink);
+    color: var(--ps-porcelain);
+  }
 
   .ps-setting__note {
     display: flex;
@@ -360,7 +388,7 @@
 
   @media (max-width: 900px) {
     .ps-setting__panel { grid-template-columns: 1fr; }
-    .ps-setting__stack { width: 74%; }
+    .ps-setting__picker { width: 84%; }
     .ps-setting__cutlery { display: none; }
   }
 {% endstylesheet %}
@@ -411,6 +439,27 @@
       });
     });
 
+    // Within each collection panel, choosing a piece swaps which one shows
+    // on the stage. Scoped per panel so several collections never cross-fire.
+    panels.forEach(function (panel) {
+      var pieceTabs = Array.prototype.slice.call(panel.querySelectorAll('[data-ps-piece-tab]'));
+      var pieces = Array.prototype.slice.call(panel.querySelectorAll('[data-ps-piece-panel]'));
+      if (!pieceTabs.length) return;
+
+      function showPiece(i) {
+        pieceTabs.forEach(function (t, n) {
+          var on = n === i;
+          t.classList.toggle('is-active', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        pieces.forEach(function (p, n) { p.classList.toggle('is-active', n === i); });
+      }
+
+      pieceTabs.forEach(function (t, i) {
+        t.addEventListener('click', function () { showPiece(i); });
+      });
+    });
+
     // Lay the first setting when the section scrolls into view.
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
@@ -433,13 +482,13 @@
   "tag": "section",
   "max_blocks": 4,
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The anatomy of a service" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Inside the Set" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Set your table" },
     {
       "type": "textarea",
       "id": "body",
       "label": "Introduction",
-      "default": "Four pieces, twenty-four in all, drawn here at the size they actually arrive. Hover any piece to see what it is."
+      "default": "Everything you need to set a table of six, choose a plate and explore."
     }
   ],
   "blocks": [

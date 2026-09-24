@@ -1,26 +1,18 @@
 {%- comment -%}
   Per Set header.
 
-  Sits over the hero with no background, picks up a linen blur once you
-  scroll, and hides itself on the way down so the photography is never
-  competing with navigation.
+  One burger on the left opens the full-screen menu (every collection and
+  page lives there now); the logo sits dead centre; search, account,
+  favourites and cart sit on the right. Three columns, always, at every
+  width — no separate mobile/desktop toggle to keep in sync.
 {%- endcomment -%}
 
 <header class="ps-header" data-ps-header>
   <div class="ps-shell ps-shell--wide">
     <div class="ps-header__inner">
 
-      <nav class="ps-nav ps-nav--main" aria-label="{{ 'sections.header.primary_nav' | t | default: 'Primary' }}">
-        {%- for link in section.settings.menu.links limit: 4 -%}
-          <a
-            class="ps-nav__link"
-            href="{{ link.url }}"
-            {% if link.current %}aria-current="page"{% endif %}>{{ link.title }}</a>
-        {%- endfor -%}
-      </nav>
-
       <button
-        class="ps-icon-btn ps-burger ps-only@sm"
+        class="ps-icon-btn ps-header__burger"
         type="button"
         data-ps-menu-toggle
         aria-expanded="false"
@@ -65,6 +57,14 @@
         {%- endif -%}
 
         <a
+          class="ps-icon-btn ps-hide@sm"
+          href="{{ section.settings.favorites_url | default: '/pages/favourites' }}"
+          aria-label="{{ 'general.favorites.title' | t | default: 'Favourites' }}">
+          {% render 'icon', name: 'heart', size: 19 %}
+          <span class="ps-cart-count" data-ps-fav-count aria-hidden="true">0</span>
+        </a>
+
+        <a
           class="ps-icon-btn"
           href="{{ routes.cart_url }}"
           data-ps-cart-link
@@ -74,16 +74,6 @@
             class="ps-cart-count{% if cart.item_count > 0 %} is-on{% endif %}"
             data-ps-cart-count>{{ cart.item_count }}</span>
         </a>
-
-        <button
-          class="ps-icon-btn ps-hide@sm"
-          type="button"
-          data-ps-menu-toggle
-          aria-expanded="false"
-          aria-controls="ps-menu"
-          aria-label="{{ 'sections.header.menu' | t | default: 'Menu' }}">
-          {% render 'icon', name: 'menu', size: 21 %}
-        </button>
       </div>
 
     </div>
@@ -137,6 +127,7 @@
     {%- if shop.customer_accounts_enabled -%}
       <a class="ps-link" href="{{ routes.account_url }}">{{ 'customer.account.title' | t | default: 'Account' }}</a>
     {%- endif -%}
+    <a class="ps-link" href="{{ section.settings.favorites_url | default: '/pages/favourites' }}">{{ 'general.favorites.title' | t | default: 'Favourites' }}</a>
     {%- if section.settings.instagram != blank -%}
       <a class="ps-link" href="{{ section.settings.instagram }}" rel="noopener" target="_blank">Instagram</a>
     {%- endif -%}
@@ -145,6 +136,9 @@
 
 {% stylesheet %}
   .ps-logo__img { width: auto; max-height: 40px; object-fit: contain; }
+
+  /* The single burger. Visible at every width now, left column. */
+  .ps-header__burger { justify-self: start; }
 
   .ps-menu__top {
     display: flex;
@@ -200,6 +194,7 @@
   "settings": [
     { "type": "image_picker", "id": "logo", "label": "Logo" },
     { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "url", "id": "favorites_url", "label": "Favourites page link" },
     { "type": "header", "content": "Menu overlay" },
     { "type": "image_picker", "id": "menu_image", "label": "Menu image" },
     {
