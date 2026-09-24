@@ -12,7 +12,7 @@
 
     <p class="ps-favs__empty" data-ps-favs-empty hidden>
       {{ section.settings.empty_text | default: 'Nothing saved yet. Tap the heart on any piece to keep it here.' }}
-      <a class="ps-link" href="{{ section.settings.empty_cta_url | default: routes.all_products_collection_url }}">
+      <a class="ps-link" href="{{ section.settings.empty_cta_url | default: '/collections/frontpage' }}">
         {{ section.settings.empty_cta_label | default: 'Browse the collections' }}
         {% render 'icon', name: 'arrow-right', size: 15 %}
       </a>
@@ -22,9 +22,15 @@
       {{ 'general.favorites.device_note' | t | default: 'Saved on this device only — favourites do not follow you to a new browser or phone.' }}
     </p>
 
+    {%- comment -%}
+      The "frontpage" collection is curated to hold exactly the products
+      that are actually sold (one complete set per collection) — the same
+      one used for "Shop all", never Shopify's automatic collections.all,
+      which would also list the hidden piece-only products.
+    {%- endcomment -%}
     <div class="ps-favs__grid" data-ps-favs-grid>
-      {%- paginate collections.all.products by 50 -%}
-        {%- for product in collections.all.products -%}
+      {%- paginate collections.frontpage.products by 50 -%}
+        {%- for product in collections.frontpage.products -%}
           <div class="ps-favs__item" data-ps-favs-item data-ps-favs-handle="{{ product.handle }}" hidden>
             {% render 'product-card', product: product %}
           </div>

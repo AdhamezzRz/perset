@@ -20,7 +20,7 @@
         {%- endif -%}
         {% render 'icon', name: 'knot', size: 16 %}
       {%- else -%}
-        {%- assign fallback = 'Hand painted · Fired in small runs · No two alike · Made in Egypt' | split: ' · ' -%}
+        {%- assign fallback = 'Made in Egypt · Three collections · Complete sets of 24' | split: ' · ' -%}
         {%- for item in fallback -%}
           <span class="ps-marquee__item">{{ item }}</span>
           {% render 'icon', name: 'knot', size: 16 %}
@@ -56,7 +56,7 @@
     {
       "type": "phrase",
       "name": "Phrase",
-      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Hand painted" }]
+      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Made in Egypt" }]
     },
     {
       "type": "mark",
@@ -68,10 +68,10 @@
     {
       "name": "Marquee",
       "blocks": [
-        { "type": "phrase", "settings": { "text": "Hand painted" } },
-        { "type": "phrase", "settings": { "text": "Fired in small runs" } },
-        { "type": "phrase", "settings": { "text": "No two alike" } },
         { "type": "phrase", "settings": { "text": "Made in Egypt" } },
+        { "type": "phrase", "settings": { "text": "Three collections" } },
+        { "type": "phrase", "settings": { "text": "Complete sets of 24" } },
+        { "type": "phrase", "settings": { "text": "Cairo, Egypt" } },
         { "type": "mark" }
       ]
     }

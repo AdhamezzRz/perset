@@ -223,7 +223,7 @@
         "type": "textarea",
         "id": "share_description",
         "label": "Fallback description",
-        "default": "Hand-painted porcelain from Egypt. Three collections, each a 24-piece service for six."
+        "default": "Porcelain tableware from Egypt. Three collections, each a complete 24-piece service for six."
       }
     ]
   }

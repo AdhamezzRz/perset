@@ -416,10 +416,16 @@
     var menu = $('[data-ps-menu]');
     if (!toggles.length || !menu) return;
     var closeBtn = $('[data-ps-menu-close]', menu);
-    var links = $$('.ps-menu__link', menu);
+    // Top-level rows get the staggered reveal, whether they are a plain link
+    // or a group toggle for a dropdown. Only real navigation links (plain
+    // top-level links, plus anything inside an open dropdown) close the
+    // whole overlay on click — the toggle itself must not, or opening a
+    // dropdown would immediately shut the menu behind it.
+    var reveals = $$('.ps-menu__link, .ps-menu__group-toggle', menu);
+    var links = $$('.ps-menu__link, .ps-menu__sublink', menu);
     var lastFocus = null;
 
-    links.forEach(function (l, i) { l.style.setProperty('--ps-delay', (120 + i * 62) + 'ms'); });
+    reveals.forEach(function (l, i) { l.style.setProperty('--ps-delay', (120 + i * 62) + 'ms'); });
 
     function setExpanded(on) {
       toggles.forEach(function (t) { t.setAttribute('aria-expanded', on ? 'true' : 'false'); });
@@ -432,7 +438,7 @@
       document.body.style.overflow = 'hidden';
       setExpanded(true);
       menu.removeAttribute('aria-hidden');
-      setTimeout(function () { (closeBtn || links[0] || menu).focus(); }, 260);
+      setTimeout(function () { (closeBtn || reveals[0] || menu).focus(); }, 260);
     }
     function close() {
       menu.classList.remove('is-open');

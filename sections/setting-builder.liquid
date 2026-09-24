@@ -13,17 +13,21 @@
 <section class="ps-setting ps-section" data-ps-setting id="setting-{{ sid }}">
   <div class="ps-shell ps-shell--wide">
 
-    <header class="ps-setting__head">
-      <div>
-        {%- if section.settings.eyebrow != blank -%}
-          <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.body != blank -%}
+      <header class="ps-setting__head">
+        <div>
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="ps-eyebrow" data-ps-reveal="fade">{{ section.settings.eyebrow }}</p>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="ps-h2 ps-setting__title" data-ps-split="lines">{{ section.settings.heading }}</h2>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.body != blank -%}
+          <p class="ps-lede" data-ps-reveal="up">{{ section.settings.body }}</p>
         {%- endif -%}
-        <h2 class="ps-h2 ps-setting__title" data-ps-split="lines">{{ section.settings.heading }}</h2>
-      </div>
-      {%- if section.settings.body != blank -%}
-        <p class="ps-lede" data-ps-reveal="up">{{ section.settings.body }}</p>
-      {%- endif -%}
-    </header>
+      </header>
+    {%- endif -%}
 
     {%- if section.blocks.size > 1 -%}
       <div class="ps-setting__tabs" role="tablist" aria-label="{{ 'sections.setting.choose' | t | default: 'Choose a collection' }}">
@@ -117,9 +121,14 @@
                   {%- if piece == blank -%}{%- continue -%}{%- endif -%}
                   {%- assign piece_i = piece_i | plus: 1 -%}
                   {%- assign piece_alt = piece.title | escape -%}
+                  {%- comment -%}
+                    Pieces are not sold on their own, so this points at the
+                    collection's one full-set product rather than the piece's
+                    own product page.
+                  {%- endcomment -%}
                   <a
                     class="ps-setting__piece{% if piece_i == 0 %} is-active{% endif %}"
-                    href="{{ piece.url }}"
+                    href="{{ col.url | default: routes.collections_url }}"
                     data-ps-piece-panel="{{ piece_i }}"
                     data-ps-cursor="{{ piece_label }}">
                     {{

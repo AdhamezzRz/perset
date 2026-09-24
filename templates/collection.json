@@ -4,7 +4,7 @@
       "type": "collection-banner",
       "settings": {
         "eyebrow": "The collection",
-        "detail": "Painted by hand · Made in Egypt",
+        "detail": "Complete 24-piece set · Made in Egypt",
         "rotation": 50,
         "pigment": "auto",
         "show_thread": true,
@@ -23,7 +23,7 @@
         "show_sort": true,
         "empty_title": "Nothing here yet",
         "empty_filtered": "Nothing matches that combination",
-        "empty_body": "The next run is still being painted. Take a look at the other collections in the meantime.",
+        "empty_body": "The next run is still being made. Take a look at the other collections in the meantime.",
         "empty_link": "Browse every collection"
       }
     }

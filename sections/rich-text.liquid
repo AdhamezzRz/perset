@@ -31,7 +31,7 @@
         {%- if section.settings.cta_label != blank -%}
           <a
             class="ps-btn{% if section.settings.cta_style == 'accent' %} ps-btn--accent{% endif %}"
-            href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}"
+            href="{{ section.settings.cta_url | default: '/collections/frontpage' }}"
             data-ps-magnetic="0.2">
             {{ section.settings.cta_label }}
           </a>
@@ -106,12 +106,12 @@
   "tag": "section",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "In the studio" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "No two pieces are identical" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Beautiful per piece, perfect per set" },
     {
       "type": "richtext",
       "id": "body",
       "label": "Body",
-      "default": "<p>Every plate is painted by hand, one brush at a time, then fired. Small differences in the line are not flaws. That is the point.</p>"
+      "default": "<p>Every set is twenty-four pieces, fired and packed together so a table of six is always ready to be laid.</p>"
     },
     {
       "type": "select",

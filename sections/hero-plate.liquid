@@ -45,7 +45,7 @@
     {%- if section.settings.cta_label != blank or section.settings.cta2_label != blank -%}
       <div class="ps-hero-brand__actions" data-ps-reveal="up" style="--ps-delay:620ms">
         {%- if section.settings.cta_label != blank -%}
-          <a class="ps-btn ps-btn--light" href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}" data-ps-magnetic="0.22">
+          <a class="ps-btn ps-btn--light" href="{{ section.settings.cta_url | default: '/collections/frontpage' }}" data-ps-magnetic="0.22">
             {{ section.settings.cta_label }}
           </a>
         {%- endif -%}
@@ -207,7 +207,7 @@
       "type": "textarea",
       "id": "lede",
       "label": "Introduction",
-      "default": "Three collections, painted by hand, one piece at a time. Made to be used on a Tuesday, not kept behind glass."
+      "default": "Three collections, each a complete set of 24. Made to be used on a Tuesday, not kept behind glass."
     },
     { "type": "checkbox", "id": "show_spark", "label": "Show the sunburst flourish", "default": true },
     { "type": "header", "content": "Buttons (optional — hidden when both are blank)" },

@@ -9,7 +9,9 @@
     {%- if section.settings.show_newsletter -%}
       <div class="ps-footer__news" data-ps-reveal="up">
         <div class="ps-footer__news-text">
-          <h2 class="ps-h3">{{ section.settings.news_heading }}</h2>
+          {%- if section.settings.news_heading != blank -%}
+            <h2 class="ps-h3">{{ section.settings.news_heading }}</h2>
+          {%- endif -%}
           {%- if section.settings.news_body != blank -%}
             <p>{{ section.settings.news_body }}</p>
           {%- endif -%}
@@ -178,18 +180,17 @@
   "name": "Footer",
   "settings": [
     { "type": "checkbox", "id": "show_newsletter", "label": "Show newsletter", "default": true },
-    { "type": "text", "id": "news_heading", "label": "Newsletter heading", "default": "First look at the next firing" },
+    { "type": "text", "id": "news_heading", "label": "Newsletter heading", "default": "Keep in touch" },
     {
       "type": "textarea",
       "id": "news_body",
-      "label": "Newsletter text",
-      "default": "Small runs sell out quietly. We will tell you before they do."
+      "label": "Newsletter text"
     },
     {
       "type": "textarea",
       "id": "blurb",
       "label": "Brand line",
-      "default": "Hand-painted porcelain, made in small runs in Egypt."
+      "default": "Beautiful per piece, perfect per set."
     },
     { "type": "text", "id": "rights", "label": "Rights line", "default": "All rights reserved." },
     { "type": "header", "content": "Credit" },

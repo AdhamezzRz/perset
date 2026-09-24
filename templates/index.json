@@ -6,7 +6,7 @@
         "show_mark": true,
         "headline_1": "Beautiful per piece",
         "headline_2": "perfect per set",
-        "lede": "Three collections, painted by hand, one piece at a time. Made to be used on a Tuesday, not kept behind glass.",
+        "lede": "Three collections, each a complete set of 24. Made to be used on a Tuesday, not kept behind glass.",
         "show_spark": true,
         "scroll_cue": "Scroll"
       }
@@ -95,192 +95,13 @@
       "settings": {
         "eyebrow": "The Collections",
         "heading": "The making of a set",
-        "intro": "Every collection begins as hand-painted artwork, carefully brought to life on porcelain for a table that feel anything but ordinary."
-      }
-    },
-    "setting": {
-      "type": "setting-builder",
-      "blocks": {
-        "s-wild": {
-          "type": "setting",
-          "settings": {
-            "collection": "stitches-of-the-wild",
-            "label": "Stitches of the Wild",
-            "note": "Leopards resting in bamboo under a pink parasol, with every border drawn to look softly stitched.",
-            "cta": "See the full service",
-            "pigment": "wild",
-            "dinner": "stitches-of-the-wild-dinner-plates-set-of-6",
-            "dessert": "stitches-of-the-wild-dessert-plates-set-of-6",
-            "salad": "stitches-of-the-wild-salad-plates-set-of-6",
-            "soup": "stitches-of-the-wild-soup-bowls-set-of-6"
-          }
-        },
-        "s-beads": {
-          "type": "setting",
-          "settings": {
-            "collection": "a-tale-in-beads",
-            "label": "A Tale in Beads",
-            "note": "A palm built from what look like hundreds of tiny placed beads. The closer you look, the more you see.",
-            "cta": "See the full service",
-            "pigment": "beads",
-            "dinner": "a-tale-in-beads-dinner-plates-set-of-6",
-            "dessert": "a-tale-in-beads-dessert-plates-set-of-6",
-            "salad": "a-tale-in-beads-salad-plates-set-of-6",
-            "soup": "a-tale-in-beads-soup-bowls-set-of-6"
-          }
-        },
-        "s-past": {
-          "type": "setting",
-          "settings": {
-            "collection": "pretty-past",
-            "label": "Pretty Past",
-            "note": "A peacock among roses, in the warm colours of a plate someone kept for forty years.",
-            "cta": "See the full service",
-            "pigment": "past",
-            "dinner": "pretty-past-dinner-plates-set-of-6",
-            "dessert": "pretty-past-dessert-plates-set-of-6",
-            "salad": "pretty-past-salad-plates-set-of-6",
-            "soup": "pretty-past-soup-bowls-set-of-6"
-          }
-        }
-      },
-      "block_order": [
-        "s-wild",
-        "s-beads",
-        "s-past"
-      ],
-      "settings": {
-        "eyebrow": "Inside the Set",
-        "heading": "Set your table",
-        "body": "Everything you need to set a table of six, choose a plate and explore."
-      }
-    },
-    "rail": {
-      "type": "featured-rail",
-      "settings": {
-        "collection": "stitches-of-the-wild",
-        "eyebrow": "Start here",
-        "heading": "Pieces to begin with",
-        "view_all": "View all",
-        "count": 8,
-        "dark": false
-      }
-    },
-    "craft": {
-      "type": "craft-process",
-      "blocks": {
-        "c1": {
-          "type": "step",
-          "settings": {
-            "title": "The drawing",
-            "icon": "brush",
-            "text": "Each motif is drawn by hand first, at full size, until the composition sits right on a circle."
-          }
-        },
-        "c2": {
-          "type": "step",
-          "settings": {
-            "title": "The painting",
-            "icon": "leaf",
-            "text": "Colour goes on in layers over the bisque. The stitched borders are the slowest part, laid stitch by stitch around the rim."
-          }
-        },
-        "c3": {
-          "type": "step",
-          "settings": {
-            "title": "The firing",
-            "icon": "knot",
-            "text": "Two firings. The first sets the body, the second fixes the glaze and brings the colour up to its final depth."
-          }
-        },
-        "c4": {
-          "type": "step",
-          "settings": {
-            "title": "The packing",
-            "icon": "box",
-            "text": "Wrapped by hand, boxed in sixes, and checked once more before it leaves the studio."
-          }
-        }
-      },
-      "block_order": [
-        "c1",
-        "c2",
-        "c3",
-        "c4"
-      ],
-      "settings": {
-        "eyebrow": "How a piece comes to be",
-        "heading": "Drawn, painted, fired, twice",
-        "body": "Nothing here is transferred or printed. Every line is laid down by a hand holding a brush, which is why the leopards on your plates will not match the leopards on anyone else's.",
-        "cta_label": "Read our story",
-        "cta_url": "/pages/our-story",
-        "dark": false,
-        "image": "shopify://shop_images/perset-past-lifestyle.jpg"
-      }
-    },
-    "reels": {
-      "type": "reel-strip",
-      "blocks": {
-        "r1": {
-          "type": "reel",
-          "settings": {
-            "caption": "A Tale in Beads, in motion",
-            "collection": "a-tale-in-beads",
-            "video_url": "https://cdn.shopify.com/videos/c/vp/047ec82f580f41b19aace0d00dedc1a9/047ec82f580f41b19aace0d00dedc1a9.HD-720p-4.5Mbps-95224103.mp4",
-            "poster_url": "https://cdn.shopify.com/s/files/1/0809/2778/5145/files/preview_images/047ec82f580f41b19aace0d00dedc1a9.thumbnail.0000000000.jpg?v=1790094843"
-          }
-        },
-        "r2": {
-          "type": "reel",
-          "settings": {
-            "caption": "Pretty Past, laid for six",
-            "collection": "pretty-past",
-            "video_url": "https://cdn.shopify.com/videos/c/vp/4cddd4b1f6694b55956a4a2ec354e0aa/4cddd4b1f6694b55956a4a2ec354e0aa.HD-720p-4.5Mbps-95224105.mp4",
-            "poster_url": "https://cdn.shopify.com/s/files/1/0809/2778/5145/files/preview_images/4cddd4b1f6694b55956a4a2ec354e0aa.thumbnail.0000000000.jpg?v=1790094843"
-          }
-        },
-        "r3": {
-          "type": "reel",
-          "settings": {
-            "caption": "Stitches of the Wild",
-            "collection": "stitches-of-the-wild",
-            "video_url": "https://cdn.shopify.com/videos/c/vp/158aaecfbec04e4ca9281aef2fbb6b07/158aaecfbec04e4ca9281aef2fbb6b07.HD-720p-4.5Mbps-95224107.mp4",
-            "poster_url": "https://cdn.shopify.com/s/files/1/0809/2778/5145/files/preview_images/158aaecfbec04e4ca9281aef2fbb6b07.thumbnail.0000000000.jpg?v=1790094848"
-          }
-        },
-        "r4": {
-          "type": "reel",
-          "settings": {
-            "caption": "A table laid",
-            "collection": "pretty-past",
-            "video_url": "https://cdn.shopify.com/videos/c/vp/b25cbb9945bc4a72b5400d7db25dd64c/b25cbb9945bc4a72b5400d7db25dd64c.HD-720p-4.5Mbps-95224108.mp4",
-            "poster_url": "https://cdn.shopify.com/s/files/1/0809/2778/5145/files/preview_images/b25cbb9945bc4a72b5400d7db25dd64c.thumbnail.0000000000.jpg?v=1790094848"
-          }
-        }
-      },
-      "block_order": [
-        "r1",
-        "r2",
-        "r3",
-        "r4"
-      ],
-      "settings": {
-        "eyebrow": "From the studio",
-        "heading": "In motion",
-        "body": "Short loops from the studio. Tables laid, plates turned, light moving across a glaze.",
-        "pigment": "none",
-        "dark": false,
-        "ratio": "1"
+        "intro": "Every collection begins as an original artwork, carefully brought to life on porcelain for a table that feels anything but ordinary."
       }
     }
   },
   "order": [
     "hero",
     "marquee-top",
-    "stories",
-    "setting",
-    "rail",
-    "reels",
-    "craft"
+    "stories"
   ]
 }

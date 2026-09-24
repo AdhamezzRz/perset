@@ -97,11 +97,34 @@
     <nav aria-label="{{ 'sections.header.menu' | t | default: 'Menu' }}">
       <ul class="ps-menu__list">
         {%- for link in section.settings.menu.links -%}
-          <li class="ps-menu__item">
-            <a class="ps-menu__link" href="{{ link.url }}">
-              <span class="ps-menu__idx">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>{{ link.title }}
-            </a>
-          </li>
+          {%- if link.links.size > 0 -%}
+            <li class="ps-menu__item ps-menu__item--group">
+              <details class="ps-menu__group">
+                <summary class="ps-menu__group-toggle">
+                  <span class="ps-menu__idx">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>{{ link.title }}
+                  <span class="ps-menu__chevron" aria-hidden="true">{% render 'icon', name: 'chevron-down', size: 18 %}</span>
+                </summary>
+                <ul class="ps-menu__sublist">
+                  <li>
+                    <a class="ps-menu__sublink" href="{{ link.url }}">
+                      {{ 'collections.general.view_all' | t | default: 'Everything' }}
+                    </a>
+                  </li>
+                  {%- for child in link.links -%}
+                    <li>
+                      <a class="ps-menu__sublink" href="{{ child.url }}">{{ child.title }}</a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+            </li>
+          {%- else -%}
+            <li class="ps-menu__item">
+              <a class="ps-menu__link" href="{{ link.url }}">
+                <span class="ps-menu__idx">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>{{ link.title }}
+              </a>
+            </li>
+          {%- endif -%}
         {%- endfor -%}
       </ul>
     </nav>
@@ -139,6 +162,61 @@
 
   /* The single burger. Visible at every width now, left column. */
   .ps-header__burger { justify-self: start; }
+
+  /* A dropdown row inside the full-screen menu. The toggle is styled to
+     match a plain .ps-menu__link exactly, but it is a <summary> rather than
+     a link, so it opens the sublist instead of closing the whole overlay. */
+  .ps-menu__group { position: relative; }
+  .ps-menu__group-toggle {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5em;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--ps-display);
+    font-size: clamp(2.2rem, 9vw, 5rem);
+    font-weight: 300;
+    font-variation-settings: "SOFT" 40, "WONK" 1, "opsz" 144;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    transform: translateY(110%);
+    transition: transform var(--ps-t-drape) var(--ps-ease-set), color var(--ps-t-fast) var(--ps-ease-swap);
+    transition-delay: var(--ps-delay, 0ms);
+  }
+  .ps-menu__group-toggle::-webkit-details-marker { display: none; }
+  .ps-menu.is-open .ps-menu__group-toggle { transform: translateY(0); }
+  .ps-menu__group-toggle:hover { color: var(--ps-accent); }
+  .ps-menu__group-toggle .ps-menu__idx {
+    font-family: var(--ps-body);
+    font-size: 0.24em;
+    letter-spacing: 0.2em;
+    vertical-align: super;
+    color: var(--ps-ink-faint);
+    margin-right: -0.2em;
+  }
+  .ps-menu__chevron {
+    display: inline-flex;
+    color: var(--ps-ink-faint);
+    transition: transform var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-menu__group[open] .ps-menu__chevron { transform: rotate(180deg); }
+
+  .ps-menu__sublist {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1em;
+    padding: 0.4em 0 0.6em 0.1em;
+  }
+  .ps-menu__sublink {
+    display: block;
+    font-family: var(--ps-body);
+    font-size: var(--ps-step-1);
+    letter-spacing: 0.01em;
+    color: var(--ps-ink-soft);
+    padding-block: 0.15em;
+    transition: color var(--ps-t-fast) var(--ps-ease-swap);
+  }
+  .ps-menu__sublink:hover { color: var(--ps-accent); }
 
   .ps-menu__top {
     display: flex;
@@ -201,7 +279,7 @@
       "type": "textarea",
       "id": "menu_note",
       "label": "Menu note",
-      "default": "Every piece is painted by hand, so no two are identical. That is the point."
+      "default": "Each collection is a complete set of twenty-four, made to set a table for six."
     },
     { "type": "url", "id": "instagram", "label": "Instagram URL" }
   ],

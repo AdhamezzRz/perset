@@ -342,8 +342,8 @@
               {%- endform -%}
 
               {%- comment -%}
-                Everything is fired in small runs, so "sold out" is a normal
-                state here rather than an error. It gets its own quiet note
+                Each set is made to order, so "sold out" is a normal state
+                here rather than an error. It gets its own quiet note
                 instead of a red box.
               {%- endcomment -%}
               <div class="ps-pdp__note" data-ps-note-sold {% if current_variant.available %}hidden{% endif %}>
@@ -1043,7 +1043,7 @@
       "limit": 1,
       "settings": [
         { "type": "checkbox", "id": "link_collection", "label": "Link to the collection", "default": true },
-        { "type": "text", "id": "text", "label": "Fallback text", "default": "Hand painted" }
+        { "type": "text", "id": "text", "label": "Fallback text", "default": "Per Set" }
       ]
     },
     {
@@ -1092,7 +1092,7 @@
           "type": "textarea",
           "id": "made_note",
           "label": "Note under the button",
-          "default": "Painted and fired in small runs. Allow two to three weeks from order to table."
+          "default": "Made to order as a complete set. Allow two to three weeks from order to table."
         },
         {
           "type": "textarea",

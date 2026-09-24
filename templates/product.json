@@ -7,7 +7,7 @@
           "type": "eyebrow",
           "settings": {
             "link_collection": true,
-            "text": "Hand painted"
+            "text": "Per Set"
           }
         },
         "title": {
@@ -45,8 +45,8 @@
             "busy_label": "Setting the table",
             "done_label": "In your cart",
             "added_message": "Added to your cart.",
-            "made_note": "Painted and fired in small runs. Allow two to three weeks from order to table.",
-            "soldout_note": "This run is finished. The next one is being painted now — leave your name and we will write to you when it comes out of the kiln.",
+            "made_note": "Made to order as a complete set. Allow two to three weeks from order to table.",
+            "soldout_note": "This run is finished. The next one is being made now — leave your name and we will write to you when it comes out of the kiln.",
             "waitlist_label": "Tell me when it returns"
           }
         },
@@ -54,7 +54,7 @@
           "type": "accordion",
           "settings": {
             "kind": "dimensions",
-            "content": "<p>Dinner 27cm. Dessert 21cm. Salad 19cm. Soup 22cm, 4cm deep. Every piece is thrown and painted by hand, so measurements vary by a few millimetres.</p>",
+            "content": "<p>Dinner 27cm. Dessert 21cm. Salad 19cm. Soup 22cm, 4cm deep. Sold only as the complete set of 24; measurements may vary by a few millimetres between pieces.</p>",
             "open": false
           }
         },

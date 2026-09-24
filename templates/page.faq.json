@@ -17,35 +17,19 @@
     "faq": {
       "type": "faq-accordion",
       "blocks": {
-        "q1": {
-          "type": "question",
-          "settings": {
-            "question": "Is it really painted by hand?",
-            "answer": "<p>Yes. Every motif is drawn at full size first, then painted onto the bisque in layers and fired twice. Nothing is transferred or printed.</p>",
-            "open": true
-          }
-        },
-        "q2": {
-          "type": "question",
-          "settings": {
-            "question": "Will my set look exactly like the photographs?",
-            "answer": "<p>Very close, but not identical. Line weight, colour depth and placement shift slightly from piece to piece because a person painted them. That variation is the character you are buying.</p>",
-            "open": false
-          }
-        },
         "q3": {
           "type": "question",
           "settings": {
             "question": "What comes in a full service?",
             "answer": "<p>Twenty-four pieces: six dinner plates at 27 cm, six dessert plates at 21 cm, six salad plates at 21 cm and slightly deep, and six soup bowls at 12 cm and deep. A service for six.</p>",
-            "open": false
+            "open": true
           }
         },
         "q4": {
           "type": "question",
           "settings": {
             "question": "Can I buy a single piece?",
-            "answer": "<p>Pieces are sold in sets of six, which is how they are fired and packed. If you need to replace one broken plate, write to us and we will do what we can.</p>",
+            "answer": "<p>No — each collection is sold only as the complete set of 24. If you need to replace one broken plate, write to us and we will do what we can.</p>",
             "open": false
           }
         },
@@ -99,8 +83,6 @@
         }
       },
       "block_order": [
-        "q1",
-        "q2",
         "q3",
         "q4",
         "q5",
@@ -113,7 +95,7 @@
       "settings": {
         "eyebrow": "Frequently asked",
         "heading": "The things people ask",
-        "body": "Sizes, care, shipping, and what hand painting actually means for the set you receive.",
+        "body": "Sizes, care, shipping, and what to expect from the set you receive.",
         "cta_label": "Write to the studio",
         "cta_url": "/pages/contact",
         "pigment": "beads",
