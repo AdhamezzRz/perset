@@ -163,6 +163,53 @@ everything else is in the repo.
 
 ---
 
+## Round 2 — the design review
+
+You sent through Judy and Dana's scroll-through of the preview, plus the
+thank-you-card PDF as inspiration for the hero. This is what changed:
+
+- **Header** — the inline nav is gone; the logo is centred; one burger on
+  the left opens the full-screen menu (this also fixed a real bug: the
+  desktop burger had no click handler at all, only the mobile one did).
+  A favourites icon sits in the tools on the right.
+- **Hero** — the plate and "A Table Worth Staying At" are gone. In their
+  place: an oxblood section with the blush ticket-edge stripe from the
+  thank-you card, the logomark, and "Beautiful per piece / perfect per
+  set." The hand-painted eyebrow line was removed from here, nowhere else
+  — see the flag below.
+- **Collections intro** — the old lede, buttons and stray "LL" are gone.
+  Copy is now "The Collections" / "The making of a set" / the new body
+  line. The marquee's "Service for six" slot is now the logomark instead.
+- **Collection panels** (Stitches / Beads / Past) — the description no
+  longer truncates, there is one pill ("24-Piece Set") instead of two, and
+  the button reads "View Collection." All three now use a single,
+  consistently cropped plate image rather than a flat-lay.
+- **Set your table** — rebuilt. It was a stacked, hover-to-reveal
+  composition; it is now a picker: choose Dinner, Salad, Soup or Dessert
+  and see that one piece alone, in the same square crop every time. Copy
+  is now "Inside the Set" / "Everything you need to set a table of six,
+  choose a plate and explore."
+- **Favourites** — Shopify has no wishlist of its own, so this is a
+  localStorage one: a heart on every product card and on the product page,
+  a `/pages/favourites` page that shows whatever is saved, and the count
+  in the header. It only remembers on the device it was saved on — there
+  is no account sync. If you outgrow that later, it is a real app
+  (Shopify has a few) rather than something to patch in.
+- Caught while sweeping the preview afterwards: the reel strip's play
+  button had a missing translation string. Fixed, unrelated to the review.
+
+**One thing to confirm with the client:** the note said "not hand painted"
+next to the hero eyebrow. I read that as wanting the line gone from the
+hero specifically — the option offered right next to it was literally
+"remove completely" — so that's the only place it changed. I did **not**
+touch the hand-painted claim anywhere else (FAQ, the craft-process
+section, product pages, the footer). If "not hand painted" is actually a
+statement about the product itself rather than where that line sits, that
+is a much bigger rewrite across the whole site and worth a straight
+answer from the client before anyone touches it.
+
+---
+
 ## Known loose ends
 
 - `assets/perset-writetest.css` is a 23-byte leftover from checking write
