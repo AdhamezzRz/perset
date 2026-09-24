@@ -4,6 +4,31 @@ What was built, what is real, and what still needs you.
 
 ---
 
+## The site is live
+
+At some point during this round the "Per Set" theme became the store's
+published theme (`perset.shop` serves it directly now, no preview link
+needed). That changes how edits reach you from here: I can no longer push
+straight to it — Shopify blocks direct file writes to a live theme, and
+that block is by design, not a bug to work around.
+
+So the newest round of edits (the hero's lede removed, the top marquee
+swapped for a short brand line, and product photos no longer cropped to
+a circle on the home page or in the shop) are sitting on a duplicate
+draft theme instead: **"Per Set — draft (edits in review)"**, preview at
+`https://perset.shop/?preview_theme_id=167099236537`. Everything from
+every round before this one is already live, since it went up while the
+theme was still unpublished.
+
+To make the draft's changes live, publish it from Shopify admin →
+Online Store → Themes (or tell me to keep working on it and you can
+review the whole batch before publishing). Once it's published, that
+draft becomes the new live theme, and any *next* round of edits will hit
+this same wall again — same fix each time: duplicate, edit the
+duplicate, you publish.
+
+---
+
 ## Before you publish
 
 These are the things that are deliberately unfinished. Nothing here is a bug.
@@ -89,15 +114,14 @@ strip takes up to eight.
 
 ## The theme
 
-Installed as **Per Set · Atelier (Claude build)**, unpublished. Your previous
-themes are untouched: `Horizon` is still live and `Whisper` is still there as
-a backup.
+Installed as **Per Set · Atelier Najmarketing**, and now the store's
+published theme — see "The site is live" above for what that changes.
+`Horizon` and `Whisper`, your original themes, are still there unpublished,
+untouched.
 
-**Preview link:**
-`https://perset.shop/?preview_theme_id=166988251321`
-
-That link works for anyone you send it to, no login needed. Click through it,
-and publish it yourself when you are happy. It will not go live on its own.
+The newest edits live on a draft duplicate until you publish it — see
+above for that link. Once published, the draft's own preview link stops
+being the one to share; use the plain storefront URL instead.
 
 Every page was checked in a real browser at 1440 px and at 390 px: ten pages,
 all passing, with no Liquid errors, no missing translation strings, no stuck
