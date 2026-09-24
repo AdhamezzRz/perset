@@ -31,55 +31,10 @@
         "padding_top": 40,
         "padding_bottom": 120
       }
-    },
-    "faq": {
-      "type": "faq-accordion",
-      "settings": {
-        "eyebrow": "Before you write",
-        "heading": "The quick answers",
-        "body": "Most notes we get are one of these three.",
-        "cta_label": "",
-        "pigment": "none",
-        "wash_bg": true,
-        "padding_top": 100,
-        "padding_bottom": 100
-      },
-      "blocks": {
-        "q1": {
-          "type": "question",
-          "settings": {
-            "question": "How long does an order take?",
-            "answer": "<p>Sets in stock leave the studio in two to three working days. If a set has to be made for you, allow two to three weeks. We write to you when it goes into the kiln.</p>",
-            "open": true
-          }
-        },
-        "q2": {
-          "type": "question",
-          "settings": {
-            "question": "Do you ship outside Egypt?",
-            "answer": "<p>Yes. Rates are calculated at checkout from the studio address. Everything travels double-boxed with foam between each piece.</p>",
-            "open": false
-          }
-        },
-        "q3": {
-          "type": "question",
-          "settings": {
-            "question": "Can I use these every day?",
-            "answer": "<p>Please do. The glaze is fired hard and the paint sits under it. Dishwasher on a normal cycle is fine. Keep them out of the microwave — the gold does not like it.</p>",
-            "open": false
-          }
-        }
-      },
-      "block_order": [
-        "q1",
-        "q2",
-        "q3"
-      ]
     }
   },
   "order": [
     "hero",
-    "form",
-    "faq"
+    "form"
   ]
 }
