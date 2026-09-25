@@ -237,6 +237,35 @@
     });
   }
 
+  // Scroll arrives in steps (wheel notches, a thumb flick), so the plate
+  // never chases the scroll position directly: each frame it eases a
+  // little of the way towards where the scroll says it should be, and the
+  // loop keeps running until every plate has settled. That is what makes
+  // the turn read as one continuous motion rather than a series of jumps.
+  var rotLoopRunning = false;
+
+  function rotLoop() {
+    var busy = false;
+    for (var i = 0; i < rotators.length; i++) {
+      var r = rotators[i];
+      if (r.target === undefined) continue;
+      if (r.cur === undefined) r.cur = r.target;
+      var diff = r.target - r.cur;
+      if (Math.abs(diff) < 0.02) { r.cur = r.target; } else { r.cur += diff * 0.11; busy = true; }
+      var p = r.cur / (2 * r.deg) + 0.5;
+      var sp = Math.sin(clamp(p, 0, 1) * Math.PI);
+      r.el.style.setProperty('--ps-rot', r.cur.toFixed(2) + 'deg');
+      if (r.scaleTo) {
+        var s = 1 + (r.scaleTo - 1) * sp;
+        r.el.style.transform = 'rotate(' + r.cur.toFixed(2) + 'deg) scale(' + s.toFixed(3) + ')';
+      }
+      if (r.shadow) {
+        r.shadow.style.setProperty('--ps-shadow-scale', lerp(0.82, 1.08, sp).toFixed(3));
+      }
+    }
+    if (busy) { requestAnimationFrame(rotLoop); } else { rotLoopRunning = false; }
+  }
+
   function initRotate() {
     if (reduced.matches) return;
     measureRotators();
@@ -250,17 +279,9 @@
         var p = (y + vhh - r.top) / (vhh + r.h);
         if (p < -0.2 || p > 1.2) continue;
         p = clamp(p, 0, 1);
-        var deg = (p - 0.5) * 2 * r.deg;
-        r.el.style.setProperty('--ps-rot', deg.toFixed(2) + 'deg');
-        if (r.scaleTo) {
-          var s = 1 + (r.scaleTo - 1) * Math.sin(p * Math.PI);
-          r.el.style.transform = 'rotate(' + deg.toFixed(2) + 'deg) scale(' + s.toFixed(3) + ')';
-        }
-        if (r.shadow) {
-          var ss = lerp(0.82, 1.08, Math.sin(p * Math.PI));
-          r.shadow.style.setProperty('--ps-shadow-scale', ss.toFixed(3));
-        }
+        r.target = (p - 0.5) * 2 * r.deg;
       }
+      if (!rotLoopRunning) { rotLoopRunning = true; requestAnimationFrame(rotLoop); }
     });
   }
 

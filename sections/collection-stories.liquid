@@ -210,16 +210,25 @@
     aspect-ratio: 1;
     transform: translate3d(0, var(--ps-par, 0px), 0);
   }
-  .ps-story__plate {
+  /* The artwork is a cut-out of the whole plate on a transparent ground,
+     so there is no frame at all: the plate itself is the shape, its shadow
+     follows its own silhouette, and it turns on scroll like a real plate
+     in the hand. The scroll-linked transform is driven frame by frame with
+     its own easing, so the CSS transition on .ps-plate must not fight it. */
+  .ps-story__plate.ps-plate {
     width: 100%;
-    box-shadow: 0 30px 80px rgba(120, 95, 60, 0.22);
+    background: transparent;
+    overflow: visible;
+    transition: none;
+    will-change: transform;
+    backface-visibility: hidden;
   }
-  /* Shown whole, not cropped to a circle: override the shared .ps-plate
-     treatment for this one instance only. */
-  .ps-story__plate.ps-plate,
-  .ps-story__plate.ps-plate::after { border-radius: var(--ps-radius-l); }
-  .ps-story__plate.ps-plate img { object-fit: contain; border-radius: var(--ps-radius-l); }
-  .ps-story__cover { position: absolute; inset: 0; border-radius: var(--ps-radius-l); z-index: 3; }
+  .ps-story__plate.ps-plate img {
+    object-fit: contain;
+    border-radius: 0;
+    filter: drop-shadow(0 26px 34px rgba(120, 95, 60, 0.28));
+  }
+  .ps-story__cover { position: absolute; inset: 0; border-radius: 50%; z-index: 3; }
 
   @media (max-width: 900px) {
     .ps-story {

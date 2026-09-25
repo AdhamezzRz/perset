@@ -6,11 +6,13 @@
   the brand's own name — now with a looping video of a table being laid
   behind it all, muted and cropped to fill the frame, with a warm oxblood
   scrim over it so the type stays legible and the mood stays the brand's
-  own rather than the footage's. A phone can be handed its own, purpose-
-  shot vertical take: the browser picks it natively via a media-scoped
-  <source>, so nobody downloads the take they'll never see. Falls back
-  to a still poster image for anyone who has asked their device to
-  reduce motion, and to plain oxblood when no video is set at all.
+  own rather than the footage's. The video is a phone-only, full-screen
+  reel: on a phone the hero fills the whole first screen, on anything
+  wider it is the plain oxblood ground and nobody downloads a byte of
+  video (the one <source> is media-scoped, and the poster is a CSS
+  background that only exists inside the phone media query). Falls back
+  to the still poster for anyone who has asked their device to reduce
+  motion, and to plain oxblood when no video is set at all.
 {%- endcomment -%}
 
 <section class="ps-hero-brand{% if section.settings.video_url != blank %} ps-hero-brand--video{% endif %}" data-ps-reveal-group{% if section.settings.video_url != blank %} data-ps-hero-video-wrap{% endif %}>
@@ -18,9 +20,7 @@
     <div
       class="ps-hero-brand__media"
       aria-hidden="true"
-      style="
-        {%- if section.settings.video_poster_url != blank %}--ps-hero-poster: url('{{ section.settings.video_poster_url }}');{% endif %}
-        {%- if section.settings.video_poster_url_mobile != blank %}--ps-hero-poster-mobile: url('{{ section.settings.video_poster_url_mobile }}');{% endif -%}">
+      {% if section.settings.video_poster_url != blank %}style="--ps-hero-poster: url('{{ section.settings.video_poster_url }}');"{% endif %}>
       <video
         class="ps-hero-brand__video"
         data-ps-hero-video
@@ -28,12 +28,9 @@
         muted
         loop
         playsinline
-        preload="auto"
-        {% if section.settings.video_poster_url != blank %}poster="{{ section.settings.video_poster_url }}"{% endif %}>
-        {%- if section.settings.video_url_mobile != blank -%}
-          <source src="{{ section.settings.video_url_mobile }}" type="video/mp4" media="(max-width: 640px)">
-        {%- endif -%}
-        <source src="{{ section.settings.video_url }}" type="video/mp4">
+        disablepictureinpicture
+        preload="auto">
+        <source src="{{ section.settings.video_url }}" type="video/mp4" media="(max-width: 640px)">
       </video>
     </div>
     <div class="ps-hero-brand__scrim" aria-hidden="true"></div>
@@ -115,33 +112,43 @@
   /* The video sits behind everything, cropped to fill the frame, with a
      warm oxblood scrim over it so the mood stays the brand's own and the
      type never fights the footage for attention. */
+  .ps-hero-brand__media,
+  .ps-hero-brand__scrim { display: none; }
   .ps-hero-brand__media {
     position: absolute;
     inset: 0;
     z-index: 0;
     background-color: var(--ps-oxblood);
-    background-image: var(--ps-hero-poster);
     background-size: cover;
     background-position: center;
-  }
-  /* A vertical take shot for the phone gets its own poster too, so the
-     still frame underneath already matches what the phone will play. */
-  @media (max-width: 640px) {
-    .ps-hero-brand__media { background-image: var(--ps-hero-poster-mobile, var(--ps-hero-poster)); }
   }
   .ps-hero-brand__video {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
   }
   .ps-hero-brand__scrim {
     position: absolute;
     inset: 0;
     z-index: 0;
     background:
-      linear-gradient(180deg, rgba(80, 12, 2, 0.72) 0%, rgba(80, 12, 2, 0.32) 26%, rgba(80, 12, 2, 0.32) 74%, rgba(80, 12, 2, 0.75) 100%),
-      rgba(80, 12, 2, 0.28);
+      linear-gradient(180deg, rgba(80, 12, 2, 0.72) 0%, rgba(80, 12, 2, 0.30) 28%, rgba(80, 12, 2, 0.30) 72%, rgba(80, 12, 2, 0.78) 100%),
+      rgba(80, 12, 2, 0.26);
+  }
+  /* Phone only: the hero becomes a full-screen reel. The poster lives in
+     this media query on purpose, so a desktop never fetches it. */
+  @media (max-width: 640px) {
+    .ps-hero-brand--video { min-height: 100vh; min-height: 100svh; }
+    .ps-hero-brand--video .ps-hero-brand__media,
+    .ps-hero-brand--video .ps-hero-brand__scrim { display: block; }
+    .ps-hero-brand--video .ps-hero-brand__media { background-image: var(--ps-hero-poster); }
+    .ps-hero-brand--video .ps-hero-brand__inner {
+      padding-top: calc(var(--ps-header-h) + 2rem);
+      padding-bottom: clamp(5rem, 16vh, 7rem);
+    }
+    .ps-hero-brand--video .ps-hero-brand__cue { display: flex; }
   }
   /* No video: the still oxblood ground, same as before. Reduced motion:
      the video is removed from the DOM by script before it can play, and
@@ -263,8 +270,8 @@
   }
 
   @media (max-width: 640px) {
-    .ps-hero-brand { min-height: auto; }
-    .ps-hero-brand__cue { display: none; }
+    .ps-hero-brand:not(.ps-hero-brand--video) { min-height: auto; }
+    .ps-hero-brand:not(.ps-hero-brand--video) .ps-hero-brand__cue { display: none; }
   }
 {% endstylesheet %}
 
@@ -274,12 +281,16 @@
     var root = document.currentScript.closest('[data-ps-hero-video-wrap]');
     if (!root) return;
     var video = root.querySelector('[data-ps-hero-video]');
-    if (!video) return;
+    if (!video || !window.matchMedia) return;
+
+    // Phone only. Wider screens never had a matching <source>, so there is
+    // nothing to play and nothing to observe.
+    if (!window.matchMedia('(max-width: 640px)').matches) return;
 
     // A person who has asked their whole device to reduce motion never
     // gets an autoplaying video, whatever the browser does with a
     // display:none element — the still poster underneath is the ceiling.
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
     }
 
@@ -318,7 +329,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Oxblood ground with the stripe band from the thank-you card. A looping video plays behind it all when one is set below; leave it blank for the plain oxblood ground."
+      "content": "Oxblood ground with the stripe band from the thank-you card. On phones, a full-screen looping video plays behind it all when one is set below; leave it blank for the plain oxblood ground everywhere."
     },
     { "type": "checkbox", "id": "show_mark", "label": "Show the logomark", "default": true },
     { "type": "text", "id": "headline_1", "label": "Headline line 1", "default": "Beautiful per piece" },
@@ -329,31 +340,18 @@
       "label": "Introduction"
     },
     { "type": "checkbox", "id": "show_spark", "label": "Show the sunburst flourish", "default": true },
-    { "type": "header", "content": "Video background (optional)" },
+    { "type": "header", "content": "Phone video (optional)" },
     {
       "type": "url",
       "id": "video_url",
-      "label": "Video URL (.mp4)",
-      "info": "Muted, looping, cropped to fill the frame. Removed automatically for anyone who has asked their device to reduce motion."
+      "label": "Video URL (.mp4, vertical)",
+      "info": "Phones only (640px and under): the hero fills the whole screen with this muted, looping reel. Wider screens keep the plain oxblood ground and never download it. Removed for anyone who has asked their device to reduce motion."
     },
     {
       "type": "url",
       "id": "video_poster_url",
       "label": "Poster image URL",
-      "info": "Shown instantly, before the video loads, and to anyone with reduced motion on."
-    },
-    { "type": "header", "content": "Mobile video override (optional)" },
-    {
-      "type": "url",
-      "id": "video_url_mobile",
-      "label": "Mobile video URL (.mp4)",
-      "info": "Swapped in automatically on phone-width screens (640px and under) — the desktop video above is never downloaded on a phone once this is set. Leave blank to use the same video everywhere."
-    },
-    {
-      "type": "url",
-      "id": "video_poster_url_mobile",
-      "label": "Mobile poster image URL",
-      "info": "The still frame a phone sees before its video loads. Leave blank to reuse the desktop poster."
+      "info": "The still frame shown instantly before the video loads, and to anyone with reduced motion on."
     },
     { "type": "header", "content": "Buttons (optional — hidden when both are blank)" },
     { "type": "text", "id": "cta_label", "label": "Primary label" },
