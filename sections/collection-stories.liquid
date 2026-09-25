@@ -80,11 +80,10 @@
             </a>
           </div>
 
-          <div class="ps-story__figure">
-            <div class="ps-story__plate-wrap" data-ps-parallax="0.06">
+          <div class="ps-story__figure" data-ps-reveal="up">
+            <div class="ps-story__plate-wrap">
               <div
                 class="ps-plate ps-story__plate"
-                data-ps-rotate="{{ block.settings.rotation }}"
                 data-ps-cursor="{{ block.settings.cta | default: 'View' | escape }}">
                 {%- if img != blank -%}
                   {%- comment -%}
@@ -219,25 +218,27 @@
   .ps-story__cta { margin-top: 0.5rem; }
 
   .ps-story__figure { display: grid; place-items: center; }
+  /* The plate rises into place once, slower and further than the text
+     beside it, and then sits still: no turn, no drift. */
+  .ps-js .ps-story__figure[data-ps-reveal] {
+    transform: translate3d(0, 64px, 0);
+    transition-duration: var(--ps-t-drape);
+  }
+  .ps-js .ps-story__figure[data-ps-reveal].is-in { transform: none; }
   .ps-story__plate-wrap {
     position: relative;
     width: min(100%, 34rem);
     aspect-ratio: 1;
-    transform: translate3d(0, var(--ps-par, 0px), 0);
-    will-change: transform;
   }
   /* The artwork is a cut-out of the whole plate on a transparent ground,
-     so there is no frame at all: the plate itself is the shape, its shadow
-     follows its own silhouette, and it turns on scroll like a real plate
-     in the hand. The scroll-linked transform is driven frame by frame with
-     its own easing, so the CSS transition on .ps-plate must not fight it. */
+     so there is no frame at all: the plate itself is the shape and its
+     shadow follows its own silhouette. */
   .ps-story__plate.ps-plate {
     width: 100%;
     background: transparent;
     overflow: visible;
+    transform: none;
     transition: none;
-    will-change: transform;
-    backface-visibility: hidden;
   }
   .ps-story__plate.ps-plate img {
     object-fit: contain;
@@ -286,12 +287,6 @@
         { "type": "text", "id": "meta", "label": "Detail pill", "default": "24-Piece Set" },
         { "type": "text", "id": "cta", "label": "Button label", "default": "View Collection" },
         { "type": "url", "id": "link", "label": "Fallback link" },
-        {
-          "type": "range",
-          "id": "rotation",
-          "label": "Scroll rotation",
-          "min": 0, "max": 120, "step": 5, "unit": "°", "default": 55
-        },
         {
           "type": "select",
           "id": "pigment",

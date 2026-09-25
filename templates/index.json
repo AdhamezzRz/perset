@@ -63,7 +63,6 @@
             "image": "shopify://shop_images/perset-wild-leopards-plate.png",
             "meta": "24-Piece Set",
             "cta": "View Collection",
-            "rotation": 55,
             "pigment": "wild"
           }
         },
@@ -74,7 +73,6 @@
             "image": "shopify://shop_images/perset-beads-palm-plate.png",
             "meta": "24-Piece Set",
             "cta": "View Collection",
-            "rotation": 55,
             "pigment": "beads"
           }
         },
@@ -85,7 +83,6 @@
             "image": "shopify://shop_images/perset-past-peacock-plate.png",
             "meta": "24-Piece Set",
             "cta": "View Collection",
-            "rotation": 55,
             "pigment": "past"
           }
         }

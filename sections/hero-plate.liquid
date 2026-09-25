@@ -15,7 +15,7 @@
   motion, and to plain oxblood when no video is set at all.
 {%- endcomment -%}
 
-<section class="ps-hero-brand{% if section.settings.video_url != blank %} ps-hero-brand--video{% endif %}" data-ps-reveal-group{% if section.settings.video_url != blank %} data-ps-hero-video-wrap{% endif %}>
+<section class="ps-hero-brand{% if section.settings.video_url != blank %} ps-hero-brand--video{% endif %}" data-ps-reveal-group{% if section.settings.video_url != blank %} data-ps-hero-video-wrap="{{ section.id }}"{% endif %}>
   {%- if section.settings.video_url != blank -%}
     <div
       class="ps-hero-brand__media"
@@ -24,6 +24,7 @@
       <video
         class="ps-hero-brand__video"
         data-ps-hero-video
+        data-ps-hero-src="{{ section.settings.video_url }}"
         autoplay
         muted
         loop
@@ -128,7 +129,14 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
+    opacity: 1;
+    transition: opacity 900ms var(--ps-ease-set);
   }
+  /* The fade-in is an enhancement the script switches on and off again
+     around the first decoded frame. The video is visible by default on
+     purpose: if the script never runs, the poster is simply replaced by
+     the moving picture the moment it arrives, never hidden behind it. */
+  .ps-hero-brand--video.is-video-loading .ps-hero-brand__video { opacity: 0; }
   .ps-hero-brand__scrim {
     position: absolute;
     inset: 0;
@@ -154,11 +162,6 @@
      the video is removed from the DOM by script before it can play, and
      this same still ground (plus the poster, if one is set) is what is
      left showing — never a frozen or auto-playing frame either way. */
-  .ps-hero-brand--video:not(.is-video-ready) .ps-hero-brand__video { opacity: 0; }
-  .ps-hero-brand--video.is-video-ready .ps-hero-brand__video {
-    opacity: 1;
-    transition: opacity 900ms var(--ps-ease-set);
-  }
   @media (prefers-reduced-motion: reduce) {
     .ps-hero-brand__video { display: none; }
   }
@@ -278,10 +281,13 @@
 {%- if section.settings.video_url != blank -%}
 <script>
   (function () {
-    var root = document.currentScript.closest('[data-ps-hero-video-wrap]');
-    if (!root) return;
+    // Looked up by section id, not from the script's own position: this
+    // script sits after the section, and the theme editor may re-run it
+    // without document.currentScript at all.
+    var root = document.querySelector('[data-ps-hero-video-wrap="{{ section.id }}"]');
+    if (!root || !window.matchMedia) return;
     var video = root.querySelector('[data-ps-hero-video]');
-    if (!video || !window.matchMedia) return;
+    if (!video) return;
 
     // Phone only. Wider screens never had a matching <source>, so there is
     // nothing to play and nothing to observe.
@@ -294,26 +300,47 @@
       return;
     }
 
-    video.addEventListener('loadeddata', function () {
-      root.classList.add('is-video-ready');
+    function ready() { root.classList.remove('is-video-loading'); }
+    if (video.readyState >= 2) {
+      ready();
+    } else {
+      root.classList.add('is-video-loading');
+      video.addEventListener('loadeddata', ready, { once: true });
+      video.addEventListener('playing', ready, { once: true });
+    }
+
+    // A browser that does not evaluate the media query on <source> is
+    // left with no source at all; hand it the file directly.
+    setTimeout(function () {
+      if (!video.currentSrc && !video.getAttribute('src')) {
+        video.src = video.getAttribute('data-ps-hero-src');
+        tryPlay();
+      }
+    }, 300);
+
+    // Autoplay can be blocked (Low Power Mode, data saver, a strict
+    // browser setting); the still poster is already showing underneath,
+    // so a blocked play is a silent no-op, retried on the first touch and
+    // whenever the tab comes back into view.
+    function tryPlay() {
+      var p = video.play();
+      if (p && p.catch) { p.catch(function () {}); }
+    }
+    tryPlay();
+    document.addEventListener('touchstart', function onTouch() {
+      document.removeEventListener('touchstart', onTouch);
+      if (video.paused) tryPlay();
+    }, { passive: true });
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden && video.paused) tryPlay();
     });
-    // Autoplay can be blocked (data saver, a strict browser setting); the
-    // still poster is already showing underneath, so a blocked play is a
-    // silent, harmless no-op rather than an error.
-    var playPromise = video.play();
-    if (playPromise && playPromise.catch) { playPromise.catch(function () {}); }
 
     // Pause off-screen so a visitor scrolling past the hero once isn't
     // quietly decoding video for the rest of the visit.
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            var p = video.play();
-            if (p && p.catch) { p.catch(function () {}); }
-          } else {
-            video.pause();
-          }
+          if (entry.isIntersecting) { tryPlay(); } else { video.pause(); }
         });
       }, { threshold: 0.1 });
       io.observe(root);
