@@ -17,7 +17,7 @@ the whole first screen like a reel, desktops keep the plain oxblood
 ground and download no video; the three collection stories use the new
 cut-out plate artwork; and the plate turn on scroll is eased frame by
 frame) are sitting on a duplicate draft theme instead:
-**"Per Set — draft v8 (collections intro copy)"**, preview at
+**"Per Set — draft v8 (intro copy + 24/16 sets)"**, preview at
 `https://perset.shop/?preview_theme_id=167139639481`. Everything from
 every round before this one is already live.
 
