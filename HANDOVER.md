@@ -12,11 +12,11 @@ needed). That changes how edits reach you from here: I can no longer push
 straight to it — Shopify blocks direct file writes to a live theme, and
 that block is by design, not a bug to work around.
 
-So the newest round of edits (the hero's lede removed, the top marquee
-swapped for a short brand line, and product photos no longer cropped to
-a circle on the home page or in the shop) are sitting on a duplicate
-draft theme instead: **"Per Set — draft (edits in review)"**, preview at
-`https://perset.shop/?preview_theme_id=167099236537`. Everything from
+So the newest round of edits (a phone-specific take of the hero video —
+a vertical clip that plays instead of the desktop one on screens 640px
+and under, with its own poster image) are sitting on a duplicate draft
+theme instead: **"Per Set — draft v4 (mobile hero video)"**, preview at
+`https://perset.shop/?preview_theme_id=167137542329`. Everything from
 every round before this one is already live, since it went up while the
 theme was still unpublished.
 
