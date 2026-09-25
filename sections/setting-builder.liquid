@@ -279,14 +279,9 @@
       radial-gradient(75% 75% at 50% 46%, var(--ps-wash, var(--ps-linen-warm)), transparent 72%),
       var(--ps-linen-warm);
   }
-  .ps-setting__cloth::before {
-    content: "";
-    position: absolute;
-    inset: 8%;
-    border-radius: 50%;
-    border: 1px dashed var(--ps-hairline);
-    opacity: 0.8;
-  }
+  /* Was a dashed circle tracing the old round plate; shown whole now, so
+     no ring. */
+  .ps-setting__cloth::before { display: none; }
 
   .ps-setting__cutlery {
     position: absolute;
@@ -325,8 +320,9 @@
     position: absolute;
     inset: 0;
     display: block;
-    border-radius: 50%;
+    border-radius: var(--ps-radius-l);
     overflow: hidden;
+    background: var(--ps-porcelain);
     box-shadow: 0 20px 48px rgba(120, 95, 60, 0.22);
     opacity: 0;
     transform: scale(0.94);
@@ -339,7 +335,7 @@
     transform: none;
     pointer-events: auto;
   }
-  .ps-setting__piece-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ps-setting__piece-img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
   .ps-setting__piece-tabs {
     display: flex;

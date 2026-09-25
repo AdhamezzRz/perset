@@ -82,15 +82,16 @@
     isolation: isolate;
   }
 
-  /* The ticket-edge stripe band, straight off the thank-you card. */
+  /* The ticket-edge stripe band, straight off the thank-you card. Made
+     bigger on request — a real band, not a hairline. */
   .ps-hero-brand__stripes {
     position: absolute;
     left: 0; right: 0;
-    height: clamp(16px, 2.6vw, 30px);
+    height: clamp(28px, 4.6vw, 56px);
     background-image: repeating-linear-gradient(
       90deg,
-      var(--ps-blush) 0 clamp(10px, 1.8vw, 20px),
-      transparent clamp(10px, 1.8vw, 20px) clamp(24px, 4vw, 46px)
+      var(--ps-blush) 0 clamp(18px, 3.2vw, 36px),
+      transparent clamp(18px, 3.2vw, 36px) clamp(42px, 7vw, 82px)
     );
   }
   .ps-hero-brand__stripes--top { top: 0; }

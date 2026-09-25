@@ -140,7 +140,10 @@
     overflow: hidden;
     box-shadow: var(--ps-lift-2);
   }
-  .ps-phero__frame.ps-plate { border-radius: 50%; box-shadow: 0 28px 70px rgba(120, 95, 60, 0.20); }
+  /* Shown whole, not cropped to a circle: override the shared .ps-plate
+     treatment for this one instance only. */
+  .ps-phero__frame.ps-plate { border-radius: var(--ps-radius-l); box-shadow: 0 28px 70px rgba(120, 95, 60, 0.20); background: var(--ps-porcelain); }
+  .ps-phero__frame.ps-plate img { object-fit: contain; }
 
   @media (max-width: 900px) {
     .ps-phero--split .ps-phero__inner { grid-template-columns: 1fr; }
