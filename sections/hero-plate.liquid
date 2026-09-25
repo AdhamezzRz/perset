@@ -6,14 +6,21 @@
   the brand's own name — now with a looping video of a table being laid
   behind it all, muted and cropped to fill the frame, with a warm oxblood
   scrim over it so the type stays legible and the mood stays the brand's
-  own rather than the footage's. Falls back to a still poster image for
-  anyone who has asked their device to reduce motion, and to plain
-  oxblood when no video is set at all.
+  own rather than the footage's. A phone can be handed its own, purpose-
+  shot vertical take: the browser picks it natively via a media-scoped
+  <source>, so nobody downloads the take they'll never see. Falls back
+  to a still poster image for anyone who has asked their device to
+  reduce motion, and to plain oxblood when no video is set at all.
 {%- endcomment -%}
 
 <section class="ps-hero-brand{% if section.settings.video_url != blank %} ps-hero-brand--video{% endif %}" data-ps-reveal-group{% if section.settings.video_url != blank %} data-ps-hero-video-wrap{% endif %}>
   {%- if section.settings.video_url != blank -%}
-    <div class="ps-hero-brand__media" aria-hidden="true" style="{% if section.settings.video_poster_url != blank %}background-image: url('{{ section.settings.video_poster_url }}');{% endif %}">
+    <div
+      class="ps-hero-brand__media"
+      aria-hidden="true"
+      style="
+        {%- if section.settings.video_poster_url != blank %}--ps-hero-poster: url('{{ section.settings.video_poster_url }}');{% endif %}
+        {%- if section.settings.video_poster_url_mobile != blank %}--ps-hero-poster-mobile: url('{{ section.settings.video_poster_url_mobile }}');{% endif -%}">
       <video
         class="ps-hero-brand__video"
         data-ps-hero-video
@@ -23,6 +30,9 @@
         playsinline
         preload="auto"
         {% if section.settings.video_poster_url != blank %}poster="{{ section.settings.video_poster_url }}"{% endif %}>
+        {%- if section.settings.video_url_mobile != blank -%}
+          <source src="{{ section.settings.video_url_mobile }}" type="video/mp4" media="(max-width: 640px)">
+        {%- endif -%}
         <source src="{{ section.settings.video_url }}" type="video/mp4">
       </video>
     </div>
@@ -110,8 +120,14 @@
     inset: 0;
     z-index: 0;
     background-color: var(--ps-oxblood);
+    background-image: var(--ps-hero-poster);
     background-size: cover;
     background-position: center;
+  }
+  /* A vertical take shot for the phone gets its own poster too, so the
+     still frame underneath already matches what the phone will play. */
+  @media (max-width: 640px) {
+    .ps-hero-brand__media { background-image: var(--ps-hero-poster-mobile, var(--ps-hero-poster)); }
   }
   .ps-hero-brand__video {
     display: block;
@@ -325,6 +341,19 @@
       "id": "video_poster_url",
       "label": "Poster image URL",
       "info": "Shown instantly, before the video loads, and to anyone with reduced motion on."
+    },
+    { "type": "header", "content": "Mobile video override (optional)" },
+    {
+      "type": "url",
+      "id": "video_url_mobile",
+      "label": "Mobile video URL (.mp4)",
+      "info": "Swapped in automatically on phone-width screens (640px and under) — the desktop video above is never downloaded on a phone once this is set. Leave blank to use the same video everywhere."
+    },
+    {
+      "type": "url",
+      "id": "video_poster_url_mobile",
+      "label": "Mobile poster image URL",
+      "info": "The still frame a phone sees before its video loads. Leave blank to reuse the desktop poster."
     },
     { "type": "header", "content": "Buttons (optional — hidden when both are blank)" },
     { "type": "text", "id": "cta_label", "label": "Primary label" },
