@@ -36,8 +36,8 @@
         "q5": {
           "type": "question",
           "settings": {
-            "question": "Is it dishwasher safe?",
-            "answer": "<p>Yes, on a gentle cycle at a lower temperature. Not microwave safe, because of the metallic pigment in some of the motifs.</p>",
+            "question": "Is it dishwasher and microwave safe?",
+            "answer": "<p>Yes to both. Dishwasher safe on a gentle cycle at a lower temperature, and microwave safe.</p>",
             "open": false
           }
         },
