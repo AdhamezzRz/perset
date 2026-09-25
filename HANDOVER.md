@@ -17,8 +17,8 @@ the whole first screen like a reel, desktops keep the plain oxblood
 ground and download no video; the three collection stories use the new
 cut-out plate artwork; and the plate turn on scroll is eased frame by
 frame) are sitting on a duplicate draft theme instead:
-**"Per Set — draft v9 (card price fix)"**, preview at
-`https://perset.shop/?preview_theme_id=167139999929`. Everything from
+**"Per Set — draft v10 (sizes + microwave safe)"**, preview at
+`https://perset.shop/?preview_theme_id=167140294841`. Everything from
 every round before this one is already live.
 
 To make the draft's changes live, publish it from Shopify admin →
