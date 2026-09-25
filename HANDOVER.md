@@ -12,13 +12,14 @@ needed). That changes how edits reach you from here: I can no longer push
 straight to it — Shopify blocks direct file writes to a live theme, and
 that block is by design, not a bug to work around.
 
-So the newest round of edits (a phone-specific take of the hero video —
-a vertical clip that plays instead of the desktop one on screens 640px
-and under, with its own poster image) are sitting on a duplicate draft
-theme instead: **"Per Set — draft v4 (mobile hero video)"**, preview at
-`https://perset.shop/?preview_theme_id=167137542329`. Everything from
-every round before this one is already live, since it went up while the
-theme was still unpublished.
+So the newest round of edits (the hero video is now phone-only and fills
+the whole first screen like a reel, desktops keep the plain oxblood
+ground and download no video; the three collection stories use the new
+cut-out plate artwork; and the plate turn on scroll is eased frame by
+frame) are sitting on a duplicate draft theme instead:
+**"Per Set — draft v5 (phone reel + plates)"**, preview at
+`https://perset.shop/?preview_theme_id=167138328761`. Everything from
+every round before this one is already live.
 
 To make the draft's changes live, publish it from Shopify admin →
 Online Store → Themes (or tell me to keep working on it and you can
