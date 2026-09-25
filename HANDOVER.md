@@ -17,8 +17,8 @@ the whole first screen like a reel, desktops keep the plain oxblood
 ground and download no video; the three collection stories use the new
 cut-out plate artwork; and the plate turn on scroll is eased frame by
 frame) are sitting on a duplicate draft theme instead:
-**"Per Set — draft v5 (phone reel + plates)"**, preview at
-`https://perset.shop/?preview_theme_id=167138328761`. Everything from
+**"Per Set — draft v6 (mp4 reel + faster plates)"**, preview at
+`https://perset.shop/?preview_theme_id=167138656441`. Everything from
 every round before this one is already live.
 
 To make the draft's changes live, publish it from Shopify admin →
