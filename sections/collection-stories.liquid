@@ -87,11 +87,26 @@
                 data-ps-rotate="{{ block.settings.rotation }}"
                 data-ps-cursor="{{ block.settings.cta | default: 'View' | escape }}">
                 {%- if img != blank -%}
+                  {%- comment -%}
+                    The plates are the first thing under the hero, so they are
+                    fetched up front rather than lazily; the first one is also
+                    preloaded and marked high priority so it is on screen the
+                    moment it scrolls into view on a first visit.
+                  {%- endcomment -%}
+                  {%- liquid
+                    assign prio = 'auto'
+                    if forloop.first
+                      assign prio = 'high'
+                    endif
+                  -%}
                   {{
                     img
                     | image_url: width: 1400
                     | image_tag:
-                      loading: 'lazy',
+                      loading: 'eager',
+                      decoding: 'async',
+                      fetchpriority: prio,
+                      preload: forloop.first,
                       widths: '480,700,900,1200,1400',
                       sizes: '(max-width: 900px) 72vw, 42vw',
                       alt: title | escape
@@ -209,6 +224,7 @@
     width: min(100%, 34rem);
     aspect-ratio: 1;
     transform: translate3d(0, var(--ps-par, 0px), 0);
+    will-change: transform;
   }
   /* The artwork is a cut-out of the whole plate on a transparent ground,
      so there is no frame at all: the plate itself is the shape, its shadow

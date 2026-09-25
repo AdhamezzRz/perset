@@ -211,8 +211,9 @@
         var centre = p.top + p.h / 2;
         var delta = (y + vhh / 2) - centre;
         if (Math.abs(delta) > vhh * 1.8) continue;
-        p.el.style.setProperty('--ps-par', (delta * p.speed * -1).toFixed(2) + 'px');
+        p.target = delta * p.speed * -1;
       }
+      kickEase();
     });
   }
 
@@ -237,23 +238,38 @@
     });
   }
 
-  // Scroll arrives in steps (wheel notches, a thumb flick), so the plate
-  // never chases the scroll position directly: each frame it eases a
-  // little of the way towards where the scroll says it should be, and the
-  // loop keeps running until every plate has settled. That is what makes
-  // the turn read as one continuous motion rather than a series of jumps.
-  var rotLoopRunning = false;
+  /* ------------------------------------------------------ eased scroll loop
+     Scroll arrives in steps (wheel notches, a thumb flick), so nothing
+     scroll-linked chases the scroll position directly. Each plate and
+     parallax layer keeps a target (where the scroll says it should be) and
+     a current value that closes part of the gap every frame; the loop runs
+     until everything has settled. The step is time-based, so a 120Hz phone
+     and a 60Hz laptop ease at the same speed. */
+  var EASE = 0.12; // share of the remaining distance closed per 16.7ms
+  var easeRunning = false, easeLast = 0;
 
-  function rotLoop() {
-    var busy = false;
-    for (var i = 0; i < rotators.length; i++) {
+  function easeStep(now) {
+    var dt = easeLast ? Math.min(now - easeLast, 50) : 16.7;
+    easeLast = now;
+    var k = 1 - Math.pow(1 - EASE, dt / 16.7);
+    var busy = false, i, diff;
+
+    for (i = 0; i < parallaxItems.length; i++) {
+      var p = parallaxItems[i];
+      if (p.target === undefined) continue;
+      if (p.cur === undefined) p.cur = p.target;
+      diff = p.target - p.cur;
+      if (Math.abs(diff) < 0.05) { p.cur = p.target; } else { p.cur += diff * k; busy = true; }
+      p.el.style.setProperty('--ps-par', p.cur.toFixed(2) + 'px');
+    }
+
+    for (i = 0; i < rotators.length; i++) {
       var r = rotators[i];
       if (r.target === undefined) continue;
       if (r.cur === undefined) r.cur = r.target;
-      var diff = r.target - r.cur;
-      if (Math.abs(diff) < 0.02) { r.cur = r.target; } else { r.cur += diff * 0.11; busy = true; }
-      var p = r.cur / (2 * r.deg) + 0.5;
-      var sp = Math.sin(clamp(p, 0, 1) * Math.PI);
+      diff = r.target - r.cur;
+      if (Math.abs(diff) < 0.02) { r.cur = r.target; } else { r.cur += diff * k; busy = true; }
+      var sp = Math.sin(clamp(r.cur / (2 * r.deg) + 0.5, 0, 1) * Math.PI);
       r.el.style.setProperty('--ps-rot', r.cur.toFixed(2) + 'deg');
       if (r.scaleTo) {
         var s = 1 + (r.scaleTo - 1) * sp;
@@ -263,7 +279,15 @@
         r.shadow.style.setProperty('--ps-shadow-scale', lerp(0.82, 1.08, sp).toFixed(3));
       }
     }
-    if (busy) { requestAnimationFrame(rotLoop); } else { rotLoopRunning = false; }
+
+    if (busy) { requestAnimationFrame(easeStep); } else { easeRunning = false; easeLast = 0; }
+  }
+
+  function kickEase() {
+    if (easeRunning) return;
+    easeRunning = true;
+    easeLast = 0;
+    requestAnimationFrame(easeStep);
   }
 
   function initRotate() {
@@ -281,7 +305,7 @@
         p = clamp(p, 0, 1);
         r.target = (p - 0.5) * 2 * r.deg;
       }
-      if (!rotLoopRunning) { rotLoopRunning = true; requestAnimationFrame(rotLoop); }
+      kickEase();
     });
   }
 
