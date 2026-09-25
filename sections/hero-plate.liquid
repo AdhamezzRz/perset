@@ -1,14 +1,34 @@
 {%- comment -%}
   THE BRAND STATEMENT
 
-  Replaces the earlier turning-plate hero. This one borrows straight from
-  the thank-you card artwork: oxblood ground, a blush stripe band top and
-  bottom like a ticket edge, the hand-lettered mark, and a two-line
-  statement that lands on the brand's own name. No plate, no photograph —
-  the first thing anyone sees is the stripe, on purpose.
+  Oxblood ground with a blush stripe band top and bottom like a ticket
+  edge, the hand-lettered mark, and a two-line statement that lands on
+  the brand's own name — now with a looping video of a table being laid
+  behind it all, muted and cropped to fill the frame, with a warm oxblood
+  scrim over it so the type stays legible and the mood stays the brand's
+  own rather than the footage's. Falls back to a still poster image for
+  anyone who has asked their device to reduce motion, and to plain
+  oxblood when no video is set at all.
 {%- endcomment -%}
 
-<section class="ps-hero-brand" data-ps-reveal-group>
+<section class="ps-hero-brand{% if section.settings.video_url != blank %} ps-hero-brand--video{% endif %}" data-ps-reveal-group{% if section.settings.video_url != blank %} data-ps-hero-video-wrap{% endif %}>
+  {%- if section.settings.video_url != blank -%}
+    <div class="ps-hero-brand__media" aria-hidden="true" style="{% if section.settings.video_poster_url != blank %}background-image: url('{{ section.settings.video_poster_url }}');{% endif %}">
+      <video
+        class="ps-hero-brand__video"
+        data-ps-hero-video
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        {% if section.settings.video_poster_url != blank %}poster="{{ section.settings.video_poster_url }}"{% endif %}>
+        <source src="{{ section.settings.video_url }}" type="video/mp4">
+      </video>
+    </div>
+    <div class="ps-hero-brand__scrim" aria-hidden="true"></div>
+  {%- endif -%}
+
   <div class="ps-hero-brand__stripes ps-hero-brand__stripes--top" aria-hidden="true"></div>
 
   <div class="ps-shell ps-shell--wide ps-hero-brand__inner">
@@ -82,10 +102,47 @@
     isolation: isolate;
   }
 
-  /* The ticket-edge stripe band, straight off the thank-you card. Made
-     bigger on request — a real band, not a hairline. */
+  /* The video sits behind everything, cropped to fill the frame, with a
+     warm oxblood scrim over it so the mood stays the brand's own and the
+     type never fights the footage for attention. */
+  .ps-hero-brand__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: var(--ps-oxblood);
+    background-size: cover;
+    background-position: center;
+  }
+  .ps-hero-brand__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ps-hero-brand__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      linear-gradient(180deg, rgba(80, 12, 2, 0.72) 0%, rgba(80, 12, 2, 0.32) 26%, rgba(80, 12, 2, 0.32) 74%, rgba(80, 12, 2, 0.75) 100%),
+      rgba(80, 12, 2, 0.28);
+  }
+  /* No video: the still oxblood ground, same as before. Reduced motion:
+     the video is removed from the DOM by script before it can play, and
+     this same still ground (plus the poster, if one is set) is what is
+     left showing — never a frozen or auto-playing frame either way. */
+  .ps-hero-brand--video:not(.is-video-ready) .ps-hero-brand__video { opacity: 0; }
+  .ps-hero-brand--video.is-video-ready .ps-hero-brand__video {
+    opacity: 1;
+    transition: opacity 900ms var(--ps-ease-set);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ps-hero-brand__video { display: none; }
+  }
+
   .ps-hero-brand__stripes {
     position: absolute;
+    z-index: 1;
     left: 0; right: 0;
     height: clamp(28px, 4.6vw, 56px);
     background-image: repeating-linear-gradient(
@@ -98,6 +155,8 @@
   .ps-hero-brand__stripes--bottom { bottom: 0; }
 
   .ps-hero-brand__inner {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -161,6 +220,7 @@
 
   .ps-hero-brand__cue {
     position: absolute;
+    z-index: 1;
     left: 50%;
     bottom: clamp(1.6rem, 4vh, 3rem);
     transform: translateX(-50%);
@@ -192,6 +252,49 @@
   }
 {% endstylesheet %}
 
+{%- if section.settings.video_url != blank -%}
+<script>
+  (function () {
+    var root = document.currentScript.closest('[data-ps-hero-video-wrap]');
+    if (!root) return;
+    var video = root.querySelector('[data-ps-hero-video]');
+    if (!video) return;
+
+    // A person who has asked their whole device to reduce motion never
+    // gets an autoplaying video, whatever the browser does with a
+    // display:none element — the still poster underneath is the ceiling.
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    video.addEventListener('loadeddata', function () {
+      root.classList.add('is-video-ready');
+    });
+    // Autoplay can be blocked (data saver, a strict browser setting); the
+    // still poster is already showing underneath, so a blocked play is a
+    // silent, harmless no-op rather than an error.
+    var playPromise = video.play();
+    if (playPromise && playPromise.catch) { playPromise.catch(function () {}); }
+
+    // Pause off-screen so a visitor scrolling past the hero once isn't
+    // quietly decoding video for the rest of the visit.
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var p = video.play();
+            if (p && p.catch) { p.catch(function () {}); }
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.1 });
+      io.observe(root);
+    }
+  })();
+</script>
+{%- endif -%}
+
 {% schema %}
 {
   "name": "Hero — brand stripe",
@@ -199,7 +302,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Oxblood ground with the stripe band from the thank-you card. No product photo — this is a brand statement, first thing on the page."
+      "content": "Oxblood ground with the stripe band from the thank-you card. A looping video plays behind it all when one is set below; leave it blank for the plain oxblood ground."
     },
     { "type": "checkbox", "id": "show_mark", "label": "Show the logomark", "default": true },
     { "type": "text", "id": "headline_1", "label": "Headline line 1", "default": "Beautiful per piece" },
@@ -207,10 +310,22 @@
     {
       "type": "textarea",
       "id": "lede",
-      "label": "Introduction",
-      "default": "Three collections, each a complete set of 24. Made to be used on a Tuesday, not kept behind glass."
+      "label": "Introduction"
     },
     { "type": "checkbox", "id": "show_spark", "label": "Show the sunburst flourish", "default": true },
+    { "type": "header", "content": "Video background (optional)" },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Video URL (.mp4)",
+      "info": "Muted, looping, cropped to fill the frame. Removed automatically for anyone who has asked their device to reduce motion."
+    },
+    {
+      "type": "url",
+      "id": "video_poster_url",
+      "label": "Poster image URL",
+      "info": "Shown instantly, before the video loads, and to anyone with reduced motion on."
+    },
     { "type": "header", "content": "Buttons (optional — hidden when both are blank)" },
     { "type": "text", "id": "cta_label", "label": "Primary label" },
     { "type": "url", "id": "cta_url", "label": "Primary link" },
