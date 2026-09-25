@@ -223,7 +223,7 @@
         "type": "textarea",
         "id": "share_description",
         "label": "Fallback description",
-        "default": "Porcelain tableware from Egypt. Three collections, each a complete 24-piece service for six."
+        "default": "Porcelain tableware from Egypt. Three collections, each a complete service of 24 or 16 pieces."
       }
     ]
   }

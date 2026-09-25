@@ -8,7 +8,8 @@ design language.
 ## The brand
 
 Per Set makes hand-painted porcelain tableware in Egypt. Three collections,
-each sold as a 24-piece service (6 dinner, 6 dessert, 6 salad, 6 soup).
+each sold as a 24-piece service (6 dinner, 6 dessert, 6 salad, 6 soup) or a
+16-piece service (4 of each), as two variants of one product.
 
 | Collection | Handle | Pigment key | Story |
 |---|---|---|---|

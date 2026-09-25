@@ -21,7 +21,7 @@
           "type": "question",
           "settings": {
             "question": "What comes in a full service?",
-            "answer": "<p>Twenty-four pieces: six dinner plates at 27 cm, six dessert plates at 21 cm, six salad plates at 21 cm and slightly deep, and six soup bowls at 12 cm and deep. A service for six.</p>",
+            "answer": "<p>Each collection comes in two sizes of set. Twenty-four pieces: six dinner plates at 27 cm, six dessert plates at 21 cm, six salad plates at 21 cm and slightly deep, and six soup bowls at 12 cm and deep — a service for six. Or sixteen pieces: four of each — a service for four.</p>",
             "open": true
           }
         },
@@ -29,7 +29,7 @@
           "type": "question",
           "settings": {
             "question": "Can I buy a single piece?",
-            "answer": "<p>No — each collection is sold only as the complete set of 24. If you need to replace one broken plate, write to us and we will do what we can.</p>",
+            "answer": "<p>No — each collection is sold only as a complete set, of 24 or 16 pieces. If you need to replace one broken plate, write to us and we will do what we can.</p>",
             "open": false
           }
         },
