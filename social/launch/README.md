@@ -1,166 +1,159 @@
-# Per Set — Launch series (9 posts)
+# Per Set — launch campaign: *On the plate. On the table.*
 
-Six 4:5 feed posts (1080 × 1350) and three Reels (1080 × 1920), built to open
-the Per Set Instagram and introduce the brand in one quiet, complete arc:
-**the name → the line → the piece → the set → the three collections → the story.**
+Nine posts to open the Per Set Instagram: six 4:5 feed posts (1080 × 1350)
+and three Reels (1080 × 1920). One idea runs through all of them.
 
-Everything uses the brand's real photography from the store, the hand-lettered
-logo mask, and the site's own system: oxblood `#500C02`, blush `#F2A4B6`, linen
-`#F4EEE4`, Fraunces for display, Jost for labels, the ticket-edge stripe from
-the homepage hero, and stitched (dashed) rules.
+## The idea
 
-Voice rules followed from the brief: warm and specific, short declaratives, never
-"luxury" as an adjective, and no "hand painted / hand drawn / fired in small runs /
-no two alike" anywhere.
+Every Per Set collection carries a small world on the plate: leopards under a
+pink parasol, a beaded palm, a peacock among roses. The campaign takes that
+world off the plate and puts it on the table around it. The parasol on the
+plate becomes the parasol over lunch. The palm on the plate becomes the palm
+over breakfast. The painted roses sit next to picked ones.
 
-Reels were made with Higgsfield (Kling 3.0, image-to-video from the real product
-photos, 8 clips × 7.5 credits ≈ 60 credits total). Titles, lower-thirds and end
-cards were composited locally so no credits were spent on text or cards.
+That gives the brand a repeatable, ownable visual device (the motif appears
+twice, once painted and once real), a hand-written "spot it" annotation style
+that makes people look twice, and a line that carries the brand's own idiom:
+
+> **Beautiful per piece. Perfect per set. On the plate, on the table.**
+
+## Type and system
+
+- **Damion** (Google Fonts) is the campaign script. It is the closest match
+  to the hand-lettered logo: monoline, same weight, same slant and bounce.
+  It is used only for headlines and the hand-written notes, never body copy.
+- **Jost** for labels, as on the site. Fraunces is kept for the store.
+- Oxblood `#500C02`, blush `#F2A4B6`, linen `#F4EEE4`. The blush ticket edge
+  from the site hero frames the cards.
+- The lifestyle scenes were generated from the real product photography as
+  references (GPT Image 2.5 via Higgsfield), so the plates in them are the
+  actual Per Set designs. They are shot to read as 35 mm editorial film:
+  Cairo balconies and gardens, real light, a hand in frame, crumbs.
+
+Voice rules from the brief still hold: warm and specific, never "luxury",
+and none of "hand painted / hand drawn / fired in small runs / no two alike".
+
+## Credits used
+
+| What | Model | Credits |
+|---|---|---|
+| 6 lifestyle worlds + 3 packshots | GPT Image 2.5, high, 2k | 24.75 |
+| 3 motif-alive clips (pro) | Kling 3.0 | 22.5 |
+| 3 living-scene clips (std) | Kling 3.0 | 22.5 |
+| Stop-motion reel, cards, overlays, 6 posts | composed locally | 0 |
+| **Total** | | **≈ 70** |
 
 ---
 
-## Posting order and captions
-
-Post in this order, one a day (or 1 / 2 / 3 on day one as a strong opening row,
-then the rest). The grid reads as a set when all nine are up:
+## Posting order
 
 ```
-Row 1:  01 Opening      02 Beautiful per piece,   03 perfect per set.
-Row 2:  R1 Reel         04 Inside the set         R2 Reel
-Row 3:  05 Three stories  R3 Reel                 06 Our story
+Row 1:  01 Same parasol        02 Own palm            03 Painted and picked
+Row 2:  R1 Into the plate      04 Guests: six         R2 The table sets itself
+Row 3:  05 Which table?        R3 They know you're    06 per piece. per set.
+                                  looking
 ```
 
-Hashtag block (use 8–12, rotate): `#perset #porcelain #tableware #tablesetting
-#tablescape #dinnerware #madeinegypt #cairo #homeware #setthetable #dinnerparty
-#tabledecor`
+Post 01 first. R1 is the campaign film and should go up with a pinned
+comment linking the shop. R3 is the loop built for shares and saves.
+
+Hashtags (8 to 12, rotate): `#perset #porcelain #tableware #tablescape
+#tablesetting #dinnerware #madeinegypt #cairo #homeware #setthetable
+#hostingseason #tabledecor`
 
 ---
 
-### 01 — Opening  (`01-opening.png`)
-Oxblood field, blush ticket edge, the logo, the line. The first post on the grid.
+## Feed posts
 
-**Caption**
-> Per Set.
+### 01 — Same parasol  `01-wild-same-parasol.png`
+Lunch in a bamboo garden under a real pink parasol; hand-written notes point
+from "her parasol" (the real one) to "his parasol" (on the plate).
+
+> Her parasol. His parasol.
+> Lunch under bamboo, on the plate and over the table.
+>
+> Stitches of the Wild — a complete set for six.
+> perset.shop
+
+### 02 — Own palm  `02-beads-own-palm.png`
+Breakfast on a Cairo balcony, palm shadows across the plate. Notes: "this
+palm" (the balcony) and "that palm" (on the plate).
+
+> Breakfast under its own palm.
+> Cairo, 8 a.m. Tea, figs, and A Tale in Beads.
+>
+> A complete 24-piece set for six.
+> perset.shop
+
+### 03 — Painted and picked  `03-past-painted-picked.png`
+Golden hour, garden roses lying beside the plate, one petal on the rim.
+
+> Roses, painted and picked.
+> Pretty Past at golden hour, with a peacock feather for company.
+>
+> A complete set for six.
+> perset.shop
+
+### 04 — Guests: six  `04-guests-six.png`
+The dusk dinner with a three-line ledger.
+
+> Guests: six.
+> Pieces: twenty-four.
+> Reasons to host: unlimited.
+>
+> Perfect per set. perset.shop
+
+### 05 — Which table are you?  `05-which-table.png`
+Three worlds, three answers. Built to be answered.
+
+> Which table are you?
+> a. The long lunch
+> b. The slow Saturday
+> c. The dinner that runs late
+>
+> Answer below. We'll tell you which set is yours.
+
+### 06 — per piece. per set.  `06-per-everything.png`
+Type only, in the campaign script.
+
+> per piece. per set. per table. per Sunday.
 > Porcelain tableware, made in Cairo.
 >
-> Beautiful per piece, perfect per set.
->
 > Now open — perset.shop
 
 ---
 
-### 02 — Beautiful per piece,  (`02-per-piece.png`)
-The Stitches of the Wild dinner plate, full bleed. First half of the line.
+## Reels
 
-**Caption**
-> Look closely.
-> Two leopards resting in the bamboo, a pink parasol each, and a border drawn to look softly stitched.
->
-> Stitches of the Wild — dinner plate, 27 cm.
-> Part of a complete 24-piece set.
->
-> perset.shop
+### R1 — Into the plate  `reel-01-into-the-plate.mp4` · 22 s
+"What's on the plate..." then the camera dives into the parasol on the plate
+and comes out at a real lunch under a real parasol. Same again for the palm
+and the roses. Ends on the logo.
 
----
+> What's on the plate is on the table.
+> Three collections, three tables. Now open — perset.shop
 
-### 03 — perfect per set.  (`03-per-set.png`)
-A Tale in Beads, the table laid. Second half of the line. Posts 02 and 03 sit side by side.
+Sound: a warm, slightly cheeky instrumental; cut the beat on each dive.
 
-**Caption**
-> Now step back.
-> Every piece was drawn to sit next to the others. Dinner plate, salad, soup, dessert — one pattern carrying across every size.
->
-> A Tale in Beads — a service for six.
->
-> perset.shop
+### R2 — The table sets itself  `reel-02-table-sets-itself.mp4` · 19 s
+Stop-motion. Six place settings drop onto the linen piece by piece while the
+count runs to 24. Cut from the real plates, so every piece is the real
+design.
 
----
+> A table for six, in 24 pieces. Watch it set itself.
+> 6 dinner · 6 dessert · 6 salad · 6 soup. perset.shop
 
-### 04 — Inside the set  (`04-inside-the-set.png`)
-The Pretty Past line-up with the anatomy of a set. The most saved post of the nine.
+Sound: one porcelain "tink" per piece works best (24 taps), or a clean
+stop-motion sound from the library.
 
-**Caption**
-> What's inside every Per Set box:
->
-> 6 dinner plates · 27 cm
-> 6 dessert plates · 21 cm
-> 6 salad plates · 21 cm
-> 6 soup bowls · 12 cm
->
-> 24 pieces. One complete set for a table of six.
-> Porcelain. Hand washing keeps the colours bright.
->
-> perset.shop
+### R3 — They know you're looking  `reel-03-they-know-youre-looking.mp4` · 12 s
+The leopards turn their heads and blink. The peacock fans its tail and the
+painted roses bloom into real ones. Built to loop.
 
----
+> They know you're looking.
+> Beautiful per piece. perset.shop
 
-### 05 — Three stories, one table  (`05-three-collections.png`)
-Triptych of the three dinner plates, numbered.
-
-**Caption**
-> Three collections. Three stories.
->
-> No. 01 — Stitches of the Wild. Leopards, bamboo, pink parasols, stitched borders.
-> No. 02 — A Tale in Beads. A palm built one bead at a time.
-> No. 03 — Pretty Past. A peacock among roses, in warm vintage colour.
->
-> Each one a complete 24-piece set.
-> Which table is yours? Tell us below.
->
-> perset.shop
-
----
-
-### 06 — Our story  (`06-our-story.png`)
-Overhead flat-lay under an oxblood veil, with the line from the Our Story page.
-
-**Caption**
-> Per Set started with a simple idea: to turn the little details we love into something that belongs on the table.
->
-> Beads, stitches, brushstrokes and carefully drawn details are where our collections begin. Each set starts as an idea, slowly taking shape through original artwork before finding its way onto porcelain.
->
-> Beautiful per piece, perfect per set.
-> Made in Cairo. Now open — perset.shop
-
----
-
-### R1 — Beautiful per piece  (`reel-01-per-piece.mp4`, 18 s)
-Opening card → three dinner plates, one per collection, slow push-ins → end card.
-The line appears across the three plates: *Beautiful / per piece, / perfect per set.*
-
-**Caption**
-> Three plates. One line.
-> Beautiful per piece, perfect per set.
->
-> Now open — perset.shop
-
-**Audio:** add a quiet, warm instrumental from Instagram's library when posting (a
-trending sound helps reach; keep it soft — nothing loud).
-
----
-
-### R2 — Inside the set  (`reel-02-inside-the-set.mp4`, 14 s)
-Card → a lateral dolly across the Beads table → the Pretty Past table with the
-6 / 6 / 6 / 6 count → end card.
-
-**Caption**
-> Everything a table of six needs, in one box.
-> 6 dinner · 6 dessert · 6 salad · 6 soup. 24 pieces.
->
-> perset.shop
-
----
-
-### R3 — Three stories, one table  (`reel-03-three-stories.mp4`, 18 s)
-Card → one table per collection, numbered → end card with the set-only note.
-
-**Caption**
-> No. 01 Stitches of the Wild.
-> No. 02 A Tale in Beads.
-> No. 03 Pretty Past.
->
-> Three stories, one table. Each a complete 24-piece set.
-> perset.shop
+Sound: something quiet with a small "boing" or wink on the blink.
 
 ---
 
@@ -168,14 +161,13 @@ Card → one table per collection, numbered → end card with the set-only note.
 
 ```
 social/launch/
-  01-opening.png … 06-our-story.png      1080 × 1350 feed posts
-  reel-01-per-piece.mp4                  1080 × 1920, 30 fps, silent
-  reel-02-inside-the-set.mp4
-  reel-03-three-stories.mp4
-  src/                                   HTML sources + build scripts (re-render with Playwright)
+  01-… 06-….png                 feed posts, 1080 × 1350
+  reel-01/02/03-….mp4           reels, 1080 × 1920, 30 fps, silent
+  worlds/w11…w32.jpg            the six generated lifestyle scenes, 1792 × 2240
+  src/                          build_posts.py (HTML → PNG), assemble_reels.py,
+                                stopmotion_frames.js, shoot.js
 ```
 
-Reels are exported silent on purpose so music can be chosen in-app. The store
-domain is written as `perset.shop` throughout; if the domain is still not
-resolving on launch day, swap the end cards to the Instagram handle (the HTML
-sources make that a one-line change).
+Reels are exported silent on purpose so music is chosen in-app. Every piece
+points to perset.shop; the end cards can be re-rendered with the Instagram
+handle from the sources if the domain is down on launch day.
