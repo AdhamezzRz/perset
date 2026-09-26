@@ -38,10 +38,10 @@ and none of "hand painted / hand drawn / fired in small runs / no two alike".
 | What | Model | Credits |
 |---|---|---|
 | 6 lifestyle worlds + 3 packshots | GPT Image 2.5, high, 2k | 24.75 |
-| 3 motif-alive clips (pro) | Kling 3.0 | 22.5 |
+| 3 motif-alive clips (pro) | Kling 3.0 | 26.25 |
 | 3 living-scene clips (std) | Kling 3.0 | 22.5 |
 | Stop-motion reel, cards, overlays, 6 posts | composed locally | 0 |
-| **Total** | | **≈ 70** |
+| **Total** | | **73.5** |
 
 ---
 
