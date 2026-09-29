@@ -17,9 +17,21 @@ the whole first screen like a reel, desktops keep the plain oxblood
 ground and download no video; the three collection stories use the new
 cut-out plate artwork; and the plate turn on scroll is eased frame by
 frame) are sitting on a duplicate draft theme instead:
-**"Per Set — draft v10 (sizes + microwave safe)"**, preview at
-`https://perset.shop/?preview_theme_id=167140294841`. Everything from
+**"Per Set — draft v11 (headings + photos + picker)"**, preview at
+`https://perset.shop/?preview_theme_id=186189709497`. Everything from
 every round before this one is already live.
+
+Two things from this round that live outside the theme:
+
+- The 12 per-piece products (dinner, salad, soup, dessert × 3) were
+  archived in admin. The Set your table picker no longer reads them; its
+  photos are now image settings on that page's section, so re-activating
+  or deleting those products changes nothing on the site.
+- "Default example products" (an empty sample collection) is still
+  published to the Online Store. The collections page no longer lists it,
+  but its own URL still resolves; unpublish or delete it in admin →
+  Products → Collections if you want it gone entirely (my Shopify access
+  is not allowed to unpublish).
 
 To make the draft's changes live, publish it from Shopify admin →
 Online Store → Themes (or tell me to keep working on it and you can
