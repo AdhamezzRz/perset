@@ -577,14 +577,26 @@ h1, h2, h3, .ps-h1, .ps-h2, .ps-h3 {
    transform again, so the line must simply never be moved: a headline that
    is only readable once a script runs is not a headline. */
 .ps-lines { display: block; }
-.ps-line-mask { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+/* The display face is set tighter than its own glyphs (line-height ~0.92),
+   so a mask cut at the line box shears off descenders (y, g, p) and the
+   tops of tall letters. The mask is widened past the line box on both
+   edges and the same amount is taken back with negative margins, so the
+   layout is unchanged and only the visible window grows. */
+.ps-line-mask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.14em 0.3em;
+  margin-block: -0.14em -0.3em;
+}
 .ps-line-inner {
   display: block;
   transform-origin: left bottom;
   transition: transform var(--ps-t-drape) var(--ps-ease-set);
   transition-delay: var(--ps-delay, 0ms);
 }
-.ps-js .ps-line-inner { transform: translate3d(0, 108%, 0) rotate(2.2deg); }
+/* Parked fully below the widened window, so no part of a line shows
+   before it rises. */
+.ps-js .ps-line-inner { transform: translate3d(0, calc(100% + 0.5em), 0) rotate(2.2deg); }
 
 /* .is-in may land on an ancestor (the usual case, set by the observer on
    .ps-lines) or on the line itself (when it carries its own data-ps-reveal). */

@@ -60,10 +60,16 @@
       {%- for block in section.blocks -%}
         {%- liquid
           assign col = collections[block.settings.collection]
-          assign dinner  = all_products[block.settings.dinner]
-          assign salad   = all_products[block.settings.salad]
-          assign dessert = all_products[block.settings.dessert]
-          assign soup    = all_products[block.settings.soup]
+          comment
+            Photographs come straight from Files, not from per-piece products:
+            the pieces are not sold on their own, and a product that gets
+            archived disappears from the storefront along with its photo.
+          endcomment
+          assign dinner  = block.settings.dinner_image
+          assign salad   = block.settings.salad_image
+          assign dessert = block.settings.dessert_image
+          assign soup    = block.settings.soup_image
+          assign col_title = block.settings.label | default: col.title
         -%}
 
         <div
@@ -120,7 +126,7 @@
                   -%}
                   {%- if piece == blank -%}{%- continue -%}{%- endif -%}
                   {%- assign piece_i = piece_i | plus: 1 -%}
-                  {%- assign piece_alt = piece.title | escape -%}
+                  {%- assign piece_alt = col_title | append: ' — ' | append: piece_label | escape -%}
                   {%- comment -%}
                     Pieces are not sold on their own, so this points at the
                     collection's one full-set product rather than the piece's
@@ -132,7 +138,7 @@
                     data-ps-piece-panel="{{ piece_i }}"
                     data-ps-cursor="{{ piece_label }}">
                     {{
-                      piece.featured_media
+                      piece
                       | image_url: width: 1000
                       | image_tag:
                         loading: 'lazy',
@@ -189,10 +195,11 @@
               <p>{{ block.settings.note }}</p>
             {%- endif -%}
             <ul class="ps-setting__list">
-              <li><span>{{ 'sections.setting.dinner' | t | default: 'Dinner plates' }}</span><span class="ps-num">6 × 27 cm</span></li>
-              <li><span>{{ 'sections.setting.dessert' | t | default: 'Dessert plates' }}</span><span class="ps-num">6 × 21 cm</span></li>
-              <li><span>{{ 'sections.setting.salad' | t | default: 'Salad plates' }}</span><span class="ps-num">6 × 21 cm</span></li>
-              <li><span>{{ 'sections.setting.soup' | t | default: 'Soup bowls' }}</span><span class="ps-num">6 × 12 cm</span></li>
+              <li><span>{{ 'sections.setting.dinner' | t | default: 'Dinner plates' }}</span><span class="ps-num">27 cm</span></li>
+              <li><span>{{ 'sections.setting.salad' | t | default: 'Salad plates' }}</span><span class="ps-num">21 cm, deep</span></li>
+              <li><span>{{ 'sections.setting.dessert' | t | default: 'Dessert plates' }}</span><span class="ps-num">21 cm</span></li>
+              <li><span>{{ 'sections.setting.soup' | t | default: 'Soup bowls' }}</span><span class="ps-num">12 cm</span></li>
+              <li><span>{{ 'sections.setting.sets' | t | default: 'Sets of' }}</span><span class="ps-num">24 or 16 pieces</span></li>
             </ul>
             {% render 'icon', name: 'thread', draw: true %}
             <a class="ps-btn ps-btn--ghost" href="{{ col.url | default: routes.collections_url }}" data-ps-magnetic="0.18">
@@ -493,7 +500,7 @@
       "type": "textarea",
       "id": "body",
       "label": "Introduction",
-      "default": "Everything you need to set a table of six, choose a plate and explore."
+      "default": "Everything you need to set a table of six or four, choose a plate and explore."
     }
   ],
   "blocks": [
@@ -517,10 +524,10 @@
           "default": "wild"
         },
         { "type": "header", "content": "The four pieces" },
-        { "type": "product", "id": "dinner", "label": "Dinner plates (27 cm)" },
-        { "type": "product", "id": "dessert", "label": "Dessert plates (21 cm)" },
-        { "type": "product", "id": "salad", "label": "Salad plates (21 cm)" },
-        { "type": "product", "id": "soup", "label": "Soup bowls (12 cm)" }
+        { "type": "image_picker", "id": "dinner_image", "label": "Dinner plate (27 cm)" },
+        { "type": "image_picker", "id": "salad_image", "label": "Salad plate (21 cm, deep)" },
+        { "type": "image_picker", "id": "dessert_image", "label": "Dessert plate (21 cm)" },
+        { "type": "image_picker", "id": "soup_image", "label": "Soup bowl (12 cm)" }
       ]
     }
   ],

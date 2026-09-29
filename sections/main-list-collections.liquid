@@ -3,7 +3,7 @@
 
   One large editorial card per collection. Each one is re-pigmented from its
   own handle, so the page reads as three worlds rather than three rows of the
-  same template, and each plate turns as it travels up the viewport.
+  same template.
 
   Merchants can either let the section list every collection, or add blocks to
   choose the order and override a pigment.
@@ -80,7 +80,7 @@
                 <span class="ps-ccard__ring" aria-hidden="true"></span>
                 <span class="ps-ccard__ring ps-ccard__ring--2" aria-hidden="true"></span>
 
-                <div class="ps-ccard__plate ps-plate" data-ps-rotate="{{ section.settings.rotation }}">
+                <div class="ps-ccard__plate ps-plate">
                   {%- if img != blank -%}
                     {{
                       img
@@ -157,7 +157,7 @@
               <span class="ps-ccard__ring" aria-hidden="true"></span>
               <span class="ps-ccard__ring ps-ccard__ring--2" aria-hidden="true"></span>
 
-              <div class="ps-ccard__plate ps-plate" data-ps-rotate="{{ section.settings.rotation }}">
+              <div class="ps-ccard__plate ps-plate">
                 {%- if img != blank -%}
                   {{
                     img
@@ -284,6 +284,7 @@
   .ps-ccard__plate {
     width: 100%;
     box-shadow: 0 22px 58px rgba(120, 95, 60, 0.20);
+    transform: none;
     transition: transform var(--ps-t-slow) var(--ps-ease-set);
   }
   .ps-ccard:hover .ps-ccard__plate { transform: scale(1.035); }
@@ -353,12 +354,6 @@
       "default": "Each set is twenty-four pieces — six dinner, six dessert, six salad, six soup — or sixteen, with four of each, sold together as one complete set."
     },
     { "type": "text", "id": "cursor", "label": "Cursor label over a card", "default": "Open" },
-    {
-      "type": "range",
-      "id": "rotation",
-      "label": "Scroll rotation",
-      "min": 0, "max": 120, "step": 5, "unit": "°", "default": 45
-    },
     {
       "type": "range",
       "id": "stagger",

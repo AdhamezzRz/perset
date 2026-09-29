@@ -137,8 +137,8 @@
 
   "collections": {
     "general": {
-      "piece": "piece",
-      "pieces": "pieces",
+      "piece": "set",
+      "pieces": "sets",
       "no_matches": "Nothing here matches that yet.",
       "view_all": "See everything",
       "items_with_count": {
@@ -434,6 +434,7 @@
       "dessert": "Dessert",
       "salad": "Salad",
       "soup": "Soup",
+      "sets": "Sets of",
       "pieces": "pieces"
     },
     "slideshow": {

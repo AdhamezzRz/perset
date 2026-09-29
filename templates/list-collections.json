@@ -2,12 +2,17 @@
   "sections": {
     "main": {
       "type": "main-list-collections",
+      "blocks": {
+        "wild": { "type": "collection", "settings": { "collection": "stitches-of-the-wild", "pigment": "auto" } },
+        "beads": { "type": "collection", "settings": { "collection": "a-tale-in-beads", "pigment": "auto" } },
+        "past": { "type": "collection", "settings": { "collection": "pretty-past", "pigment": "auto" } }
+      },
+      "block_order": ["wild", "beads", "past"],
       "settings": {
         "eyebrow": "Three worlds",
         "heading": "The collections",
         "intro": "Each set is twenty-four pieces — six dinner, six dessert, six salad, six soup — or sixteen, with four of each, sold together as one complete set.",
         "cursor": "Open",
-        "rotation": 45,
         "stagger": 120
       }
     }
