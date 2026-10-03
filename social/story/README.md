@@ -13,7 +13,7 @@ edge, stitched dashed rules.
 | # | File | Length | What happens |
 |---|---|---|---|
 | 1 | `story-1-were-open.mp4` | 6.3 s | An oxblood shop shutter with the logo and a taped note, "back in a minute, setting the table". It rattles, jolts and rolls up on a Cairo doorway with a laid table inside, a pink parasol leaning on the frame. "We're open." |
-| 2 | `story-2-the-receipt.mp4` | 8.2 s | A receipt prints line by line for a table of six: 1 × complete set, 24 pcs, the four piece sizes, double-boxed, across Egypt, total "one good table", then an OPEN NOW stamp lands. |
+| 2 | `story-2-the-receipt.mp4` | 8.2 s | A receipt prints line by line for a table of six: 1 × complete set, 24 pcs, the four piece sizes, double-boxed, across Egypt, total "one good table", then an AVAILABLE NOW stamp lands. |
 | 3 | `story-3-pick-your-plate.mp4` | 7.0 s | The three dinner plates drop in one by one and spin lazily, each with its line: leopards under a pink parasol, a palm built bead by bead, a peacock among roses. "Pick your plate." |
 | 4 | `story-4-saved-you-a-seat.mp4` | 5.9 s | Overhead, a table laid for six. A hand sets the last plate down and slips away. "Saved you a seat." |
 | 5 | `story-5-set-your-table.mp4` | 5.0 s | Closing card with a hand-drawn arrow into a clear space for the link sticker. |

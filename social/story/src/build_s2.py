@@ -24,8 +24,8 @@ body{background:#2a0a04}
 .bar{display:flex;gap:4px;justify-content:center;margin-top:26px;height:96px}
 .bar i{display:block;background:var(--ink);height:100%%}
 .url{text-align:center;font-size:23px;letter-spacing:.34em;text-transform:uppercase;margin-top:12px;color:#6E5A54}
-#zone{height:230px;position:relative}
-#stamp{position:absolute;left:50%%;top:60%%;padding:10px 30px;border:8px double #7a1a0c;color:#7a1a0c;font-size:92px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
+#zone{height:290px;position:relative}
+#stamp{position:absolute;left:50%%;top:52%%;padding:12px 36px 8px;border:8px double #7a1a0c;color:#7a1a0c;font-size:82px;line-height:1.02;text-align:center;font-weight:500;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
   transform:translate(-50%%,-50%%) rotate(-9deg) scale(2.6);opacity:0;mix-blend-mode:multiply;border-radius:10px;background:rgba(122,26,12,.04)}
 """ % bgimg
 bars=''.join(f'<i style="width:{w}px"></i>' for w in [4,2,6,3,2,5,2,8,3,2,4,6,2,3,5,2,7,3,2,4,2,6,3,5,2,4,8,2,3,6,2,4,3,5,2,7,3,2,5,4])
@@ -47,7 +47,7 @@ body=f"""
  <div class="ln rule" data-i="12"></div>
  <div class="ln row tot" data-i="13"><span>Total</span><span class="d"></span><span class="v">one good table</span></div>
  <div class="ln thanks" data-i="14">thank you for<br>setting your table</div>
- <div id="zone"><div id="stamp" class="eyebrow">Open now</div></div>
+ <div id="zone"><div id="stamp" class="eyebrow">Available<br>now</div></div>
  <div class="ln url" data-i="15">perset.shop</div>
 </div>
 """
