@@ -52,11 +52,11 @@ css="""
 #c .e{font-size:20px;letter-spacing:.34em;text-transform:uppercase;color:#F2A4B6}
 #c .w{font-family:'Damion',cursive;font-size:230px;line-height:.9;color:#F4EEE4;margin-top:14px}
 #c .w i{font-style:normal;color:#F2A4B6}
-#c .t{font-size:34px;color:#F4EEE4;margin-top:34px;line-height:1.5;opacity:.92}
+#c .t{font-size:46px;color:#F4EEE4;margin-top:40px;line-height:1.35;opacity:.96;letter-spacing:.01em}
 #c .logo{width:280px;height:152px;background:#F2A4B6;margin-top:56px}
 #c .u{font-size:22px;letter-spacing:.34em;text-transform:uppercase;margin-top:26px}
 """
-body='<div class="ticket" style="top:0;left:0;right:0;height:30px;background:#F2A4B6;-webkit-mask:radial-gradient(circle at 50% 100%, transparent 12px, #000 13px) 0 0/48px 100% repeat-x"></div><div id="c"><div class="e">case closed</div><div class="w">worth<br><i>it.</i></div><div class="t">Hand washing keeps the colours bright.<br>Every set is 24 pieces. Every table earns its evidence.</div><div class="logo"></div><div class="u">perset.shop</div></div>'
+body='<div class="ticket" style="top:0;left:0;right:0;height:30px;background:#F2A4B6;-webkit-mask:radial-gradient(circle at 50% 100%, transparent 12px, #000 13px) 0 0/48px 100% repeat-x"></div><div id="c"><div class="e">case closed</div><div class="w">worth<br><i>it.</i></div><div class="t">Beautiful per piece,<br>perfect per set.</div><div class="logo"></div><div class="u">perset.shop</div></div>'
 S.append(('05-close', page(css,body,'',W=1080,H=1350,bgc='#500C02')))
 for n,h in S: open(n+'.html','w').write(h)
 print([n for n,_ in S])
