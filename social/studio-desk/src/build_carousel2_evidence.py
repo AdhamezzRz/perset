@@ -31,10 +31,10 @@ S.append(('01-wild', slide('ev_wild.jpg',
   arrows=[(650,150,545,165,3,26),(790,320,745,280,6,-20),(700,1010,560,960,9,-26)],
   exhibit='exhibit a · stitches of the wild', extra=Lbl())))
 S.append(('02-beads', slide('ev_beads.jpg',
-  loops=[(858,822,122,94,3,-12),(412,1140,56,72,6,6),(90,706,110,70,9)],
-  notes=[(790,612,'flatbread:<br>demolished',60,-4,290,'left'),(235,1210,'honey,<br>everywhere',66,-3,330,'left'),(40,850,'the last fig',58,-3,300,'left')],
-  arrows=[(385,1212,412,1192,7,-14),(110,845,100,790,2,-14)],
-  exhibit='exhibit b · a tale in beads')))
+  loops=[(205,92,150,96,3,-6),(365,1240,222,100,6,-2)],
+  notes=[(678,1052,'flatbread:<br>demolished',42,-5,210,'left'),(430,150,'the last fig',64,-4,320,'left')],
+  arrows=[(425,168,340,128,2,-14)],
+  exhibit='exhibit b · a tale in beads', extra='<style>.ex{right:auto;left:30px;bottom:40px;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.28em;font-size:17px}</style>')))
 S.append(('03-past', slide('ev_past.jpg',
   loops=[(270,520,150,180,4),(865,205,150,110,7),(183,775,105,90,2)],
   notes=[(40,262,'candles:<br>spent',68,-5,300,'left'),(520,70,"someone's<br>cardigan",72,-4,420,'left'),(30,915,'half a<br>pomegranate',60,-4,380,'left')],
