@@ -4,7 +4,9 @@ A='../assets/'
 INK='#F7EEDC'
 def slide(photo, loops, notes, arrows, exhibit, extra=''):
     sv=''
-    for (cx,cy,rx,ry,seed) in loops: sv+=f'<path d="{loop_path(cx,cy,rx,ry,seed)}"/>'
+    for L in loops:
+        cx,cy,rx,ry,seed=L[:5]; rot=L[5] if len(L)>5 else 0
+        sv+=f'<path d="{loop_path(cx,cy,rx,ry,seed)}" transform="rotate({rot} {cx} {cy})"/>'
     for (x1,y1,x2,y2,seed,bow) in arrows:
         sv+=f'<path d="{squiggle(x1,y1,x2,y2,seed,bow)}"/><path d="{arrowhead(x2,y2,x1,y1,24,seed)}"/>'
     nt=''.join(f'<div class="abs script note" style="left:{x}px;top:{y}px;font-size:{s}px;transform:rotate({r}deg);width:{w}px;text-align:{al}">{t}</div>' for (x,y,t,s,r,w,al) in notes)
@@ -29,9 +31,9 @@ S.append(('01-wild', slide('ev_wild.jpg',
   arrows=[(650,150,545,165,3,26),(790,320,745,280,6,-20),(700,1010,560,960,9,-26)],
   exhibit='exhibit a · stitches of the wild', extra=Lbl())))
 S.append(('02-beads', slide('ev_beads.jpg',
-  loops=[(948,450,95,150,3),(398,1115,70,60,6),(90,706,110,70,9)],
+  loops=[(966,452,92,168,3,13),(412,1140,56,72,6,6),(90,706,110,70,9)],
   notes=[(700,600,'crossword:<br>abandoned',62,-4,330,'left'),(235,1210,'honey,<br>everywhere',66,-3,330,'left'),(40,850,'the last fig',58,-3,300,'left')],
-  arrows=[(800,590,920,610,4,-20),(380,1205,415,1160,7,-18),(110,845,100,790,2,-14)],
+  arrows=[(800,600,905,620,4,-20),(385,1212,412,1192,7,-14),(110,845,100,790,2,-14)],
   exhibit='exhibit b · a tale in beads')))
 S.append(('03-past', slide('ev_past.jpg',
   loops=[(270,520,150,180,4),(865,205,150,110,7),(183,775,105,90,2)],
