@@ -10,7 +10,7 @@ from scipy import ndimage
 
 SCR = '/tmp/claude-0/-home-user-perset/9ff3c93e-59bb-5efc-8bbb-67d4644489c6/scratchpad'
 CUT = {'wild': SCR + '/pack/assets/wild_hi.png', 'past': SCR + '/cutouts/past_dinner.png',
-       'wild_bowl': SCR + '/cutouts/wild_soup.png', 'past_bowl': SCR + '/cutouts/past_soup.png'}
+       'wild_bowl': SCR + '/cutouts/wild_soup.png', 'past_bowl': SCR + '/cutouts/past_soup.png', 'salad': SCR + '/salad/salad_cut.png'}
 
 
 def load(p):

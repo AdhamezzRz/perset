@@ -17,8 +17,7 @@ In the Kling videos this is done frame by frame (`vtool.py`). The real plate is 
 The leopards, parasols, peacock and roses you see are the actual designs. The reels with no generation at all use only the real photos:
 
 - Stitches of the Wild Reel 1;
-- Pretty Past Reel 2;
-- Pretty Past Reel 1's spaghetti shot, which is Kling animating the real lifestyle photo.
+- Pretty Past Reel 2.
 
 Voice rules from the brief still hold: never "luxury", and none of "hand painted / hand drawn / fired in small runs / no two alike".
 
@@ -77,7 +76,8 @@ Cover, then 4 "looks" of the same plate with denim, silk, sand and velvet, then 
 ## Pretty Past
 
 ### Reel 1 — El Nish  `reels/reel-1-el-nish.mp4` · 18 s
-Every Egyptian home has a nish, and the good plates live in it. Look, don't touch, guests only. Then a hand turns the key, the door opens, and it cuts to spaghetti on a Tuesday.
+Every Egyptian home has a nish, and the good plates live in it. Look, don't touch, guests only. Then a hand turns the key and the door opens. It cuts to a Tuesday kitchen table where fattoush is spooned onto the plate.
+The plate is the **Pretty Past salad plate**: a pink border with coral flowers and peacock-feather eyes, a white ring, and a saffron centre. It comes from the product photo with the lemon painted out (`src/salad_cutout.py`), and it is the real plate in every frame.
 > Every Egyptian home has a nish. This is your sign to open it.
 > Pretty Past was made for a Tuesday. #FreeThePlates
 > perset.shop
@@ -97,7 +97,7 @@ A real peacock meets the plate. He saw it, he has… questions, identity crisis.
 > Pretty Past. perset.shop
 
 ### Post 1 — Rules of the nish  `posts/post-1-nish-rules.jpg`
-Two notes on the glass: "GUESTS ONLY. ~~do not touch.~~ — Teta, 1987" and a pink sticky note, "update: use them on Tuesdays. — also Teta ♡".
+The nish holds four Pretty Past salad plates. Two notes on the glass: "GUESTS ONLY. ~~do not touch.~~ — Teta, 1987" and a pink sticky note, "update: use them on Tuesdays. — also Teta ♡".
 > Teta updated the rules. Pretty Past, a set for six. perset.shop
 
 ### Post 2 — Teta's Om Ali  `posts/post-2-tetas-om-ali.jpg`
@@ -143,10 +143,10 @@ The plates themselves are always the real photos.
 
 | What | Model | Credits |
 |---|---|---|
-| 18 scenes + 1 edit (cups made plain) | GPT Image 2.5, high, 2k | 52.25 |
-| 5 clips (forks, toast, peacock, nish door, spaghetti) | Kling 3.0 pro, 5 s | 43.75 |
+| 19 scenes + 1 edit (cups made plain) | GPT Image 2.5, high, 2k | 55 |
+| 6 clips (forks, toast, peacock, nish door, spaghetti, fattoush) | Kling 3.0 pro, 5 s | 52.5 |
 | Plate replacement, reveals, captions, posts, carousels | local | 0 |
-| **Total** | | **96** |
+| **Total** | | **107.5** |
 
 ## Source
 

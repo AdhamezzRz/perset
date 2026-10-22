@@ -1,5 +1,5 @@
 from wc import *
-jpg('ex/g20_nish2.png','a/p_nish.jpg',1080,1350,box=(0,330,1520,2230),q=94)
+jpg('ex/g20_nish_salad.png','a/p_nish.jpg',1080,1350,box=(0,330,1520,2230),q=94)
 css=f"""
 .photo{{position:absolute;inset:0;background:url({img('a/p_nish.jpg')}) center/cover}}
 .note{{position:absolute;font-family:'Caveat',cursive;line-height:1.02;padding:26px 26px 22px;box-shadow:0 10px 16px rgba(20,8,0,.35),0 1px 2px rgba(20,8,0,.4)}}
